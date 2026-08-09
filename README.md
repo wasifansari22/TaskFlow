@@ -1,16 +1,51 @@
-# React + Vite
+# 📝 TaskFlow — Project Management Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive project management platform for organizing tasks, tracking progress, and visualizing team productivity through an intuitive drag-and-drop interface.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Features
 
-## React Compiler
+* 🔐 Authentication — Secure user login and registration
+* 📋 Task Management — Create, update, assign, and organize tasks
+* 🖱️ Drag-and-Drop Workflows — Move tasks across boards/columns seamlessly
+* 📊 Analytics Dashboard — Visualize project progress and team performance
+* 🔗 RESTful API Integration — Clean, structured communication between frontend and backend
+* 📱 Responsive Design — Works smoothly across desktop, tablet, and mobile
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠 Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+* React
+* React Router
+* Tailwind
+* Redux-Toolkit
+* Vite
+* Django REST Framework
+* PostgreSQL
+* More...
+
+---
+
+## 🤝 Contributing
+
+Contributions, suggestions, and improvements are always welcome.
+
+Feel free to fork the repository and submit a pull request.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 👨‍💻 Author
+
+**Wasif Ansari**
+
+GitHub: [@wasifansari22](https://github.com/wasifansari22)
+
+If you enjoyed this project, consider giving it a ⭐ on GitHub.

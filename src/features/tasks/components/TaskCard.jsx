@@ -1,12 +1,15 @@
 import { CalendarDays, CheckCircle2, Circle, Clock3, Trash2, } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { deleteTask, toggleTask, } from "../taskSlice";
+import { deleteTask, updateTaskStatus, } from "../taskSlice";
 
 function TaskCard({ task }) {
     const dispatch = useDispatch();
 
-    const handleToggle = () => {
-        dispatch(toggleTask(task.id));
+    const handleStatusChange = (event) => {
+        dispatch(updateTaskStatus({
+            id: task.id,
+            status: event.target.value,
+        }));
     };
 
     const handleDelete = () => {
@@ -41,18 +44,9 @@ function TaskCard({ task }) {
     return (
         <div className="group rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:shadow-md">
             <div className="flex items-start gap-4">
-                <button
-                    type="button"
-                    onClick={handleToggle}
-                    className="mt-0.5 shrink-0 rounded-full transition hover:scale-105"
-                    aria-label={
-                        task.status === "Completed"
-                            ? "Mark task as pending"
-                            : "Mark task as completed"
-                    }
-                >
+                <div className="mt-0.5 shrink-0">
                     {statusIcon}
-                </button>
+                </div>
 
                 <div className="min-w-0 flex-1">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
@@ -78,27 +72,38 @@ function TaskCard({ task }) {
                         </span>
                     </div>
 
-                    <div className="mt-4 flex items-center justify-between gap-4">
+                    {/* dropdown */}
+                    <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div className="flex items-center gap-4 text-xs text-slate-500">
                             <span className="flex items-center gap-1.5">
                                 <CalendarDays size={14} />
                                 {task.dueDate}
                             </span>
-
-                            <span className="hidden sm:inline">
-                                {task.status}
-                            </span>
                         </div>
 
-                        <button
-                            type="button"
-                            onClick={handleDelete}
-                            className="rounded-lg p-2 text-slate-400 opacity-100 transition hover:bg-rose-50 hover:text-rose-600 sm:opacity-0 sm:group-hover:opacity-100"
-                            aria-label={`Delete ${task.title}`}
-                        >
-                            <Trash2 size={16} />
-                        </button>
+                        <div className="flex items-center gap-2">
+                            <select
+                                value={task.status}
+                                onChange={handleStatusChange}
+                                className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                aria-label={`Change status for ${task.title}`}
+                            >
+                                <option value="Pending">Pending</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+
+                            <button
+                                type="button"
+                                onClick={handleDelete}
+                                className="rounded-lg p-2 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600"
+                                aria-label={`Delete ${task.title}`}
+                            >
+                                <Trash2 size={16} />
+                            </button>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>

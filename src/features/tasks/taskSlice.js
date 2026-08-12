@@ -47,17 +47,11 @@ const taskSlice = createSlice({
             state.tasks.unshift(action.payload);
         },
 
-        toggleTask: (state, action) => {
-            const task = state.tasks.find(
-                (task) => task.id === action.payload
-            );
-
+        updateTaskStatus: (state, action) => {
+            const { id, status } = action.payload;
+            const task = state.tasks.find((task) => task.id === id);
             if (!task) return;
-
-            task.status =
-                task.status === "Completed"
-                    ? "Pending"
-                    : "Completed";
+            task.status = status;
         },
 
         deleteTask: (state, action) => {
@@ -68,5 +62,5 @@ const taskSlice = createSlice({
     },
 });
 
-export const { addTask, toggleTask, deleteTask, } = taskSlice.actions;
+export const { addTask, updateTaskStatus, deleteTask, } = taskSlice.actions;
 export default taskSlice.reducer;

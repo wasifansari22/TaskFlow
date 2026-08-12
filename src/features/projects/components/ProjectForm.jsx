@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addTask } from "../taskSlice";
+import { addProject } from "../projectSlice";
 
 const initialForm = {
-    title: "",
+    name: "",
     description: "",
     priority: "Medium",
     dueDate: "",
 };
 
-function TaskForm({ onClose }) {
+function ProjectForm({ onClose }) {
     const dispatch = useDispatch();
     const [formData, setFormData] = useState(initialForm);
 
@@ -24,20 +24,21 @@ function TaskForm({ onClose }) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if (!formData.title.trim()) {
+
+        if (!formData.name.trim()) {
             return;
         }
 
-        const newTask = {
-            id: `task-${Date.now()}`,
-            title: formData.title.trim(),
+        const newProject = {
+            id: `project-${Date.now()}`,
+            name: formData.name.trim(),
             description: formData.description.trim() || "No description provided.",
             priority: formData.priority,
-            status: "Pending",
+            status: "Active",
             dueDate: formData.dueDate || "No due date",
         };
 
-        dispatch(addTask(newTask));
+        dispatch(addProject(newProject));
         setFormData(initialForm);
         onClose();
     };
@@ -46,37 +47,37 @@ function TaskForm({ onClose }) {
         <form onSubmit={handleSubmit} className="space-y-4">
             <div>
                 <label
-                    htmlFor="task-title"
+                    htmlFor="project-name"
                     className="mb-1.5 block text-sm font-medium text-slate-700"
                 >
-                    Task title
+                    Project name
                 </label>
 
                 <input
-                    id="task-title"
-                    name="title"
-                    value={formData.title}
+                    id="project-name"
+                    name="name"
+                    value={formData.name}
                     onChange={handleChange}
-                    placeholder="e.g. Build authentication flow"
+                    placeholder="e.g. E-commerce Website"
                     className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
             </div>
 
             <div>
                 <label
-                    htmlFor="task-description"
+                    htmlFor="project-description"
                     className="mb-1.5 block text-sm font-medium text-slate-700"
                 >
                     Description
                 </label>
 
                 <textarea
-                    id="task-description"
+                    id="project-description"
                     name="description"
                     value={formData.description}
                     onChange={handleChange}
                     rows={3}
-                    placeholder="What needs to be done?"
+                    placeholder="What is this project about?"
                     className="w-full resize-none rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
             </div>
@@ -84,14 +85,14 @@ function TaskForm({ onClose }) {
             <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                     <label
-                        htmlFor="task-priority"
+                        htmlFor="project-priority"
                         className="mb-1.5 block text-sm font-medium text-slate-700"
                     >
                         Priority
                     </label>
 
                     <select
-                        id="task-priority"
+                        id="project-priority"
                         name="priority"
                         value={formData.priority}
                         onChange={handleChange}
@@ -105,14 +106,14 @@ function TaskForm({ onClose }) {
 
                 <div>
                     <label
-                        htmlFor="task-due-date"
+                        htmlFor="project-due-date"
                         className="mb-1.5 block text-sm font-medium text-slate-700"
                     >
                         Due date
                     </label>
 
                     <input
-                        id="task-due-date"
+                        id="project-due-date"
                         name="dueDate"
                         type="date"
                         value={formData.dueDate}
@@ -135,11 +136,11 @@ function TaskForm({ onClose }) {
                     type="submit"
                     className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
                 >
-                    Create Task
+                    Create Project
                 </button>
             </div>
         </form>
     );
 }
 
-export default TaskForm;
+export default ProjectForm;

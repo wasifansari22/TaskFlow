@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react";
 import { CheckCircle2, Clock3, ListTodo, Plus, Search, } from "lucide-react";
 import { useSelector } from "react-redux";
+import { selectAllTasks, selectCompletedTasks, selectInProgressTasks, selectPendingTasks, } from "../features/tasks/taskSelectors";
 import TaskForm from "../features/tasks/components/TaskForm";
 import TaskList from "../features/tasks/components/TaskList";
-import { selectAllTasks, selectCompletedTasks, selectInProgressTasks, selectPendingTasks, } from "../features/tasks/taskSelectors";
+import Modal from "../components/ui/Modal";
 
 const Tasks = () => {
     const [filter, setFilter] = useState("All");
@@ -118,13 +119,15 @@ const Tasks = () => {
             </section>
 
             {/* Create Form */}
-            {showForm && (
-                <section>
-                    <TaskForm
-                        onClose={() => setShowForm(false)}
-                    />
-                </section>
-            )}
+            <Modal
+                isOpen={showForm}
+                onClose={() => setShowForm(false)}
+                title="Create New Task"
+            >
+                <TaskForm
+                    onClose={() => setShowForm(false)}
+                />
+            </Modal>
 
             {/* Search + Filters */}
             <section className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:flex-row lg:items-center lg:justify-between">

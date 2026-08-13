@@ -52,8 +52,15 @@ const projectSlice = createSlice({
         deleteProject: (state, action) => {
             state.projects = state.projects.filter((project) => project.id !== action.payload);
         },
+
+        updateProject: (state, action) => {
+            const { id, updates } = action.payload;
+            const project = state.projects.find((project) => project.id === id);
+            if (!project) return;
+            Object.assign(project, updates);
+        },
     },
 });
 
-export const { addProject, updateProjectStatus, deleteProject } = projectSlice.actions;
+export const { addProject, updateProjectStatus, deleteProject, updateProject } = projectSlice.actions;
 export default projectSlice.reducer;

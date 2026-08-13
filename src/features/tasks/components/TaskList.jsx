@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { selectAllTasks } from "../taskSelectors";
 import TaskCard from "./TaskCard";
 
-function TaskList({ filter, search }) {
+function TaskList({ filter, search, onEdit }) {
     const tasks = useSelector(selectAllTasks);
 
     const filteredTasks = tasks.filter((task) => {
@@ -38,6 +38,7 @@ function TaskList({ filter, search }) {
                 <TaskCard
                     key={task.id}
                     task={task}
+                    onEdit={onEdit}
                 />
             ))}
         </div>

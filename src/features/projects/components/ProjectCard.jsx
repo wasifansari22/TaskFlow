@@ -1,11 +1,11 @@
-import { CalendarDays, FolderKanban, Trash2 } from "lucide-react";
+import { CalendarDays, FolderKanban, Trash2, Pencil } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteProject, updateProjectStatus } from "../projectSlice";
 import { selectProjectProgress } from "../projectSelectors";
 import { selectTasksByProject } from "../../tasks/taskSelectors";
 import { Link } from "react-router";
 
-const ProjectCard = ({ project }) => {
+const ProjectCard = ({ project, onEdit }) => {
     const dispatch = useDispatch();
     const progress = useSelector((state) =>
         selectProjectProgress(state, project.id)
@@ -120,6 +120,15 @@ const ProjectCard = ({ project }) => {
                         <option value="On Hold">On Hold</option>
                         <option value="Completed">Completed</option>
                     </select>
+
+                    <button
+                        type="button"
+                        onClick={() => onEdit(project)}
+                        className="rounded-lg p-2 text-slate-400 transition hover:bg-blue-50 hover:text-blue-600"
+                        aria-label={`Edit ${project.name}`}
+                    >
+                        <Pencil size={16} />
+                    </button>
 
                     <button
                         type="button"

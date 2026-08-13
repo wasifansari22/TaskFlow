@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addProject } from "../projectSlice";
+import { addProject, updateProject } from "../projectSlice";
 
 const initialForm = {
     name: "",
@@ -9,9 +9,21 @@ const initialForm = {
     dueDate: "",
 };
 
-function ProjectForm({ onClose }) {
+function ProjectForm({ project = null, onClose }) {
     const dispatch = useDispatch();
-    const [formData, setFormData] = useState(initialForm);
+    const [formData, setFormData] = useState(
+        project
+            ? {
+                name: project.name || "",
+                description: project.description || "",
+                priority: project.priority || "Medium",
+                dueDate:
+                    project.dueDate === "No due date"
+                        ? ""
+                        : project.dueDate || "",
+            }
+            : initialForm
+    );
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -24,22 +36,35 @@ function ProjectForm({ onClose }) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-
         if (!formData.name.trim()) {
             return;
         }
 
-        const newProject = {
-            id: `project-${Date.now()}`,
-            name: formData.name.trim(),
-            description: formData.description.trim() || "No description provided.",
-            priority: formData.priority,
-            status: "Active",
-            dueDate: formData.dueDate || "No due date",
-        };
+        if (project) {
+            dispatch(
+                updateProject({
+                    id: project.id,
+                    updates: {
+                        name: formData.name.trim(),
+                        description: formData.description.trim() || "No description provided.",
+                        priority: formData.priority,
+                        dueDate: formData.dueDate || "No due date",
+                    },
+                })
+            );
+        } else {
+            const newProject = {
+                id: `project-${Date.now()}`,
+                name: formData.name.trim(),
+                description: formData.description.trim() || "No description provided.",
+                priority: formData.priority,
+                status: "Active",
+                dueDate: formData.dueDate || "No due date",
+            };
 
-        dispatch(addProject(newProject));
-        setFormData(initialForm);
+            dispatch(addProject(newProject));
+        }
+
         onClose();
     };
 
@@ -136,7 +161,7 @@ function ProjectForm({ onClose }) {
                     type="submit"
                     className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
                 >
-                    Create Project
+                    {project ? "Save Changes" : "Create Project"}
                 </button>
             </div>
         </form>

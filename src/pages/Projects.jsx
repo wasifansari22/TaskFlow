@@ -10,6 +10,7 @@ const Projects = () => {
     const [filter, setFilter] = useState("All");
     const [search, setSearch] = useState("");
     const [showForm, setShowForm] = useState(false);
+    const [editingProject, setEditingProject] = useState(null);
     const projects = useSelector(selectAllProjects);
     const activeProjects = useSelector(selectActiveProjects);
     const completedProjects = useSelector(selectCompletedProjects);
@@ -76,7 +77,10 @@ const Projects = () => {
 
                 <button
                     type="button"
-                    onClick={() => setShowForm(true)}
+                    onClick={() => {
+                        setEditingProject(null);
+                        setShowForm(true);
+                    }}
                     className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700"
                 >
                     <Plus size={18} />
@@ -118,12 +122,23 @@ const Projects = () => {
 
             {/* Create Project */}
             <Modal
-                isOpen={showForm}
-                onClose={() => setShowForm(false)}
-                title="Create New Project"
+                isOpen={showForm || editingProject !== null}
+                onClose={() => {
+                    setShowForm(false);
+                    setEditingProject(null);
+                }}
+                title={
+                    editingProject
+                        ? "Edit Project"
+                        : "Create New Project"
+                }
             >
                 <ProjectForm
-                    onClose={() => setShowForm(false)}
+                    project={editingProject}
+                    onClose={() => {
+                        setShowForm(false);
+                        setEditingProject(null);
+                    }}
                 />
             </Modal>
 
@@ -167,6 +182,7 @@ const Projects = () => {
             <ProjectList
                 filter={filter}
                 search={search}
+                onEdit={setEditingProject}
             />
         </div>
     );

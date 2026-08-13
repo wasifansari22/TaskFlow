@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import ProjectCard from "./ProjectCard";
 import { selectAllProjects } from "../projectSelectors";
 
-function ProjectList({ filter, search }) {
+function ProjectList({ filter, search, onEdit }) {
     const projects = useSelector(selectAllProjects);
 
     const filteredProjects = projects.filter((project) => {
@@ -38,6 +38,7 @@ function ProjectList({ filter, search }) {
                 <ProjectCard
                     key={project.id}
                     project={project}
+                    onEdit={onEdit}
                 />
             ))}
         </div>

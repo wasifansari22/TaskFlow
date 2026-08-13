@@ -1,8 +1,8 @@
-import { CalendarDays, CheckCircle2, Circle, Clock3, Trash2, } from "lucide-react";
+import { CalendarDays, CheckCircle2, Circle, Clock3, Trash2, Pencil } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { deleteTask, updateTaskStatus, } from "../taskSlice";
 
-function TaskCard({ task }) {
+const TaskCard = ({ task, onEdit }) => {
     const dispatch = useDispatch();
 
     const handleStatusChange = (event) => {
@@ -82,6 +82,15 @@ function TaskCard({ task }) {
                         </div>
 
                         <div className="flex items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={() => onEdit(task)}
+                                className="rounded-lg p-2 text-slate-400 transition hover:bg-blue-50 hover:text-blue-600"
+                                aria-label={`Edit ${task.title}`}
+                            >
+                                <Pencil size={16} />
+                            </button>
+
                             <select
                                 value={task.status}
                                 onChange={handleStatusChange}

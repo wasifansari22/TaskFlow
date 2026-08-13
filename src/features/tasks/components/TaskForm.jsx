@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addTask } from "../taskSlice";
+import { addTask, updateTask } from "../taskSlice";
 import { selectAllProjects } from "../../projects/projectSelectors";
 
 const initialForm = {
@@ -11,10 +11,23 @@ const initialForm = {
     projectId: "",
 };
 
-function TaskForm({ onClose }) {
+function TaskForm({ task = null, onClose }) {
     const dispatch = useDispatch();
     const projects = useSelector(selectAllProjects);
-    const [formData, setFormData] = useState(initialForm);
+    const [formData, setFormData] = useState(
+        task
+            ? {
+                title: task.title || "",
+                description: task.description || "",
+                priority: task.priority || "Medium",
+                dueDate:
+                    task.dueDate === "No due date"
+                        ? ""
+                        : task.dueDate || "",
+                projectId: task.projectId || "",
+            }
+            : initialForm
+    );
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -31,18 +44,31 @@ function TaskForm({ onClose }) {
             return;
         }
 
-        const newTask = {
-            id: `task-${Date.now()}`,
-            title: formData.title.trim(),
-            description: formData.description.trim() || "No description provided.",
-            priority: formData.priority,
-            status: "Pending",
-            dueDate: formData.dueDate || "No due date",
-            projectId: formData.projectId || null,
-        };
-
-        dispatch(addTask(newTask));
-        setFormData(initialForm);
+        if (task) {
+            dispatch(
+                updateTask({
+                    id: task.id,
+                    updates: {
+                        title: formData.title.trim(),
+                        description: formData.description.trim() || "No description provided.",
+                        priority: formData.priority,
+                        dueDate: formData.dueDate || "No due date",
+                        projectId: formData.projectId || null,
+                    },
+                })
+            );
+        } else {
+            const newTask = {
+                id: `task-${Date.now()}`,
+                title: formData.title.trim(),
+                description: formData.description.trim() || "No description provided.",
+                priority: formData.priority,
+                status: "Pending",
+                dueDate: formData.dueDate || "No due date",
+                projectId: formData.projectId || null,
+            };
+            dispatch(addTask(newTask));
+        }
         onClose();
     };
 
@@ -168,7 +194,7 @@ function TaskForm({ onClose }) {
                     type="submit"
                     className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
                 >
-                    Create Task
+                    {task ? "Save Changes" : "Create Task"}
                 </button>
             </div>
         </form>

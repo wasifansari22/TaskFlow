@@ -10,7 +10,7 @@ const Tasks = () => {
     const [filter, setFilter] = useState("All");
     const [search, setSearch] = useState("");
     const [showForm, setShowForm] = useState(false);
-
+    const [editingTask, setEditingTask] = useState(null);
     const tasks = useSelector(selectAllTasks);
     const completedTasks = useSelector(selectCompletedTasks);
     const inProgressTasks = useSelector(selectInProgressTasks);
@@ -78,7 +78,10 @@ const Tasks = () => {
 
                 <button
                     type="button"
-                    onClick={() => setShowForm(true)}
+                    onClick={() => {
+                        setEditingTask(null);
+                        setShowForm(true);
+                    }}
                     className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700"
                 >
                     <Plus size={18} />
@@ -120,12 +123,19 @@ const Tasks = () => {
 
             {/* Create Form */}
             <Modal
-                isOpen={showForm}
-                onClose={() => setShowForm(false)}
-                title="Create New Task"
+                isOpen={showForm || editingTask !== null}
+                onClose={() => {
+                    setShowForm(false);
+                    setEditingTask(null);
+                }}
+                title={editingTask ? "Edit Task" : "Create New Task"}
             >
                 <TaskForm
-                    onClose={() => setShowForm(false)}
+                    task={editingTask}
+                    onClose={() => {
+                        setShowForm(false);
+                        setEditingTask(null);
+                    }}
                 />
             </Modal>
 
@@ -170,6 +180,7 @@ const Tasks = () => {
                 <TaskList
                     filter={filter}
                     search={search}
+                    onEdit={setEditingTask}
                 />
             </section>
         </div>

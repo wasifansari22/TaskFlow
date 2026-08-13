@@ -18,3 +18,21 @@ export const selectOnHoldProjects = (state) =>
     state.projects.projects.filter(
         (project) => project.status === "On Hold"
     );
+
+export const selectProjectProgress = (state, projectId) => {
+    const tasks = state.tasks.tasks.filter(
+        (task) => task.projectId === projectId
+    );
+
+    if (tasks.length === 0) {
+        return 0;
+    }
+
+    const completedTasks = tasks.filter(
+        (task) => task.status === "Completed"
+    ).length;
+
+    return Math.round(
+        (completedTasks / tasks.length) * 100
+    );
+};

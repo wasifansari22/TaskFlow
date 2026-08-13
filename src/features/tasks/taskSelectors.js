@@ -18,3 +18,8 @@ export const selectInProgressTasks = (state) =>
     state.tasks.tasks.filter(
         (task) => task.status === "In Progress"
     );
+
+export const selectTasksByProject  = (state, projectId) =>
+    state.tasks.tasks.filter(
+        (task) => task.projectId === projectId
+    )

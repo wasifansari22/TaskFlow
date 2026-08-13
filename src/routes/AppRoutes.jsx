@@ -6,6 +6,7 @@ import Calendar from "../pages/Calendar";
 import Settings from "../pages/Settings";
 import NotFound from "../pages/NotFound";
 import MainLayout from "../layouts/MainLayout";
+import ProjectDetails from "../pages/ProjectDetails";
 
 const AppRoutes = () => {
     return (
@@ -13,6 +14,7 @@ const AppRoutes = () => {
             <Route element={<MainLayout />}>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/projects" element={<Projects />} />
+                <Route path="/projects/:projectId" element={<ProjectDetails />} />
                 <Route path="/tasks" element={<Tasks />} />
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/settings" element={<Settings />} />

@@ -8,6 +8,7 @@ const initialTasks = [
         priority: "High",
         status: "Completed",
         dueDate: "2026-08-12",
+        projectId: "project-1",
     },
     {
         id: "task-2",
@@ -16,6 +17,7 @@ const initialTasks = [
         priority: "High",
         status: "In Progress",
         dueDate: "2026-08-15",
+        projectId: "project-1",
     },
     {
         id: "task-3",
@@ -24,6 +26,7 @@ const initialTasks = [
         priority: "Medium",
         status: "Pending",
         dueDate: "2026-08-18",
+        projectId: "project-1",
     },
     {
         id: "task-4",
@@ -32,6 +35,7 @@ const initialTasks = [
         priority: "Low",
         status: "Pending",
         dueDate: "2026-08-20",
+        projectId: "project-1",
     },
 ];
 

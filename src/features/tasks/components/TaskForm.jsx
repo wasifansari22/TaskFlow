@@ -1,16 +1,19 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addTask } from "../taskSlice";
+import { selectAllProjects } from "../../projects/projectSelectors";
 
 const initialForm = {
     title: "",
     description: "",
     priority: "Medium",
     dueDate: "",
+    projectId: "",
 };
 
 function TaskForm({ onClose }) {
     const dispatch = useDispatch();
+    const projects = useSelector(selectAllProjects);
     const [formData, setFormData] = useState(initialForm);
 
     const handleChange = (event) => {
@@ -35,6 +38,7 @@ function TaskForm({ onClose }) {
             priority: formData.priority,
             status: "Pending",
             dueDate: formData.dueDate || "No due date",
+            projectId: formData.projectId || null,
         };
 
         dispatch(addTask(newTask));
@@ -100,6 +104,35 @@ function TaskForm({ onClose }) {
                         <option value="High">High</option>
                         <option value="Medium">Medium</option>
                         <option value="Low">Low</option>
+                    </select>
+                </div>
+
+                {/* Project Selector */}
+                <div>
+                    <label
+                        htmlFor="task-project"
+                        className="mb-1.5 block text-sm font-medium text-slate-700"
+                    >
+                        Project
+                    </label>
+
+                    <select
+                        id="task-project"
+                        name="projectId"
+                        value={formData.projectId}
+                        onChange={handleChange}
+                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    >
+                        <option value="">Select a project</option>
+
+                        {projects.map((project) => (
+                            <option
+                                key={project.id}
+                                value={project.id}
+                            >
+                                {project.name}
+                            </option>
+                        ))}
                     </select>
                 </div>
 

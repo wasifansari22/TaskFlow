@@ -1,9 +1,19 @@
 import { CalendarDays, FolderKanban, Trash2 } from "lucide-react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteProject, updateProjectStatus } from "../projectSlice";
+import { selectProjectProgress } from "../projectSelectors";
+import { selectTasksByProject } from "../../tasks/taskSelectors";
+import { Link } from "react-router";
 
 const ProjectCard = ({ project }) => {
     const dispatch = useDispatch();
+    const progress = useSelector((state) =>
+        selectProjectProgress(state, project.id)
+    );
+    const projectTasks = useSelector((state) =>
+        selectTasksByProject(state, project.id)
+    );
+
     const handleStatusChange = (event) => {
         dispatch(
             updateProjectStatus({
@@ -33,14 +43,18 @@ const ProjectCard = ({ project }) => {
 
     return (
         <article className="group rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+            {/* Header */}
             <div className="flex items-start justify-between gap-4">
-                <div className="flex min-w-0 items-start gap-3">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                <Link
+                    to={`/projects/${project.id}`}
+                    className="flex min-w-0 items-start gap-3 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                >
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 transition group-hover:bg-blue-100">
                         <FolderKanban size={21} />
                     </div>
 
                     <div className="min-w-0">
-                        <h2 className="truncate font-semibold text-slate-900">
+                        <h2 className="truncate font-semibold text-slate-900 transition group-hover:text-blue-600">
                             {project.name}
                         </h2>
 
@@ -48,7 +62,7 @@ const ProjectCard = ({ project }) => {
                             {project.description}
                         </p>
                     </div>
-                </div>
+                </Link>
 
                 <span
                     className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${priorityStyle}`}
@@ -64,15 +78,22 @@ const ProjectCard = ({ project }) => {
                         Progress
                     </span>
 
-                    <span className="text-slate-400">
-                        Coming with tasks
+                    <span className="font-medium text-slate-600">
+                        {progress}%
                     </span>
                 </div>
 
                 <div className="h-2 overflow-hidden rounded-full bg-slate-100">
-                    {/* temporary progress value. */}
-                    <div className="h-full w-1/4 rounded-full bg-blue-500" />
+                    <div
+                        className="h-full rounded-full bg-blue-500 transition-all duration-500"
+                        style={{ width: `${progress}%` }}
+                    />
                 </div>
+
+                <p className="mt-2 text-xs text-slate-400">
+                    {projectTasks.length}{" "}
+                    {projectTasks.length === 1 ? "task" : "tasks"}
+                </p>
             </div>
 
             {/* Footer */}
@@ -102,7 +123,10 @@ const ProjectCard = ({ project }) => {
 
                     <button
                         type="button"
-                        onClick={handleDelete}
+                        onClick={(event) => {
+                            event.stopPropagation();
+                            handleDelete();
+                        }}
                         className="rounded-lg p-2 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600"
                         aria-label={`Delete ${project.name}`}
                     >

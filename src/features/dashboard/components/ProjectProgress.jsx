@@ -1,24 +1,11 @@
 import { ArrowRight } from "lucide-react";
-
-const projects = [
-    {
-        name: "Website Redesign",
-        progress: 75,
-        tasks: "12 / 16 tasks",
-    },
-    {
-        name: "Mobile Application",
-        progress: 60,
-        tasks: "9 / 15 tasks",
-    },
-    {
-        name: "Portfolio Website",
-        progress: 40,
-        tasks: "4 / 10 tasks",
-    },
-];
+import { useSelector } from "react-redux";
+import { Link } from "react-router";
+import { selectDashboardProjects } from "../dashboardSelectors";
 
 const ProjectProgress = () => {
+    const projects = useSelector(selectDashboardProjects);
+
     return (
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between">
@@ -32,18 +19,18 @@ const ProjectProgress = () => {
                     </p>
                 </div>
 
-                <button
-                    type="button"
-                    className="hidden items-center gap-1 text-sm font-medium text-blue-600 transition hover:text-blue-700 sm:flex"
+                <Link
+                    to="/projects"
+                    className="flex items-center gap-1 text-sm font-medium text-blue-600 transition hover:text-blue-700"
                 >
                     View all
                     <ArrowRight size={16} />
-                </button>
+                </Link>
             </div>
 
             <div className="mt-6 space-y-6">
-                {projects.map((project) => (
-                    <div key={project.name}>
+                {projects.slice(0, 4).map((project) => (
+                    <div key={project.id}>
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-sm font-medium text-slate-900">
@@ -51,7 +38,7 @@ const ProjectProgress = () => {
                                 </p>
 
                                 <p className="mt-1 text-xs text-slate-500">
-                                    {project.tasks}
+                                    {project.completedTasks} / {project.totalTasks} tasks
                                 </p>
                             </div>
 

@@ -1,10 +1,19 @@
+import { useSelector } from "react-redux";
+import { CheckCircle2, Clock3, FolderKanban, ListTodo, } from "lucide-react";
+import { selectDashboardStats } from "../features/dashboard/dashboardSelectors";
 import StatCard from "../features/dashboard/components/StatCard";
 import ProjectProgress from "../features/dashboard/components/ProjectProgress";
 import QuickActions from "../features/dashboard/components/QuickActions";
 import RecentTasks from "../features/dashboard/components/RecentTasks";
-import { dashboardStats } from "../features/dashboard/dashboardData";
+import { selectAllTasks, selectCompletedTasks, selectInProgressTasks, selectPendingTasks } from "../features/tasks/taskSelectors";
+import { selectAllProjects, selectActiveProjects, } from "../features/projects/projectSelectors";
+import UpcomingDeadlines from "../features/dashboard/components/UpcomingDeadlines";
+import TaskAnalytics from "../features/dashboard/components/TaskAnalytics";
+import ProjectAnalytics from "../features/dashboard/components/ProjectAnalytics";
 
 const Dashboard = () => {
+    const dashboardStats = useSelector(selectDashboardStats);
+
     return (
         <div className="mx-auto w-full max-w-7xl space-y-8">
             {/* Page Header */}
@@ -23,7 +32,7 @@ const Dashboard = () => {
             </section>
 
             {/* Statistics */}
-            <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
                 {dashboardStats.map((stat) => (
                     <StatCard
                         key={stat.title}
@@ -36,7 +45,7 @@ const Dashboard = () => {
                 ))}
             </section>
 
-            {/* Projects + Quick Actions */}
+            {/* Projects and Quick Actions */}
             <section className="grid gap-6 xl:grid-cols-3">
                 <div className="xl:col-span-2">
                     <ProjectProgress />
@@ -48,6 +57,17 @@ const Dashboard = () => {
             {/* Recent Tasks */}
             <section>
                 <RecentTasks />
+            </section>
+
+            {/* Analytics */}
+            <section className="grid gap-6 xl:grid-cols-2">
+                <TaskAnalytics />
+                <ProjectAnalytics />
+            </section>
+
+            {/* Upcoming Deadlines */}
+            <section>
+                <UpcomingDeadlines />
             </section>
         </div>
     );

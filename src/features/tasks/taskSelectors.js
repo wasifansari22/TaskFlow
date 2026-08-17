@@ -19,7 +19,13 @@ export const selectInProgressTasks = (state) =>
         (task) => task.status === "In Progress"
     );
 
-export const selectTasksByProject  = (state, projectId) =>
+export const selectTasksByProject = (state, projectId) =>
     state.tasks.tasks.filter(
         (task) => task.projectId === projectId
     )
+
+export const selectTasksByDueDate = (state, date) => {
+    return state.tasks.tasks.filter(
+        (task) => task.dueDate === date
+    );
+};

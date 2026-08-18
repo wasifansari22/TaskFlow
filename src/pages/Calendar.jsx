@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { selectTasksByDueDate } from "../features/tasks/taskSelectors";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Modal from "../components/ui/Modal";
+import TaskForm from "../features/tasks/components/TaskForm";
 
 const Calendar = () => {
     const today = new Date();
@@ -27,6 +28,8 @@ const Calendar = () => {
     const [selectedDate, setSelectedDate] = useState(
         today.toISOString().split("T")[0]
     );
+
+    const [showTaskForm, setShowTaskForm] = useState(false);
 
     const [showMobileTasks, setShowMobileTasks] = useState(false);
 
@@ -215,23 +218,33 @@ const Calendar = () => {
 
             {/* Daily Task Panel */}
             <section className="hidden rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:block">
-                <div>
-                    <h2 className="font-semibold text-slate-900">
-                        {selectedDate
-                            ? new Date(`${selectedDate}T00:00:00`).toLocaleDateString(
-                                "en-US",
-                                {
-                                    month: "long",
-                                    day: "numeric",
-                                    year: "numeric",
-                                }
-                            )
-                            : "Select a date"}
-                    </h2>
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <h2 className="font-semibold text-slate-900">
+                            {selectedDate
+                                ? new Date(`${selectedDate}T00:00:00`).toLocaleDateString(
+                                    "en-US",
+                                    {
+                                        month: "long",
+                                        day: "numeric",
+                                        year: "numeric",
+                                    }
+                                )
+                                : "Select a date"}
+                        </h2>
 
-                    <p className="mt-1 text-sm text-slate-500">
-                        Tasks scheduled for this day.
-                    </p>
+                        <p className="mt-1 text-sm text-slate-500">
+                            Tasks scheduled for this day.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={() => setShowTaskForm(true)}
+                        className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+                    >
+                        + Add Task
+                    </button>
                 </div>
 
                 {selectedTasks.length === 0 ? (
@@ -315,69 +328,96 @@ const Calendar = () => {
                             : "Selected Date"
                     }
                 >
-                    {selectedTasks.length === 0 ? (
-                        <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 p-6 text-center">
-                            <p className="text-sm font-medium text-slate-700">
-                                No tasks scheduled
-                            </p>
-
-                            <p className="mt-1 text-xs text-slate-500">
-                                There are no tasks due on this date.
+                    <div className="space-y-4">
+                        <div>
+                            <p className="text-sm text-slate-500">
+                                Tasks scheduled for this day.
                             </p>
                         </div>
-                    ) : (
-                        <div className="space-y-3">
-                            {selectedTasks.map((task) => (
-                                <div
-                                    key={task.id}
-                                    className="rounded-lg border border-slate-200 p-4"
-                                >
-                                    <div className="flex items-start justify-between gap-3">
-                                        <div className="min-w-0">
-                                            <h3
-                                                className={`font-medium ${task.status === "Completed"
+
+                        {selectedTasks.length === 0 ? (
+                            <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 p-6 text-center">
+                                <p className="text-sm font-medium text-slate-700">
+                                    No tasks scheduled
+                                </p>
+
+                                <p className="mt-1 text-xs text-slate-500">
+                                    There are no tasks due on this date.
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="space-y-3">
+                                {selectedTasks.map((task) => (
+                                    <div
+                                        key={task.id}
+                                        className="rounded-lg border border-slate-200 p-4"
+                                    >
+                                        <h3
+                                            className={`font-medium ${task.status === "Completed"
                                                     ? "text-slate-400 line-through"
                                                     : "text-slate-900"
+                                                }`}
+                                        >
+                                            {task.title}
+                                        </h3>
+
+                                        <p className="mt-1 text-sm text-slate-500">
+                                            {task.description}
+                                        </p>
+
+                                        <div className="mt-3 flex flex-wrap gap-2">
+                                            <span
+                                                className={`rounded-full px-2.5 py-1 text-xs font-medium ${task.priority === "High"
+                                                        ? "bg-rose-50 text-rose-700"
+                                                        : task.priority === "Medium"
+                                                            ? "bg-amber-50 text-amber-700"
+                                                            : "bg-slate-100 text-slate-600"
                                                     }`}
                                             >
-                                                {task.title}
-                                            </h3>
+                                                {task.priority}
+                                            </span>
 
-                                            <p className="mt-1 text-sm text-slate-500">
-                                                {task.description}
-                                            </p>
+                                            <span
+                                                className={`rounded-full px-2.5 py-1 text-xs font-medium ${task.status === "Completed"
+                                                        ? "bg-emerald-50 text-emerald-700"
+                                                        : task.status === "In Progress"
+                                                            ? "bg-blue-50 text-blue-700"
+                                                            : "bg-slate-100 text-slate-600"
+                                                    }`}
+                                            >
+                                                {task.status}
+                                            </span>
                                         </div>
                                     </div>
+                                ))}
+                            </div>
+                        )}
 
-                                    <div className="mt-3 flex flex-wrap gap-2">
-                                        <span
-                                            className={`rounded-full px-2.5 py-1 text-xs font-medium ${task.priority === "High"
-                                                ? "bg-rose-50 text-rose-700"
-                                                : task.priority === "Medium"
-                                                    ? "bg-amber-50 text-amber-700"
-                                                    : "bg-slate-100 text-slate-600"
-                                                }`}
-                                        >
-                                            {task.priority}
-                                        </span>
-
-                                        <span
-                                            className={`rounded-full px-2.5 py-1 text-xs font-medium ${task.status === "Completed"
-                                                ? "bg-emerald-50 text-emerald-700"
-                                                : task.status === "In Progress"
-                                                    ? "bg-blue-50 text-blue-700"
-                                                    : "bg-slate-100 text-slate-600"
-                                                }`}
-                                        >
-                                            {task.status}
-                                        </span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setShowMobileTasks(false);
+                                setShowTaskForm(true);
+                            }}
+                            className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
+                        >
+                            Add Task
+                        </button>
+                    </div>
                 </Modal>
             </div>
+
+            {/* Modal  */}
+            <Modal
+                isOpen={showTaskForm}
+                onClose={() => setShowTaskForm(false)}
+                title="Create New Task"
+            >
+                <TaskForm
+                    initialDueDate={selectedDate}
+                    onClose={() => setShowTaskForm(false)}
+                />
+            </Modal>
         </div>
     );
 }

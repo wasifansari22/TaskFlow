@@ -11,7 +11,7 @@ const initialForm = {
     projectId: "",
 };
 
-function TaskForm({ task = null, onClose }) {
+function TaskForm({ task = null, onClose, initialDueDate = "" }) {
     const dispatch = useDispatch();
     const projects = useSelector(selectAllProjects);
     const [formData, setFormData] = useState(
@@ -26,7 +26,10 @@ function TaskForm({ task = null, onClose }) {
                         : task.dueDate || "",
                 projectId: task.projectId || "",
             }
-            : initialForm
+            : {
+                ...initialForm,
+                dueDate: initialDueDate,
+            }
     );
 
     const handleChange = (event) => {

@@ -33,6 +33,8 @@ const Calendar = () => {
 
     const [showMobileTasks, setShowMobileTasks] = useState(false);
 
+    const [editingTask, setEditingTask] = useState(null);
+
     const selectedTasks = selectedDate
         ? tasksByDate[selectedDate] || []
         : [];
@@ -262,7 +264,8 @@ const Calendar = () => {
                         {selectedTasks.map((task) => (
                             <div
                                 key={task.id}
-                                className="rounded-lg border border-slate-200 p-4 transition hover:shadow-sm"
+                                onClick={() => setEditingTask(task)}
+                                className="cursor-pointer rounded-lg border border-slate-200 p-4 transition hover:border-blue-300 hover:bg-blue-50/30 hover:shadow-sm"
                             >
                                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                     <div className="min-w-0">
@@ -350,12 +353,16 @@ const Calendar = () => {
                                 {selectedTasks.map((task) => (
                                     <div
                                         key={task.id}
-                                        className="rounded-lg border border-slate-200 p-4"
+                                        onClick={() => {
+                                            setShowMobileTasks(false);
+                                            setEditingTask(task);
+                                        }}
+                                        className="cursor-pointer rounded-lg border border-slate-200 p-4 transition hover:border-blue-300 hover:bg-blue-50/30"
                                     >
                                         <h3
                                             className={`font-medium ${task.status === "Completed"
-                                                    ? "text-slate-400 line-through"
-                                                    : "text-slate-900"
+                                                ? "text-slate-400 line-through"
+                                                : "text-slate-900"
                                                 }`}
                                         >
                                             {task.title}
@@ -368,10 +375,10 @@ const Calendar = () => {
                                         <div className="mt-3 flex flex-wrap gap-2">
                                             <span
                                                 className={`rounded-full px-2.5 py-1 text-xs font-medium ${task.priority === "High"
-                                                        ? "bg-rose-50 text-rose-700"
-                                                        : task.priority === "Medium"
-                                                            ? "bg-amber-50 text-amber-700"
-                                                            : "bg-slate-100 text-slate-600"
+                                                    ? "bg-rose-50 text-rose-700"
+                                                    : task.priority === "Medium"
+                                                        ? "bg-amber-50 text-amber-700"
+                                                        : "bg-slate-100 text-slate-600"
                                                     }`}
                                             >
                                                 {task.priority}
@@ -379,10 +386,10 @@ const Calendar = () => {
 
                                             <span
                                                 className={`rounded-full px-2.5 py-1 text-xs font-medium ${task.status === "Completed"
-                                                        ? "bg-emerald-50 text-emerald-700"
-                                                        : task.status === "In Progress"
-                                                            ? "bg-blue-50 text-blue-700"
-                                                            : "bg-slate-100 text-slate-600"
+                                                    ? "bg-emerald-50 text-emerald-700"
+                                                    : task.status === "In Progress"
+                                                        ? "bg-blue-50 text-blue-700"
+                                                        : "bg-slate-100 text-slate-600"
                                                     }`}
                                             >
                                                 {task.status}
@@ -407,7 +414,7 @@ const Calendar = () => {
                 </Modal>
             </div>
 
-            {/* Modal  */}
+            {/* Create Task Modal */}
             <Modal
                 isOpen={showTaskForm}
                 onClose={() => setShowTaskForm(false)}
@@ -416,6 +423,18 @@ const Calendar = () => {
                 <TaskForm
                     initialDueDate={selectedDate}
                     onClose={() => setShowTaskForm(false)}
+                />
+            </Modal>
+
+            {/* Edit Task Modal */}
+            <Modal
+                isOpen={Boolean(editingTask)}
+                onClose={() => setEditingTask(null)}
+                title="Edit Task"
+            >
+                <TaskForm
+                    task={editingTask}
+                    onClose={() => setEditingTask(null)}
                 />
             </Modal>
         </div>

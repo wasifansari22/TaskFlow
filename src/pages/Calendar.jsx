@@ -1,12 +1,14 @@
 import { useState, useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { selectTasksByDueDate } from "../features/tasks/taskSelectors";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Modal from "../components/ui/Modal";
 import TaskForm from "../features/tasks/components/TaskForm";
+import { updateTask, updateTaskStatus } from "../features/tasks/taskSlice";
 
 const Calendar = () => {
     const today = new Date();
+    const dispatch = useDispatch();
 
     const tasks = useSelector((state) => state.tasks.tasks);
     const tasksByDate = useMemo(() => {
@@ -69,6 +71,15 @@ const Calendar = () => {
 
     const goToToday = () => {
         setCurrentDate(new Date(today.getFullYear(), today.getMonth(), 1));
+    };
+
+    const handleStatusChange = (event, taskId) => {
+        dispatch(
+            updateTaskStatus({
+                id: taskId,
+                status: event.target.value,
+            })
+        );
     };
 
     return (
@@ -295,16 +306,20 @@ const Calendar = () => {
                                             {task.priority}
                                         </span>
 
-                                        <span
-                                            className={`rounded-full px-2.5 py-1 text-xs font-medium ${task.status === "Completed"
-                                                ? "bg-emerald-50 text-emerald-700"
-                                                : task.status === "In Progress"
-                                                    ? "bg-blue-50 text-blue-700"
-                                                    : "bg-slate-100 text-slate-600"
-                                                }`}
+                                        <select
+                                            value={task.status}
+                                            onChange={(event) => {
+                                                event.stopPropagation();
+                                                handleStatusChange(event, task.id);
+                                            }}
+                                            onClick={(event) => event.stopPropagation()}
+                                            className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                            aria-label={`Change status for ${task.title}`}
                                         >
-                                            {task.status}
-                                        </span>
+                                            <option value="Pending">Pending</option>
+                                            <option value="In Progress">In Progress</option>
+                                            <option value="Completed">Completed</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -384,17 +399,22 @@ const Calendar = () => {
                                                 {task.priority}
                                             </span>
 
-                                            <span
-                                                className={`rounded-full px-2.5 py-1 text-xs font-medium ${task.status === "Completed"
-                                                    ? "bg-emerald-50 text-emerald-700"
-                                                    : task.status === "In Progress"
-                                                        ? "bg-blue-50 text-blue-700"
-                                                        : "bg-slate-100 text-slate-600"
-                                                    }`}
+                                            <select
+                                                value={task.status}
+                                                onChange={(event) => {
+                                                    event.stopPropagation();
+                                                    handleStatusChange(event, task.id);
+                                                }}
+                                                onClick={(event) => event.stopPropagation()}
+                                                className="rounded-full border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                                aria-label={`Change status for ${task.title}`}
                                             >
-                                                {task.status}
-                                            </span>
+                                                <option value="Pending">Pending</option>
+                                                <option value="In Progress">In Progress</option>
+                                                <option value="Completed">Completed</option>
+                                            </select>
                                         </div>
+
                                     </div>
                                 ))}
                             </div>

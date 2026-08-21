@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addTask, updateTask } from "../taskSlice";
 import { selectAllProjects } from "../../projects/projectSelectors";
+import { addNotification } from "../../notifications/notificationSlice";
 
 const initialForm = {
     title: "",
@@ -60,6 +61,16 @@ function TaskForm({ task = null, onClose, initialDueDate = "" }) {
                     },
                 })
             );
+            dispatch(
+                addNotification({
+                    id: `notification-${Date.now()}`,
+                    type: "task-updated",
+                    title: "Task updated",
+                    message: formData.title.trim(),
+                    read: false,
+                    createdAt: new Date().toISOString(),
+                })
+            );
         } else {
             const newTask = {
                 id: `task-${Date.now()}`,
@@ -71,6 +82,17 @@ function TaskForm({ task = null, onClose, initialDueDate = "" }) {
                 projectId: formData.projectId || null,
             };
             dispatch(addTask(newTask));
+            // Notification
+            dispatch(
+                addNotification({
+                    id: `notification-${Date.now()}`,
+                    type: "task-created",
+                    title: "Task created",
+                    message: newTask.title,
+                    read: false,
+                    createdAt: new Date().toISOString(),
+                })
+            );
         }
         onClose();
     };

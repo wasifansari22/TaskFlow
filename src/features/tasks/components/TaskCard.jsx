@@ -1,19 +1,49 @@
 import { CalendarDays, CheckCircle2, Circle, Clock3, Trash2, Pencil } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { deleteTask, updateTaskStatus, } from "../taskSlice";
+import { addNotification } from "../../notifications/notificationSlice";
 
 const TaskCard = ({ task, onEdit }) => {
     const dispatch = useDispatch();
 
     const handleStatusChange = (event) => {
-        dispatch(updateTaskStatus({
-            id: task.id,
-            status: event.target.value,
-        }));
+        const newStatus = event.target.value;
+        dispatch(
+            updateTaskStatus({
+                id: task.id,
+                status: newStatus,
+            })
+        );
+        dispatch(
+            addNotification({
+                id: `notification-${Date.now()}`,
+                type:
+                    newStatus === "Completed"
+                        ? "task-completed"
+                        : "task-updated",
+                title:
+                    newStatus === "Completed"
+                        ? "Task completed"
+                        : "Task status updated",
+                message: task.title,
+                read: false,
+                createdAt: new Date().toISOString(),
+            })
+        );
     };
 
     const handleDelete = () => {
         dispatch(deleteTask(task.id));
+        dispatch(
+            addNotification({
+                id: `notification-${Date.now()}`,
+                type: "task-deleted",
+                title: "Task deleted",
+                message: task.title,
+                read: false,
+                createdAt: new Date().toISOString(),
+            })
+        );
     };
 
     const statusIcon =

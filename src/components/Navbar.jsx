@@ -1,14 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 import { NavLink } from "react-router";
 import { mainNavigation, secondaryNavigation } from "../constants/navigation";
+import { selectUnreadNotificationCount } from "../features/notifications/notificationSelectors";
+import NotificationPanel from "../features/notifications/components/NotificationPanel";
 
 const navigation = [
-  ...mainNavigation,
-  ...secondaryNavigation,
+    ...mainNavigation,
+    ...secondaryNavigation,
 ];
 
 function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+    const unreadCount = useSelector(selectUnreadNotificationCount);
+    const notificationRef = useRef(null);
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                notificationRef.current &&
+                !notificationRef.current.contains(event.target)
+            ) {
+                setIsNotificationOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
+    // Lock body scroll while it's open
+    useEffect(() => {
+        if (isNotificationOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
+        return () => {
+            document.body.style.overflow = "";
+        };
+    }, [isNotificationOpen]);
 
     return (
         <>
@@ -38,15 +70,31 @@ function Navbar() {
                 </div>
 
                 <div className="flex items-center gap-3 sm:gap-4">
-                    <button
-                        type="button"
-                        className="relative rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
-                        aria-label="Notifications"
-                    >
-                        <span className="text-lg">🔔</span>
+                    <div ref={notificationRef} className="relative">
+                        <button
+                            type="button"
+                            onClick={() =>
+                                setIsNotificationOpen((previous) => !previous)
+                            }
+                            className="relative rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+                            aria-label="Notifications"
+                            aria-expanded={isNotificationOpen}
+                            aria-haspopup="dialog"
+                        >
+                            <span className="text-lg">🔔</span>
+                            {unreadCount > 0 && (
+                                <span className="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-blue-600 px-1 text-[10px] font-bold text-white">
+                                    {unreadCount > 9 ? "9+" : unreadCount}
+                                </span>
+                            )}
+                        </button>
 
-                        <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-blue-600" />
-                    </button>
+                        {isNotificationOpen && (
+                            <NotificationPanel
+                                onClose={() => setIsNotificationOpen(false)}
+                            />
+                        )}
+                    </div>
 
                     <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
                         WA

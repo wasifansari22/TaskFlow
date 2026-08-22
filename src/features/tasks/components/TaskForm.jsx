@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addTask, updateTask } from "../taskSlice";
 import { selectAllProjects } from "../../projects/projectSelectors";
 import { addNotification } from "../../notifications/notificationSlice";
+import { selectDefaultPriority, selectDefaultStatus } from "../../settings/settingsSelectors";
 
 const initialForm = {
     title: "",
@@ -12,9 +13,12 @@ const initialForm = {
     projectId: "",
 };
 
-function TaskForm({ task = null, onClose, initialDueDate = "" }) {
+const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
     const dispatch = useDispatch();
     const projects = useSelector(selectAllProjects);
+    const defaultPriority = useSelector(selectDefaultPriority);
+    const defaultStatus = useSelector(selectDefaultStatus);
+    
     const [formData, setFormData] = useState(
         task
             ? {
@@ -29,6 +33,7 @@ function TaskForm({ task = null, onClose, initialDueDate = "" }) {
             }
             : {
                 ...initialForm,
+                priority: defaultPriority,
                 dueDate: initialDueDate,
             }
     );
@@ -77,7 +82,7 @@ function TaskForm({ task = null, onClose, initialDueDate = "" }) {
                 title: formData.title.trim(),
                 description: formData.description.trim() || "No description provided.",
                 priority: formData.priority,
-                status: "Pending",
+                status: defaultStatus,
                 dueDate: formData.dueDate || "No due date",
                 projectId: formData.projectId || null,
             };

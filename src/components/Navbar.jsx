@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
-import { NavLink } from "react-router";
+import { useSelector, useDispatch } from "react-redux";
+import { NavLink, useNavigate } from "react-router";
 import { mainNavigation, secondaryNavigation } from "../constants/navigation";
 import { selectUnreadNotificationCount } from "../features/notifications/notificationSelectors";
 import NotificationPanel from "../features/notifications/components/NotificationPanel";
+import { logout } from "../features/auth/authSlice";
+import { selectCurrentUser } from "../features/auth/authSelectors";
 
 const navigation = [
     ...mainNavigation,
@@ -13,8 +15,17 @@ const navigation = [
 function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const unreadCount = useSelector(selectUnreadNotificationCount);
+    const currentUser = useSelector(selectCurrentUser);
+
     const notificationRef = useRef(null);
+    const profileRef = useRef(null);
+
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (
@@ -23,12 +34,23 @@ function Navbar() {
             ) {
                 setIsNotificationOpen(false);
             }
+            if (
+                profileRef.current && !profileRef.current.contains(event.target)
+            ) {
+                setIsProfileOpen(false);
+            }
         };
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+
+    const handleLogout = () => {
+        dispatch(logout());
+        setIsProfileOpen(false);
+        navigate("/login", { replace: true });
+    }
 
     // Lock body scroll while it's open
     useEffect(() => {
@@ -96,18 +118,60 @@ function Navbar() {
                         )}
                     </div>
 
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
-                        WA
-                    </div>
+                    {/* Navbar Profile Section */}
+                    <div ref={profileRef} className="relative">
+                        <button
+                            type="button"
+                            onClick={() =>
+                                setIsProfileOpen((previous) => !previous)
+                            }
+                            className="flex items-center gap-3 rounded-lg p-1.5 transition hover:bg-slate-50"
+                            aria-label="Open profile menu"
+                            aria-expanded={isProfileOpen}
+                        >
+                            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
+                                {currentUser?.name
+                                    ? currentUser.name
+                                        .split(" ")
+                                        .map((name) => name[0])
+                                        .join("")
+                                        .slice(0, 2)
+                                        .toUpperCase()
+                                    : "U"}
+                            </div>
 
-                    <div className="hidden sm:block">
-                        <p className="text-sm font-medium text-slate-900">
-                            Wasif
-                        </p>
+                            <div className="hidden text-left sm:block">
+                                <p className="text-sm font-medium text-slate-900">
+                                    {currentUser?.name || "User"}
+                                </p>
 
-                        <p className="text-xs text-slate-500">
-                            Developer
-                        </p>
+                                <p className="text-xs text-slate-500">
+                                    Developer
+                                </p>
+                            </div>
+                        </button>
+
+                        {isProfileOpen && (
+                            <div className="absolute right-0 top-full z-50 mt-2 w-64 rounded-xl border border-slate-200 bg-white p-2 shadow-lg">
+                                <div className="border-b border-slate-100 px-3 py-3">
+                                    <p className="text-sm font-semibold text-slate-900">
+                                        {currentUser?.name || "User"}
+                                    </p>
+
+                                    <p className="mt-1 truncate text-xs text-slate-500">
+                                        {currentUser?.email || ""}
+                                    </p>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    onClick={handleLogout}
+                                    className="mt-1 w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium text-rose-600 transition hover:bg-rose-50"
+                                >
+                                    Log out
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </header>

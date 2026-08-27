@@ -7,24 +7,31 @@ const Login = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         setError("");
-        if (!email.trim() || !password.trim()) {
-            setError("Please enter your email and password.");
+
+        if (!username.trim() || !password.trim()) {
+            setError("Please enter your username and password.");
             return;
         }
-        dispatch(
-            login({
-                name: "Wasif",
-                email: email.trim(),
-            })
-        );
-        navigate("/");
+        try {
+            await dispatch(
+                login({
+                    username: username.trim(),
+                    password,
+                })
+            ).unwrap();
+
+            navigate("/");
+
+        } catch (error) {
+            setError(error || "Invalid username or password.");
+        }
     };
 
     return (
@@ -60,13 +67,11 @@ const Login = () => {
                             </label>
 
                             <input
-                                id="email"
-                                type="email"
-                                value={email}
-                                onChange={(event) =>
-                                    setEmail(event.target.value)
-                                }
-                                placeholder="you@example.com"
+                                id="username"
+                                type="text"
+                                value={username}
+                                onChange={(event) => setUsername(event.target.value)}
+                                placeholder="Enter your username"
                                 className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                             />
                         </div>

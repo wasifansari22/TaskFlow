@@ -1,12 +1,18 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, Clock3, ListTodo, Plus, Search, } from "lucide-react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectAllTasks, selectCompletedTasks, selectInProgressTasks, selectPendingTasks, } from "../features/tasks/taskSelectors";
 import TaskForm from "../features/tasks/components/TaskForm";
 import TaskList from "../features/tasks/components/TaskList";
 import Modal from "../components/ui/Modal";
+import { fetchTasks } from "../features/tasks/taskSlice";
 
 const Tasks = () => {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(fetchTasks());
+    }, [dispatch]);
+
     const [filter, setFilter] = useState("All");
     const [search, setSearch] = useState("");
     const [showForm, setShowForm] = useState(false);

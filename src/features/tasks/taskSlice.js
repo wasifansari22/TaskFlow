@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { getTasks } from "../../api/taskApi";
 
 const initialTasks = [
     {
@@ -41,7 +42,20 @@ const initialTasks = [
 
 const initialState = {
     tasks: initialTasks,
+    status: "idle",
+    error: null,
 };
+
+export const fetchTasks = createAsyncThunk(
+    "tasks/fetchTasks",
+    async (_, thunkAPI) => {
+        try {
+            return await getTasks();
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error.message);
+        }
+    }
+);
 
 const taskSlice = createSlice({
     name: "tasks",
@@ -69,6 +83,21 @@ const taskSlice = createSlice({
             if (!task) return;
             Object.assign(task, updates);
         },
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(fetchTasks.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+            })
+            .addCase(fetchTasks.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.tasks = action.payload;
+            })
+            .addCase(fetchTasks.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+            });
     },
 });
 

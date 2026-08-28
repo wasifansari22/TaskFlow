@@ -21,3 +21,26 @@ export const getTasks = async () => {
 
     return data;
 };
+
+export const createTaskRequest = async (taskData) => {
+    const token = localStorage.getItem("taskflow-token");
+
+    const response = await fetch(`${API_BASE_URL}/tasks/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${token}`,
+        },
+        body: JSON.stringify(taskData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            data.detail || "Failed to create task."
+        );
+    }
+
+    return data;
+};

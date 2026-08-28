@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getTasks } from "../../api/taskApi";
+import { getTasks, createTaskRequest } from "../../api/taskApi";
 
 const initialTasks = [
     {
@@ -57,6 +57,27 @@ export const fetchTasks = createAsyncThunk(
     }
 );
 
+export const createTask = createAsyncThunk(
+    "tasks/createTask",
+    async (taskData, thunkAPI) => {
+        try {
+            const backendTask = {
+                title: taskData.title,
+                description: taskData.description,
+                priority: taskData.priority,
+                status: taskData.status,
+                due_date:
+                    taskData.dueDate === "No due date"
+                        ? null
+                        : taskData.dueDate,
+            };
+            return await createTaskRequest(backendTask);
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error.message);
+        }
+    }
+);
+
 const taskSlice = createSlice({
     name: "tasks",
     initialState,
@@ -97,7 +118,10 @@ const taskSlice = createSlice({
             .addCase(fetchTasks.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload;
-            });
+            })
+            .addCase(createTask.fulfilled, (state, action) => {
+                state.tasks.unshift(action.payload);
+            })
     },
 });
 

@@ -17,7 +17,11 @@ const Tasks = () => {
     const [search, setSearch] = useState("");
     const [showForm, setShowForm] = useState(false);
     const [editingTask, setEditingTask] = useState(null);
+
     const tasks = useSelector(selectAllTasks);
+    const taskStatus = useSelector((state) => state.tasks.status);
+    const taskError = useSelector((state) => state.tasks.error);
+
     const completedTasks = useSelector(selectCompletedTasks);
     const inProgressTasks = useSelector(selectInProgressTasks);
     const pendingTasks = useSelector(selectPendingTasks);
@@ -181,14 +185,35 @@ const Tasks = () => {
                 </div>
             </section>
 
-            {/* Task List */}
-            <section>
+            {/*  */}
+            {taskStatus === "loading" && (
+                <div className="rounded-xl border border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
+                    Loading tasks...
+                </div>
+            )}
+
+            {taskStatus === "failed" && (
+                <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center text-sm text-red-600">
+                    {taskError || "Failed to load tasks. Please try again."}
+                </div>
+            )}
+
+            {taskStatus === "succeeded" && (
                 <TaskList
                     filter={filter}
                     search={search}
                     onEdit={setEditingTask}
                 />
-            </section>
+            )}
+
+            {/* Task List */}
+            {/* <section>
+                <TaskList
+                    filter={filter}
+                    search={search}
+                    onEdit={setEditingTask}
+                />
+            </section> */}
         </div>
     );
 }

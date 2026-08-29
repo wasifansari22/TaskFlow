@@ -1,47 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getTasks, createTaskRequest } from "../../api/taskApi";
-
-const initialTasks = [
-    {
-        id: "task-1",
-        title: "Finish landing page",
-        description: "Complete the responsive landing page design.",
-        priority: "High",
-        status: "Completed",
-        dueDate: "2026-08-23",
-        projectId: "project-1",
-    },
-    {
-        id: "task-2",
-        title: "Build authentication flow",
-        description: "Create login and registration screens.",
-        priority: "High",
-        status: "In Progress",
-        dueDate: "2026-08-21",
-        projectId: "project-1",
-    },
-    {
-        id: "task-3",
-        title: "Create project API",
-        description: "Plan the API structure for projects.",
-        priority: "Medium",
-        status: "Pending",
-        dueDate: "2026-08-24",
-        projectId: "project-1",
-    },
-    {
-        id: "task-4",
-        title: "Review mobile layout",
-        description: "Check TaskFlow responsive behavior.",
-        priority: "Low",
-        status: "Pending",
-        dueDate: "2026-08-27",
-        projectId: "project-1",
-    },
-];
+import { getTasks, createTaskRequest, updateTaskRequest, deleteTaskRequest } from "../../api/taskApi";
 
 const initialState = {
-    tasks: initialTasks,
+    tasks: [],
     status: "idle",
     error: null,
 };
@@ -66,12 +27,58 @@ export const createTask = createAsyncThunk(
                 description: taskData.description,
                 priority: taskData.priority,
                 status: taskData.status,
-                due_date:
-                    taskData.dueDate === "No due date"
-                        ? null
-                        : taskData.dueDate,
+                due_date: taskData.dueDate === "No due date" ? null : taskData.dueDate,
+                project: taskData.projectId ? Number(taskData.projectId) : null,
             };
+
             return await createTaskRequest(backendTask);
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error.message);
+        }
+    }
+);
+
+export const updateTaskAsync = createAsyncThunk(
+    "tasks/updateTask",
+    async ({ id, updates }, thunkAPI) => {
+        try {
+            const backendUpdates = {
+                title: updates.title,
+                description: updates.description,
+                priority: updates.priority,
+                status: updates.status,
+                due_date: updates.dueDate === "No due date" ? null : updates.dueDate,
+                project: updates.projectId ? Number(updates.projectId) : null,
+            };
+
+            return await updateTaskRequest(
+                id,
+                backendUpdates
+            );
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error.message);
+        }
+    }
+);
+
+export const updateTaskStatusAsync = createAsyncThunk(
+    "tasks/updateTaskStatus",
+    async ({ id, status }, thunkAPI) => {
+        try {
+            return await updateTaskRequest(id, {
+                status,
+            });
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error.message);
+        }
+    }
+);
+
+export const deleteTaskAsync = createAsyncThunk(
+    "tasks/deleteTask",
+    async (id, thunkAPI) => {
+        try {
+            return await deleteTaskRequest(id);
         } catch (error) {
             return thunkAPI.rejectWithValue(error.message);
         }
@@ -82,28 +89,28 @@ const taskSlice = createSlice({
     name: "tasks",
     initialState,
     reducers: {
-        addTask: (state, action) => {
-            state.tasks.unshift(action.payload);
-        },
+        // addTask: (state, action) => {
+        //     state.tasks.unshift(action.payload);
+        // },
 
-        updateTaskStatus: (state, action) => {
-            const { id, status } = action.payload;
-            const task = state.tasks.find((task) => task.id === id);
-            if (!task) return;
-            task.status = status;
-        },
+        // updateTaskStatus: (state, action) => {
+        //     const { id, status } = action.payload;
+        //     const task = state.tasks.find((task) => task.id === id);
+        //     if (!task) return;
+        //     task.status = status;
+        // },
 
-        deleteTask: (state, action) => {
-            state.tasks = state.tasks.filter(
-                (task) => task.id !== action.payload
-            );
-        },
-        updateTask: (state, action) => {
-            const { id, updates } = action.payload;
-            const task = state.tasks.find((task) => task.id === id);
-            if (!task) return;
-            Object.assign(task, updates);
-        },
+        // deleteTask: (state, action) => {
+        //     state.tasks = state.tasks.filter(
+        //         (task) => task.id !== action.payload
+        //     );
+        // },
+        // updateTask: (state, action) => {
+        //     const { id, updates } = action.payload;
+        //     const task = state.tasks.find((task) => task.id === id);
+        //     if (!task) return;
+        //     Object.assign(task, updates);
+        // },
     },
     extraReducers: (builder) => {
         builder
@@ -122,8 +129,36 @@ const taskSlice = createSlice({
             .addCase(createTask.fulfilled, (state, action) => {
                 state.tasks.unshift(action.payload);
             })
+            .addCase(updateTaskAsync.fulfilled, (state, action) => {
+                const updatedTask = action.payload;
+
+                const index = state.tasks.findIndex(
+                    (task) => task.id === updatedTask.id
+                );
+
+                if (index !== -1) {
+                    state.tasks[index] = updatedTask;
+                }
+            })
+            .addCase(updateTaskStatusAsync.fulfilled, (state, action) => {
+                const updatedTask = action.payload;
+
+                const index = state.tasks.findIndex(
+                    (task) => task.id === updatedTask.id
+                );
+
+                if (index !== -1) {
+                    state.tasks[index] = updatedTask;
+                }
+            })
+            .addCase(deleteTaskAsync.fulfilled, (state, action) => {
+                state.tasks = state.tasks.filter(
+                    (task) => task.id !== action.payload
+                );
+            })
     },
 });
 
-export const { addTask, updateTaskStatus, deleteTask, updateTask } = taskSlice.actions;
+// export const { addTask, updateTaskStatus, deleteTask, updateTask } = taskSlice.actions;
+export const { updateTaskStatus } = taskSlice.actions;
 export default taskSlice.reducer;

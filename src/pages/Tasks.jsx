@@ -6,11 +6,13 @@ import TaskForm from "../features/tasks/components/TaskForm";
 import TaskList from "../features/tasks/components/TaskList";
 import Modal from "../components/ui/Modal";
 import { fetchTasks } from "../features/tasks/taskSlice";
+import { fetchProjects } from "../features/projects/projectSlice";
 
 const Tasks = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(fetchTasks());
+        dispatch(fetchProjects());
     }, [dispatch]);
 
     const [filter, setFilter] = useState("All");

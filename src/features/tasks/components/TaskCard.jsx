@@ -1,6 +1,6 @@
 import { CalendarDays, CheckCircle2, Circle, Clock3, Trash2, Pencil } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { deleteTask, updateTaskStatus, } from "../taskSlice";
+import { deleteTaskAsync, updateTaskStatusAsync } from "../taskSlice";
 import { addNotification } from "../../notifications/notificationSlice";
 
 const TaskCard = ({ task, onEdit }) => {
@@ -9,7 +9,7 @@ const TaskCard = ({ task, onEdit }) => {
     const handleStatusChange = (event) => {
         const newStatus = event.target.value;
         dispatch(
-            updateTaskStatus({
+            updateTaskStatusAsync({
                 id: task.id,
                 status: newStatus,
             })
@@ -32,8 +32,8 @@ const TaskCard = ({ task, onEdit }) => {
         );
     };
 
-    const handleDelete = () => {
-        dispatch(deleteTask(task.id));
+    const handleDelete = async () => {
+        await dispatch(deleteTaskAsync(task.id)).unwrap();
         dispatch(
             addNotification({
                 id: `notification-${Date.now()}`,

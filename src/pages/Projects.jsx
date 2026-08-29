@@ -1,12 +1,18 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, FolderKanban, PauseCircle, Plus, Search, } from "lucide-react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectActiveProjects, selectAllProjects, selectCompletedProjects, selectOnHoldProjects, } from "../features/projects/projectSelectors";
 import ProjectForm from "../features/projects/components/ProjectForm";
 import ProjectList from "../features/projects/components/ProjectList";
 import Modal from "../components/ui/Modal";
+import { fetchProjects } from "../features/projects/projectSlice";
 
 const Projects = () => {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(fetchProjects());
+    }, [dispatch]);
+
     const [filter, setFilter] = useState("All");
     const [search, setSearch] = useState("");
     const [showForm, setShowForm] = useState(false);

@@ -4,7 +4,7 @@ import { selectTasksByDueDate } from "../features/tasks/taskSelectors";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Modal from "../components/ui/Modal";
 import TaskForm from "../features/tasks/components/TaskForm";
-import { updateTask, updateTaskStatus } from "../features/tasks/taskSlice";
+// import { updateTask, updateTaskStatus } from "../features/tasks/taskSlice";
 
 const Calendar = () => {
     const today = new Date();
@@ -73,14 +73,14 @@ const Calendar = () => {
         setCurrentDate(new Date(today.getFullYear(), today.getMonth(), 1));
     };
 
-    const handleStatusChange = (event, taskId) => {
-        dispatch(
-            updateTaskStatus({
-                id: taskId,
-                status: event.target.value,
-            })
-        );
-    };
+    // const handleStatusChange = (event, taskId) => {
+    //     dispatch(
+    //         updateTaskStatus({
+    //             id: taskId,
+    //             status: event.target.value,
+    //         })
+    //     );
+    // };
 
     return (
         <div className="mx-auto w-full max-w-7xl space-y-8">

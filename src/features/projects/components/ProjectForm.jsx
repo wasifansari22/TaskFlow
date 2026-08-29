@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addProject, updateProject } from "../projectSlice";
+import { createProjectAsync, updateProjectAsync } from "../projectSlice";
 
 const initialForm = {
     name: "",
@@ -34,35 +34,42 @@ function ProjectForm({ project = null, onClose }) {
         }));
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
+
         if (!formData.name.trim()) {
             return;
         }
 
         if (project) {
-            dispatch(
-                updateProject({
+            await dispatch(
+                updateProjectAsync({
                     id: project.id,
                     updates: {
                         name: formData.name.trim(),
-                        description: formData.description.trim() || "No description provided.",
+                        description:
+                            formData.description.trim() ||
+                            "No description provided.",
                         priority: formData.priority,
-                        dueDate: formData.dueDate || "No due date",
+                        status: project.status,
+                        dueDate:
+                            formData.dueDate || "No due date",
                     },
                 })
-            );
+            ).unwrap();
         } else {
-            const newProject = {
-                id: `project-${Date.now()}`,
-                name: formData.name.trim(),
-                description: formData.description.trim() || "No description provided.",
-                priority: formData.priority,
-                status: "Active",
-                dueDate: formData.dueDate || "No due date",
-            };
-
-            dispatch(addProject(newProject));
+            await dispatch(
+                createProjectAsync({
+                    name: formData.name.trim(),
+                    description:
+                        formData.description.trim() ||
+                        "No description provided.",
+                    priority: formData.priority,
+                    status: "Active",
+                    dueDate:
+                        formData.dueDate || "No due date",
+                })
+            ).unwrap();
         }
 
         onClose();

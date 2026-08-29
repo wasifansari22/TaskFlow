@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from projects.models import Project
 
 # Create your models here.
 
@@ -9,6 +10,14 @@ class Task(models.Model):
     owner = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
+        related_name="tasks",
+    )
+
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         related_name="tasks",
     )
 

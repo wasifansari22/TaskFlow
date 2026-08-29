@@ -21,7 +21,7 @@ export const selectOnHoldProjects = (state) =>
 
 export const selectProjectProgress = (state, projectId) => {
     const tasks = state.tasks.tasks.filter(
-        (task) => task.projectId === projectId
+        (task) => task.project === projectId
     );
 
     if (tasks.length === 0) {

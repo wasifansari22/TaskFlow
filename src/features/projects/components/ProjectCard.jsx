@@ -1,6 +1,6 @@
 import { CalendarDays, FolderKanban, Trash2, Pencil } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteProject, updateProjectStatus } from "../projectSlice";
+import { deleteProjectAsync, updateProjectAsync } from "../projectSlice";
 import { selectProjectProgress } from "../projectSelectors";
 import { selectTasksByProject } from "../../tasks/taskSelectors";
 import { Link } from "react-router";
@@ -16,15 +16,22 @@ const ProjectCard = ({ project, onEdit }) => {
 
     const handleStatusChange = (event) => {
         dispatch(
-            updateProjectStatus({
+            updateProjectAsync({
                 id: project.id,
-                status: event.target.value,
+                // status: event.target.value,
+                updates: {
+                    name: project.name,
+                    description: project.description,
+                    priority: project.priority,
+                    status: newStatus,
+                    dueDate: project.dueDate || "No due date",
+                },
             })
         );
     };
 
     const handleDelete = () => {
-        dispatch(deleteProject(project.id));
+        dispatch(deleteProjectAsync(project.id));
     };
 
     const priorityStyle =

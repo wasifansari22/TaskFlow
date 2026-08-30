@@ -11,7 +11,15 @@ export const fetchTasks = createAsyncThunk(
     "tasks/fetchTasks",
     async (_, thunkAPI) => {
         try {
-            return await getTasks();
+            const tasks = await getTasks();
+
+            return tasks.map((task) => ({
+                ...task,
+                dueDate: task.due_date
+                    ? task.due_date
+                    : "No due date",
+                projectId: task.project,
+            }));
         } catch (error) {
             return thunkAPI.rejectWithValue(error.message);
         }
@@ -88,69 +96,76 @@ export const deleteTaskAsync = createAsyncThunk(
 const taskSlice = createSlice({
     name: "tasks",
     initialState,
-    reducers: {
-        // addTask: (state, action) => {
-        //     state.tasks.unshift(action.payload);
-        // },
-
-        // updateTaskStatus: (state, action) => {
-        //     const { id, status } = action.payload;
-        //     const task = state.tasks.find((task) => task.id === id);
-        //     if (!task) return;
-        //     task.status = status;
-        // },
-
-        // deleteTask: (state, action) => {
-        //     state.tasks = state.tasks.filter(
-        //         (task) => task.id !== action.payload
-        //     );
-        // },
-        // updateTask: (state, action) => {
-        //     const { id, updates } = action.payload;
-        //     const task = state.tasks.find((task) => task.id === id);
-        //     if (!task) return;
-        //     Object.assign(task, updates);
-        // },
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(fetchTasks.pending, (state) => {
                 state.status = "loading";
                 state.error = null;
             })
+
             .addCase(fetchTasks.fulfilled, (state, action) => {
                 state.status = "succeeded";
                 state.tasks = action.payload;
             })
+
             .addCase(fetchTasks.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload;
             })
+
             .addCase(createTask.fulfilled, (state, action) => {
-                state.tasks.unshift(action.payload);
+                const task = action.payload;
+
+                state.tasks.unshift({
+                    ...task,
+                    dueDate: task.due_date
+                        ? task.due_date
+                        : "No due date",
+                    projectId: task.project,
+                });
             })
+
             .addCase(updateTaskAsync.fulfilled, (state, action) => {
-                const updatedTask = action.payload;
+                const task = action.payload;
+
+                const updatedTask = {
+                    ...task,
+                    dueDate: task.due_date
+                        ? task.due_date
+                        : "No due date",
+                    projectId: task.project,
+                };
 
                 const index = state.tasks.findIndex(
-                    (task) => task.id === updatedTask.id
+                    (existingTask) => existingTask.id === updatedTask.id
                 );
 
                 if (index !== -1) {
                     state.tasks[index] = updatedTask;
                 }
             })
+
             .addCase(updateTaskStatusAsync.fulfilled, (state, action) => {
-                const updatedTask = action.payload;
+                const task = action.payload;
+
+                const updatedTask = {
+                    ...task,
+                    dueDate: task.due_date
+                        ? task.due_date
+                        : "No due date",
+                    projectId: task.project,
+                };
 
                 const index = state.tasks.findIndex(
-                    (task) => task.id === updatedTask.id
+                    (existingTask) => existingTask.id === updatedTask.id
                 );
 
                 if (index !== -1) {
                     state.tasks[index] = updatedTask;
                 }
             })
+
             .addCase(deleteTaskAsync.fulfilled, (state, action) => {
                 state.tasks = state.tasks.filter(
                     (task) => task.id !== action.payload
@@ -159,6 +174,4 @@ const taskSlice = createSlice({
     },
 });
 
-// export const { addTask, updateTaskStatus, deleteTask, updateTask } = taskSlice.actions;
-export const { updateTaskStatus } = taskSlice.actions;
 export default taskSlice.reducer;

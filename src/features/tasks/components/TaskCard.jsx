@@ -6,30 +6,28 @@ import { addNotification } from "../../notifications/notificationSlice";
 const TaskCard = ({ task, onEdit }) => {
     const dispatch = useDispatch();
 
-    const handleStatusChange = (event) => {
+    const handleStatusChange = async (event) => {
         const newStatus = event.target.value;
-        dispatch(
-            updateTaskStatusAsync({
-                id: task.id,
-                status: newStatus,
-            })
-        );
-        dispatch(
-            addNotification({
-                id: `notification-${Date.now()}`,
-                type:
-                    newStatus === "Completed"
-                        ? "task-completed"
-                        : "task-updated",
-                title:
-                    newStatus === "Completed"
-                        ? "Task completed"
-                        : "Task status updated",
-                message: task.title,
-                read: false,
-                createdAt: new Date().toISOString(),
-            })
-        );
+        try {
+            await dispatch(
+                updateTaskStatusAsync({
+                    id: task.id,
+                    status: newStatus,
+                })
+            ).unwrap();
+            dispatch(
+                addNotification({
+                    id: `notification-${Date.now()}`,
+                    type: newStatus === "Completed" ? "task-completed" : "task-updated",
+                    title: newStatus === "Completed" ? "Task completed" : "Task status updated",
+                    message: task.title,
+                    read: false,
+                    createdAt: new Date().toISOString(),
+                })
+            );
+        } catch (error) {
+            console.error("Failed to update task status:", error);
+        }
     };
 
     const handleDelete = async () => {

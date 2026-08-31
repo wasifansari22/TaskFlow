@@ -1,5 +1,11 @@
 const API_BASE_URL = "http://127.0.0.1:8000/api";
 
+const mapTaskFromBackend = (task) => ({
+    ...task,
+    dueDate: task.due_date || "No due date",
+    projectId: task.project ? String(task.project) : null,
+});
+
 export const getTasks = async () => {
     const token = localStorage.getItem("taskflow-token");
 
@@ -19,7 +25,7 @@ export const getTasks = async () => {
         );
     }
 
-    return data;
+    return data.map(mapTaskFromBackend);
 };
 
 export const createTaskRequest = async (taskData) => {
@@ -42,7 +48,7 @@ export const createTaskRequest = async (taskData) => {
         );
     }
 
-    return data;
+    return mapTaskFromBackend(data);
 };
 
 export const updateTaskRequest = async (id, taskData) => {
@@ -65,7 +71,7 @@ export const updateTaskRequest = async (id, taskData) => {
         );
     }
 
-    return data;
+    return mapTaskFromBackend(data);
 };
 
 export const deleteTaskRequest = async (id) => {

@@ -14,11 +14,12 @@ const ProjectCard = ({ project, onEdit }) => {
         selectTasksByProject(state, project.id)
     );
 
-    const handleStatusChange = (event) => {
-        dispatch(
+    const handleStatusChange = async (event) => {
+        const newStatus = event.target.value;
+
+        await dispatch(
             updateProjectAsync({
                 id: project.id,
-                // status: event.target.value,
                 updates: {
                     name: project.name,
                     description: project.description,
@@ -27,7 +28,7 @@ const ProjectCard = ({ project, onEdit }) => {
                     dueDate: project.dueDate || "No due date",
                 },
             })
-        );
+        ).unwrap();
     };
 
     const handleDelete = () => {
@@ -107,7 +108,7 @@ const ProjectCard = ({ project, onEdit }) => {
             <div className="mt-5 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-1.5 text-xs text-slate-500">
                     <CalendarDays size={14} />
-                    {project.dueDate}
+                    {project.dueDate || "No due date"}
                 </div>
 
                 <div className="flex items-center gap-2">

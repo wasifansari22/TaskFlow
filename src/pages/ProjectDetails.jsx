@@ -1,17 +1,29 @@
 import { Link, useParams } from "react-router";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { CalendarDays, CheckCircle2, Circle, Clock3 } from "lucide-react";
 import { selectAllProjects, selectProjectProgress, } from "../features/projects/projectSelectors";
-
 import { selectTasksByProject } from "../features/tasks/taskSelectors";
+import { fetchProjects } from "../features/projects/projectSlice";
+import { fetchTasks } from "../features/tasks/taskSlice";
+import { useEffect } from "react";
 
 const ProjectDetails = () => {
     const { projectId } = useParams();
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(fetchProjects());
+        dispatch(fetchTasks());
+    }, [dispatch]);
 
     const project = useSelector((state) =>
         selectAllProjects(state).find(
-            (item) => item.id === projectId
+            (item) => Number(item.id) === Number(projectId)
         )
+    );
+
+    const projectStatus = useSelector(
+        (state) => state.projects.status
     );
 
     const projectTasks = useSelector((state) =>
@@ -21,6 +33,16 @@ const ProjectDetails = () => {
     const progress = useSelector((state) =>
         selectProjectProgress(state, projectId)
     );
+
+    if (projectStatus === "loading" || projectStatus === "idle") {
+        return (
+            <div className="flex min-h-[60vh] items-center justify-center px-4">
+                <p className="text-sm text-slate-500">
+                    Loading project...
+                </p>
+            </div>
+        );
+    }
 
     if (!project) {
         return (

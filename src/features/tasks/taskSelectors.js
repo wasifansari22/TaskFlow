@@ -21,8 +21,8 @@ export const selectInProgressTasks = (state) =>
 
 export const selectTasksByProject = (state, projectId) =>
     state.tasks.tasks.filter(
-        (task) => task.projectId === projectId
-    )
+        (task) => Number(task.project) === Number(projectId)
+    );
 
 export const selectTasksByDueDate = (state, date) => {
     return state.tasks.tasks.filter(

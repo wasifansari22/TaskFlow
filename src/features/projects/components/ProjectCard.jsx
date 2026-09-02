@@ -17,22 +17,30 @@ const ProjectCard = ({ project, onEdit }) => {
     const handleStatusChange = async (event) => {
         const newStatus = event.target.value;
 
-        await dispatch(
-            updateProjectAsync({
-                id: project.id,
-                updates: {
-                    name: project.name,
-                    description: project.description,
-                    priority: project.priority,
-                    status: newStatus,
-                    dueDate: project.dueDate || "No due date",
-                },
-            })
-        ).unwrap();
+        try {
+            await dispatch(
+                updateProjectAsync({
+                    id: project.id,
+                    updates: {
+                        name: project.name,
+                        description: project.description,
+                        priority: project.priority,
+                        status: newStatus,
+                        dueDate: project.dueDate || "No due date",
+                    },
+                })
+            ).unwrap();
+        } catch (error) {
+            console.error("Project status update failed:", error);
+        }
     };
 
-    const handleDelete = () => {
-        dispatch(deleteProjectAsync(project.id));
+    const handleDelete = async () => {
+        try {
+            await dispatch(deleteProjectAsync(project.id)).unwrap();
+        } catch (error) {
+            console.error("Project deletion failed:", error);
+        }
     };
 
     const priorityStyle =

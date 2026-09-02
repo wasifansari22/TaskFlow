@@ -41,38 +41,42 @@ function ProjectForm({ project = null, onClose }) {
             return;
         }
 
-        if (project) {
-            await dispatch(
-                updateProjectAsync({
-                    id: project.id,
-                    updates: {
+        try {
+            if (project) {
+                await dispatch(
+                    updateProjectAsync({
+                        id: project.id,
+                        updates: {
+                            name: formData.name.trim(),
+                            description:
+                                formData.description.trim() ||
+                                "No description provided.",
+                            priority: formData.priority,
+                            status: project.status,
+                            dueDate:
+                                formData.dueDate || "No due date",
+                        },
+                    })
+                ).unwrap();
+            } else {
+                await dispatch(
+                    createProjectAsync({
                         name: formData.name.trim(),
                         description:
                             formData.description.trim() ||
                             "No description provided.",
                         priority: formData.priority,
-                        status: project.status,
+                        status: "Active",
                         dueDate:
                             formData.dueDate || "No due date",
-                    },
-                })
-            ).unwrap();
-        } else {
-            await dispatch(
-                createProjectAsync({
-                    name: formData.name.trim(),
-                    description:
-                        formData.description.trim() ||
-                        "No description provided.",
-                    priority: formData.priority,
-                    status: "Active",
-                    dueDate:
-                        formData.dueDate || "No due date",
-                })
-            ).unwrap();
-        }
+                    })
+                ).unwrap();
+            }
 
-        onClose();
+            onClose();
+        } catch (error) {
+            console.error("Project save failed:", error);
+        }
     };
 
     return (

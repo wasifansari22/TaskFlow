@@ -20,7 +20,11 @@ export const fetchProjects = createAsyncThunk(
             const projects = await getProjects();
             return projects.map(normalizeProject);
         } catch (error) {
-            return thunkAPI.rejectWithValue(error.message);
+            return thunkAPI.rejectWithValue(
+                error.message === "Failed to fetch"
+                    ? "Unable to load projects. Please make sure the server is running and try again."
+                    : error.message
+            );
         }
     }
 );

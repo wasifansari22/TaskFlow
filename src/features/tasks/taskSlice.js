@@ -21,7 +21,11 @@ export const fetchTasks = createAsyncThunk(
                 projectId: task.project,
             }));
         } catch (error) {
-            return thunkAPI.rejectWithValue(error.message);
+            return thunkAPI.rejectWithValue(
+                error.message === "Failed to fetch"
+                    ? "Unable to load tasks. Please make sure the server is running and try again."
+                    : error.message
+            );
         }
     }
 );

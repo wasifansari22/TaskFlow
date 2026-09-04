@@ -24,6 +24,9 @@ const Projects = () => {
     const completedProjects = useSelector(selectCompletedProjects);
     const onHoldProjects = useSelector(selectOnHoldProjects);
 
+    const projectStatus = useSelector((state) => state.projects.status);
+    const projectError = useSelector((state) => state.projects.error);
+
     const stats = useMemo(() => [
         {
             label: "All Projects",
@@ -187,11 +190,35 @@ const Projects = () => {
             </section>
 
             {/* Project List */}
-            <ProjectList
-                filter={filter}
-                search={search}
-                onEdit={setEditingProject}
-            />
+            {projectStatus === "loading" && (
+                <div className="rounded-xl border border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
+                    Loading projects...
+                </div>
+            )}
+
+            {projectStatus === "failed" && (
+                <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center">
+                    <p className="text-sm text-red-600">
+                        {projectError || "Failed to load projects. Please try again."}
+                    </p>
+
+                    <button
+                        type="button"
+                        onClick={() => dispatch(fetchProjects())}
+                        className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
+                    >
+                        Try Again
+                    </button>
+                </div>
+            )}
+
+            {projectStatus === "succeeded" && (
+                <ProjectList
+                    filter={filter}
+                    search={search}
+                    onEdit={setEditingProject}
+                />
+            )}
         </div>
     );
 }

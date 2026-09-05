@@ -55,6 +55,17 @@ const authSlice = createSlice({
                     "taskflow-token",
                     action.payload.token
                 );
+
+                localStorage.setItem(
+                    "taskflow-auth",
+                    JSON.stringify({
+                        isAuthenticated: true,
+                        user: action.payload.user,
+                        token: action.payload.token,
+                        status: "succeeded",
+                        error: null,
+                    })
+                );
             })
 
             .addCase(login.rejected, (state, action) => {

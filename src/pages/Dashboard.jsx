@@ -1,17 +1,26 @@
-import { useSelector } from "react-redux";
+import { useEffect } from "react"
+import { useSelector, useDispatch } from "react-redux";
 import { CheckCircle2, Clock3, FolderKanban, ListTodo, } from "lucide-react";
 import { selectDashboardStats } from "../features/dashboard/dashboardSelectors";
 import StatCard from "../features/dashboard/components/StatCard";
 import ProjectProgress from "../features/dashboard/components/ProjectProgress";
 import QuickActions from "../features/dashboard/components/QuickActions";
 import RecentTasks from "../features/dashboard/components/RecentTasks";
-import { selectAllTasks, selectCompletedTasks, selectInProgressTasks, selectPendingTasks } from "../features/tasks/taskSelectors";
-import { selectAllProjects, selectActiveProjects, } from "../features/projects/projectSelectors";
+// import { selectAllTasks, selectCompletedTasks, selectInProgressTasks, selectPendingTasks } from "../features/tasks/taskSelectors";
+// import { selectAllProjects, selectActiveProjects, } from "../features/projects/projectSelectors";
 import UpcomingDeadlines from "../features/dashboard/components/UpcomingDeadlines";
 import TaskAnalytics from "../features/dashboard/components/TaskAnalytics";
 import ProjectAnalytics from "../features/dashboard/components/ProjectAnalytics";
+import { fetchTasks } from "../features/tasks/taskSlice";
+import { fetchProjects } from "../features/projects/projectSlice";
 
 const Dashboard = () => {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(fetchTasks());
+        dispatch(fetchProjects());
+    }, [dispatch]);
+
     const dashboardStats = useSelector(selectDashboardStats);
 
     return (

@@ -26,6 +26,10 @@ const ProjectDetails = () => {
         (state) => state.projects.status
     );
 
+    const projectError = useSelector(
+        (state) => state.projects.error
+    )
+
     const projectTasks = useSelector((state) =>
         selectTasksByProject(state, projectId)
     );
@@ -40,6 +44,39 @@ const ProjectDetails = () => {
                 <p className="text-sm text-slate-500">
                     Loading project...
                 </p>
+            </div>
+        );
+    }
+
+    if (projectStatus === "failed") {
+        return (
+            <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
+                <h1 className="text-2xl font-bold text-slate-900">
+                    Unable to load project
+                </h1>
+
+                <p className="mt-2 max-w-md text-sm text-slate-500">
+                    {projectError ||
+                        "Something went wrong while loading this project."}
+                </p>
+
+                <button
+                    type="button"
+                    onClick={() => {
+                        dispatch(fetchProjects());
+                        dispatch(fetchTasks());
+                    }}
+                    className="mt-5 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
+                >
+                    Try Again
+                </button>
+
+                <Link
+                    to="/projects"
+                    className="mt-3 text-sm font-medium text-slate-500 transition hover:text-slate-900"
+                >
+                    Back to Projects
+                </Link>
             </div>
         );
     }

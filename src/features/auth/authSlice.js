@@ -17,7 +17,11 @@ export const login = createAsyncThunk(
         try {
             return await loginUser(username, password);
         } catch (error) {
-            return thunkAPI.rejectWithValue(error.message);
+            return thunkAPI.rejectWithValue(
+                error.message === "Failed to fetch"
+                    ? "Unable to connect to the server. Please make sure the server is running and try again."
+                    : error.message
+            );
         }
     }
 );

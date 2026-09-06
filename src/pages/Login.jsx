@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { login } from "../features/auth/authSlice";
@@ -10,15 +10,26 @@ const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const isSubmittingRef = useRef(false);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        console.log("button clicked");
+        if (isSubmittingRef.current) {
+            return;
+        }
+
         setError("");
 
         if (!username.trim() || !password.trim()) {
             setError("Please enter your username and password.");
             return;
         }
+
+        isSubmittingRef.current = true;
+        setIsSubmitting(true);
+
         try {
             await dispatch(
                 login({
@@ -28,9 +39,15 @@ const Login = () => {
             ).unwrap();
 
             navigate("/");
-
         } catch (error) {
-            setError(error || "Invalid username or password.");
+            setError(
+                typeof error === "string"
+                    ? error
+                    : "Invalid username or password."
+            );
+        } finally {
+            isSubmittingRef.current = false;
+            setIsSubmitting(false);
         }
     };
 
@@ -101,12 +118,13 @@ const Login = () => {
                                 {error}
                             </p>
                         )}
-
+                    
                         <button
                             type="submit"
-                            className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
+                            disabled={isSubmitting}
+                            className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
                         >
-                            Sign in
+                            {isSubmitting ? "Signing in..." : "Sign in"}
                         </button>
                     </form>
                 </div>

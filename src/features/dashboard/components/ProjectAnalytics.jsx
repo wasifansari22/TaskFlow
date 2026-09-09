@@ -20,65 +20,63 @@ const ProjectAnalytics = () => {
 
             <div className="mt-6 h-64">
                 {projects.length === 0 ? (
-                    <div className="flex h-64 flex-col items-center justify-center text-center">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
-                            <FolderKanban
-                                size={24}
-                                className="text-slate-400"
-                            />
-                        </div>
+                    <div className="flex h-full flex-col items-center justify-center text-center">
+                        <FolderKanban
+                            size={32}
+                            className="text-slate-300"
+                        />
 
-                        <h3 className="mt-4 text-sm font-semibold text-slate-900">
+                        <p className="mt-3 font-medium text-slate-900">
                             No project data yet
-                        </h3>
+                        </p>
 
-                        <p className="mt-1 max-w-sm text-sm text-slate-500">
+                        <p className="mt-1 text-sm text-slate-500">
                             Create projects to see your project progress.
                         </p>
                     </div>
                 ) : (
-                    <div className="mt-6 h-64">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart
-                                data={projects}
-                                layout="vertical"
-                                margin={{
-                                    top: 5,
-                                    right: 10,
-                                    left: 10,
-                                    bottom: 5,
-                                }}
-                            >
-                                <XAxis
-                                    type="number"
-                                    domain={[0, 100]}
-                                    tick={{ fontSize: 11 }}
-                                    tickFormatter={(value) => `${value}%`}
-                                />
 
-                                <YAxis
-                                    type="category"
-                                    dataKey="name"
-                                    width={90}
-                                    tick={{ fontSize: 11 }}
-                                />
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                            data={projects}
+                            layout="vertical"
+                            margin={{
+                                top: 5,
+                                right: 10,
+                                left: 10,
+                                bottom: 5,
+                            }}
+                        >
+                            <XAxis
+                                type="number"
+                                domain={[0, 100]}
+                                tick={{ fontSize: 11 }}
+                                tickFormatter={(value) => `${value}%`}
+                            />
 
-                                <Tooltip
-                                    formatter={(value) => [
-                                        `${value}%`,
-                                        "Progress",
-                                    ]}
-                                />
+                            <YAxis
+                                type="category"
+                                dataKey="name"
+                                width={90}
+                                tick={{ fontSize: 11 }}
+                            />
 
-                                <Bar
-                                    dataKey="progress"
-                                    fill="#2563eb"
-                                    radius={[0, 6, 6, 0]}
-                                    barSize={24}
-                                />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
+                            <Tooltip
+                                formatter={(value) => [
+                                    `${value}%`,
+                                    "Progress",
+                                ]}
+                            />
+
+                            <Bar
+                                dataKey="progress"
+                                fill="#2563eb"
+                                radius={[0, 6, 6, 0]}
+                                barSize={24}
+                            />
+                        </BarChart>
+                    </ResponsiveContainer>
+
                 )}
             </div>
         </div>

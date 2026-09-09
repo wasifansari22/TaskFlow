@@ -1,8 +1,12 @@
 import { ArrowUpRight } from "lucide-react";
+import { Link } from "react-router";
 
-const StatCard = ({ title, value, description, icon: Icon, iconStyle = "bg-blue-50 text-blue-600", }) => {
+const StatCard = ({ title, value, description, icon: Icon, iconStyle = "bg-blue-50 text-blue-600", to = "#", }) => {
     return (
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
+        <Link
+            to={to}
+            className="group block rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+        >
             <div className="flex items-start justify-between">
                 <div
                     className={`flex h-10 w-10 items-center justify-center rounded-lg ${iconStyle}`}
@@ -12,7 +16,7 @@ const StatCard = ({ title, value, description, icon: Icon, iconStyle = "bg-blue-
 
                 <ArrowUpRight
                     size={18}
-                    className="text-slate-400"
+                    className="text-slate-400 transition group-hover:text-blue-600"
                 />
             </div>
 
@@ -29,8 +33,8 @@ const StatCard = ({ title, value, description, icon: Icon, iconStyle = "bg-blue-
                     {description}
                 </p>
             </div>
-        </div>
+        </Link>
     );
-}
+};
 
 export default StatCard;

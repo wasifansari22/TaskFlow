@@ -82,16 +82,24 @@ const Dashboard = () => {
 
                     {/* Statistics */}
                     <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-                        {dashboardStats.map((stat) => (
-                            <StatCard
-                                key={stat.title}
-                                title={stat.title}
-                                value={stat.value}
-                                description={stat.description}
-                                icon={stat.icon}
-                                iconStyle={stat.iconStyle}
-                            />
-                        ))}
+                        {dashboardStats.map((stat) => {
+                            const destination =
+                                stat.title === "Active Projects"
+                                    ? "/projects"
+                                    : "/tasks";
+
+                            return (
+                                <StatCard
+                                    key={stat.title}
+                                    title={stat.title}
+                                    value={stat.value}
+                                    description={stat.description}
+                                    icon={stat.icon}
+                                    iconStyle={stat.iconStyle}
+                                    to={destination}
+                                />
+                            );
+                        })}
                     </section>
 
                     {/* Projects and Quick Actions */}

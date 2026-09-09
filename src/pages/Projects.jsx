@@ -107,7 +107,7 @@ const Projects = () => {
                     return (
                         <div
                             key={stat.label}
-                            className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
+                            className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                         >
                             <div className="flex items-center gap-3">
                                 <div

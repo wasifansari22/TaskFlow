@@ -55,13 +55,13 @@ const UpcomingDeadlines = () => {
     return (
         <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-slate-200 p-5">
-                <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-                        <CalendarDays size={19} />
+            <div className="flex items-start justify-between gap-4 border-b border-slate-200 p-5">
+                <div className="flex min-w-0 items-start gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                        <CalendarDays size={20} />
                     </div>
 
-                    <div>
+                    <div className="min-w-0">
                         <h2 className="font-semibold text-slate-900">
                             Upcoming Deadlines
                         </h2>
@@ -74,7 +74,7 @@ const UpcomingDeadlines = () => {
 
                 <Link
                     to="/tasks"
-                    className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 transition hover:text-blue-700"
+                    className="flex shrink-0 items-center gap-1 whitespace-nowrap pt-1 text-sm font-medium text-blue-600 transition hover:text-blue-700"
                 >
                     View all
                     <ArrowRight size={16} />

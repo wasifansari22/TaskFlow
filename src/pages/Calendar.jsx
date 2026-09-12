@@ -7,6 +7,20 @@ import Modal from "../components/ui/Modal";
 import TaskForm from "../features/tasks/components/TaskForm";
 import { fetchProjects } from "../features/projects/projectSlice";
 
+const getTaskStatusStyle = (status) => {
+    switch (status) {
+        case "Completed":
+            return "bg-emerald-50 text-emerald-700 line-through";
+
+        case "In Progress":
+            return "bg-amber-50 text-amber-700";
+
+        case "Pending":
+        default:
+            return "bg-blue-50 text-blue-700";
+    }
+};
+
 const Calendar = () => {
     const today = new Date();
     const dispatch = useDispatch();
@@ -236,6 +250,24 @@ const Calendar = () => {
                     ))}
                 </div>
 
+                {/* Calendar Legend  */}
+                <div className="flex flex-wrap items-center gap-4 border-b border-slate-100 px-4 py-3 text-xs text-slate-500">
+                    <div className="flex items-center gap-1.5">
+                        <span className="h-2 w-2 rounded-full bg-blue-500" />
+                        <span>Pending</span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5">
+                        <span className="h-2 w-2 rounded-full bg-amber-500" />
+                        <span>In Progress</span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5">
+                        <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                        <span>Completed</span>
+                    </div>
+                </div>
+
                 {/* Days */}
                 <div className="grid grid-cols-7">
                     {days.map((day, index) => {
@@ -282,9 +314,9 @@ const Calendar = () => {
                                         );
                                     }
                                 }}
-                                className={`min-h-24 border-b border-r border-slate-100 p-2 sm:min-h-28 sm:p-3 ${day
-                                    ? "cursor-pointer transition hover:bg-slate-50"
-                                    : ""
+                                className={`min-h-24 border-b border-r border-slate-100 p-1.5 sm:min-h-28 sm:p-3 ${day
+                                        ? "cursor-pointer transition hover:bg-slate-50"
+                                        : ""
                                     }`}
                             >
                                 {day && (
@@ -304,43 +336,48 @@ const Calendar = () => {
                                                 <>
                                                     {/* Desktop */}
                                                     <div className="mt-2 hidden space-y-1 sm:block">
-                                                        {tasksForDay.map(
-                                                            (
-                                                                task
-                                                            ) => (
-                                                                <div
-                                                                    key={
-                                                                        task.id
-                                                                    }
-                                                                    className={`truncate rounded-md px-2 py-1 text-xs font-medium ${task.status ===
-                                                                        "Completed"
-                                                                        ? "bg-emerald-50 text-emerald-700"
-                                                                        : task.status ===
-                                                                            "In Progress"
-                                                                            ? "bg-amber-50 text-amber-700"
-                                                                            : "bg-blue-50 text-blue-700"
-                                                                        }`}
-                                                                    title={
-                                                                        task.title
-                                                                    }
-                                                                >
-                                                                    {
-                                                                        task.title
-                                                                    }
-                                                                </div>
-                                                            )
-                                                        )}
+                                                        {tasksForDay.map((task) => (
+                                                            <div
+                                                                key={task.id}
+                                                                className={`truncate rounded-md px-2 py-1 text-xs font-medium ${getTaskStatusStyle(
+                                                                    task.status
+                                                                )}`}
+                                                                title={`${task.title} — ${task.status}`}
+                                                            >
+                                                                {task.title}
+                                                            </div>
+                                                        ))}
                                                     </div>
 
                                                     {/* Mobile */}
-                                                    <div className="mt-2 flex items-center gap-1.5 sm:hidden">
-                                                        <span className="h-1 w-1 rounded-full bg-blue-500" />
-
-                                                        <span className="rounded-full bg-blue-50 px-1.5 py-0.5 text-[10px] font-medium text-blue-600">
-                                                            {
-                                                                tasksForDay.length
-                                                            }
+                                                    <div className="mt-2 flex flex-col items-center gap-1 sm:hidden">
+                                                        <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600">
+                                                            {tasksForDay.length}
                                                         </span>
+
+                                                        <div
+                                                            className="flex h-1.5 w-8 overflow-hidden rounded-full bg-slate-100"
+                                                            title={`${tasksForDay.length} task${tasksForDay.length > 1 ? "s" : ""
+                                                                }`}
+                                                        >
+                                                            {tasksForDay.some(
+                                                                (task) => task.status === "Pending"
+                                                            ) && (
+                                                                    <span className="flex-1 bg-blue-500" />
+                                                                )}
+
+                                                            {tasksForDay.some(
+                                                                (task) => task.status === "In Progress"
+                                                            ) && (
+                                                                    <span className="flex-1 bg-amber-500" />
+                                                                )}
+
+                                                            {tasksForDay.some(
+                                                                (task) => task.status === "Completed"
+                                                            ) && (
+                                                                    <span className="flex-1 bg-emerald-500" />
+                                                                )}
+                                                        </div>
                                                     </div>
                                                 </>
                                             )}

@@ -46,12 +46,9 @@ const Calendar = () => {
         }, {});
     }, [tasks]);
 
-    const todayString = today
-        .toISOString()
-        .split("T")[0];
+    const todayString = today.toISOString().split("T")[0];
 
-    const [selectedDate, setSelectedDate] =
-        useState(todayString);
+    const [selectedDate, setSelectedDate] = useState(todayString);
 
     const [currentDate, setCurrentDate] = useState(
         new Date(
@@ -61,14 +58,11 @@ const Calendar = () => {
         )
     );
 
-    const [showTaskForm, setShowTaskForm] =
-        useState(false);
+    const [showTaskForm, setShowTaskForm] = useState(false);
 
-    const [showMobileTasks, setShowMobileTasks] =
-        useState(false);
+    const [showMobileTasks, setShowMobileTasks] = useState(false);
 
-    const [editingTask, setEditingTask] =
-        useState(null);
+    const [editingTask, setEditingTask] = useState(null);
 
     // Load the latest tasks when Calendar opens
     useEffect(() => {
@@ -76,13 +70,9 @@ const Calendar = () => {
         dispatch(fetchProjects());
     }, [dispatch]);
 
-    const selectedTasks = useSelector((state) =>
-        selectTasksByDueDate(state, selectedDate)
-    );
+    const selectedTasks = useSelector((state) => selectTasksByDueDate(state, selectedDate));
 
-    const taskStatus = useSelector(
-        (state) => state.tasks.status
-    );
+    const taskStatus = useSelector((state) => state.tasks.status);
 
     const month = currentDate.getMonth();
     const year = currentDate.getFullYear();
@@ -94,22 +84,13 @@ const Calendar = () => {
         }
     );
 
-    const firstDayOfMonth = new Date(
-        year,
-        month,
-        1
-    ).getDay();
+    const firstDayOfMonth = new Date(year, month, 1).getDay();
 
-    const daysInMonth = new Date(
-        year,
-        month + 1,
-        0
-    ).getDate();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
 
     const days = Array.from(
         {
-            length:
-                firstDayOfMonth + daysInMonth,
+            length: firstDayOfMonth + daysInMonth,
         },
         (_, index) => {
             if (index < firstDayOfMonth) {
@@ -117,22 +98,26 @@ const Calendar = () => {
             }
 
             return (
-                index -
-                firstDayOfMonth +
-                1
+                index - firstDayOfMonth + 1
             );
         }
     );
 
     const goToPreviousMonth = () => {
-        setCurrentDate(
-            new Date(year, month - 1, 1)
+        const previousMonth = new Date(year, month - 1, 1);
+
+        setCurrentDate(previousMonth);
+        setSelectedDate(
+            `${previousMonth.getFullYear()}-${String(previousMonth.getMonth() + 1).padStart(2, "0")}-01`
         );
     };
 
     const goToNextMonth = () => {
-        setCurrentDate(
-            new Date(year, month + 1, 1)
+        const nextMonth = new Date(year, month + 1, 1);
+
+        setCurrentDate(nextMonth);
+        setSelectedDate(
+            `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, "0")}-01`
         );
     };
 
@@ -148,10 +133,7 @@ const Calendar = () => {
         setSelectedDate(todayString);
     };
 
-    const handleStatusChange = async (
-        event,
-        taskId
-    ) => {
+    const handleStatusChange = async (event, taskId) => {
         const newStatus = event.target.value;
 
         try {
@@ -272,25 +254,12 @@ const Calendar = () => {
                 <div className="grid grid-cols-7">
                     {days.map((day, index) => {
                         const dateString = day
-                            ? `${year}-${String(
-                                month + 1
-                            ).padStart(
-                                2,
-                                "0"
-                            )}-${String(
-                                day
-                            ).padStart(
-                                2,
-                                "0"
-                            )}`
+                            ? `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
                             : null;
 
-                        const tasksForDay =
-                            dateString
-                                ? tasksByDate[
-                                dateString
-                                ] || []
-                                : [];
+                        const tasksForDay = dateString
+                            ? tasksByDate[dateString] || []
+                            : [];
 
                         return (
                             <div
@@ -315,15 +284,14 @@ const Calendar = () => {
                                     }
                                 }}
                                 className={`min-h-24 border-b border-r border-slate-100 p-1.5 sm:min-h-28 sm:p-3 ${day
-                                        ? "cursor-pointer transition hover:bg-slate-50"
-                                        : ""
+                                    ? "cursor-pointer transition hover:bg-slate-50"
+                                    : ""
                                     }`}
                             >
                                 {day && (
                                     <>
                                         <span
-                                            className={`flex h-7 w-7 items-center justify-center rounded-full text-sm font-medium ${selectedDate ===
-                                                dateString
+                                            className={`flex h-7 w-7 items-center justify-center rounded-full text-sm font-medium ${selectedDate === dateString
                                                 ? "bg-blue-600 text-white"
                                                 : "text-slate-700"
                                                 }`}
@@ -395,22 +363,17 @@ const Calendar = () => {
                     <div>
                         <h2 className="font-semibold text-slate-900">
                             {selectedDate
-                                ? new Date(
-                                    `${selectedDate}T00:00:00`
-                                ).toLocaleDateString(
-                                    "en-US",
+                                ? new Date(`${selectedDate}T00:00:00`).toLocaleDateString("en-US",
                                     {
                                         month: "long",
                                         day: "numeric",
                                         year: "numeric",
                                     }
-                                )
-                                : "Select a date"}
+                                ) : "Select a date"}
                         </h2>
 
                         <p className="mt-1 text-sm text-slate-500">
-                            Tasks scheduled for this
-                            day.
+                            Tasks scheduled for this day.
                         </p>
                     </div>
 
@@ -458,57 +421,39 @@ const Calendar = () => {
                                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                         <div className="min-w-0">
                                             <h3
-                                                className={`font-medium ${task.status ===
-                                                    "Completed"
+                                                className={`font-medium ${task.status === "Completed"
                                                     ? "text-slate-400 line-through"
                                                     : "text-slate-900"
                                                     }`}
                                             >
-                                                {
-                                                    task.title
-                                                }
+                                                {task.title}
                                             </h3>
 
                                             <p className="mt-1 text-sm text-slate-500">
-                                                {
-                                                    task.description
-                                                }
+                                                {task.description}
                                             </p>
                                         </div>
 
                                         <div className="flex shrink-0 items-center gap-2">
                                             <span
-                                                className={`rounded-full px-2.5 py-1 text-xs font-medium ${task.priority ===
-                                                    "High"
+                                                className={`rounded-full px-2.5 py-1 text-xs font-medium ${task.priority === "High"
                                                     ? "bg-rose-50 text-rose-700"
-                                                    : task.priority ===
-                                                        "Medium"
+                                                    : task.priority === "Medium"
                                                         ? "bg-amber-50 text-amber-700"
                                                         : "bg-slate-100 text-slate-600"
                                                     }`}
                                             >
-                                                {
-                                                    task.priority
-                                                }
+                                                {task.priority}
                                             </span>
 
                                             <select
-                                                value={
-                                                    task.status
-                                                }
-                                                onChange={(
-                                                    event
-                                                ) => {
+                                                value={task.status}
+                                                onChange={(event) => {
                                                     event.stopPropagation();
 
-                                                    handleStatusChange(
-                                                        event,
-                                                        task.id
-                                                    );
+                                                    handleStatusChange(event, task.id);
                                                 }}
-                                                onClick={(
-                                                    event
-                                                ) =>
+                                                onClick={(event) =>
                                                     event.stopPropagation()
                                                 }
                                                 className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
@@ -544,24 +489,19 @@ const Calendar = () => {
                     }
                     title={
                         selectedDate
-                            ? new Date(
-                                `${selectedDate}T00:00:00`
-                            ).toLocaleDateString(
-                                "en-US",
+                            ? new Date(`${selectedDate}T00:00:00`).toLocaleDateString("en-US",
                                 {
                                     month: "long",
                                     day: "numeric",
                                     year: "numeric",
                                 }
-                            )
-                            : "Selected Date"
+                            ) : "Selected Date"
                     }
                 >
                     <div className="space-y-4">
                         <div>
                             <p className="text-sm text-slate-500">
-                                Tasks scheduled for
-                                this day.
+                                Tasks scheduled for this day.
                             </p>
                         </div>
 
@@ -573,8 +513,7 @@ const Calendar = () => {
                                 </p>
 
                                 <p className="mt-1 text-xs text-slate-500">
-                                    There are no tasks
-                                    due on this date.
+                                    There are no tasks due on this date.
                                 </p>
                             </div>
                         ) : (
@@ -582,70 +521,46 @@ const Calendar = () => {
                                 {selectedTasks.map(
                                     (task) => (
                                         <div
-                                            key={
-                                                task.id
-                                            }
+                                            key={task.id}
                                             onClick={() => {
-                                                setShowMobileTasks(
-                                                    false
-                                                );
-                                                setEditingTask(
-                                                    task
-                                                );
+                                                setShowMobileTasks(false);
+                                                setEditingTask(task);
                                             }}
                                             className="cursor-pointer rounded-lg border border-slate-200 p-4 transition hover:border-blue-300 hover:bg-blue-50/30"
                                         >
                                             <h3
-                                                className={`font-medium ${task.status ===
-                                                    "Completed"
+                                                className={`font-medium ${task.status === "Completed"
                                                     ? "text-slate-400 line-through"
                                                     : "text-slate-900"
                                                     }`}
                                             >
-                                                {
-                                                    task.title
-                                                }
+                                                {task.title}
                                             </h3>
 
                                             <p className="mt-1 text-sm text-slate-500">
-                                                {
-                                                    task.description
-                                                }
+                                                {task.description}
                                             </p>
 
                                             <div className="mt-3 flex flex-wrap gap-2">
                                                 <span
-                                                    className={`rounded-full px-2.5 py-1 text-xs font-medium ${task.priority ===
-                                                        "High"
+                                                    className={`rounded-full px-2.5 py-1 text-xs font-medium ${task.priority === "High"
                                                         ? "bg-rose-50 text-rose-700"
-                                                        : task.priority ===
-                                                            "Medium"
+                                                        : task.priority === "Medium"
                                                             ? "bg-amber-50 text-amber-700"
                                                             : "bg-slate-100 text-slate-600"
                                                         }`}
                                                 >
-                                                    {
-                                                        task.priority
-                                                    }
+                                                    {task.priority}
                                                 </span>
 
                                                 <select
-                                                    value={
-                                                        task.status
-                                                    }
-                                                    onChange={(
-                                                        event
-                                                    ) => {
+                                                    value={task.status}
+                                                    onChange={(event) => {
                                                         event.stopPropagation();
 
-                                                        handleStatusChange(
-                                                            event,
-                                                            task.id
-                                                        );
+                                                        handleStatusChange(event, task.id);
                                                     }}
-                                                    onClick={(
-                                                        event
-                                                    ) =>
+                                                    onClick={(event) =>
                                                         event.stopPropagation()
                                                     }
                                                     className="rounded-full border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
@@ -673,9 +588,7 @@ const Calendar = () => {
                         <button
                             type="button"
                             onClick={() => {
-                                setShowMobileTasks(
-                                    false
-                                );
+                                setShowMobileTasks(false);
                                 setShowTaskForm(true);
                             }}
                             className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"

@@ -6,6 +6,7 @@ import { fetchTasks, updateTaskStatusAsync, } from "../features/tasks/taskSlice"
 import Modal from "../components/ui/Modal";
 import TaskForm from "../features/tasks/components/TaskForm";
 import { fetchProjects } from "../features/projects/projectSlice";
+import { addNotification } from "../features/notifications/notificationSlice";
 
 const getTaskStatusStyle = (status) => {
     switch (status) {
@@ -137,12 +138,31 @@ const Calendar = () => {
         const newStatus = event.target.value;
 
         try {
+            const task = tasks.find(
+                (task) => task.id === taskId
+            );
+
             await dispatch(
                 updateTaskStatusAsync({
                     id: taskId,
                     status: newStatus,
                 })
             ).unwrap();
+
+            dispatch(
+                addNotification({
+                    id: `notification-${Date.now()}`,
+                    type: newStatus === "Completed"
+                        ? "task-completed"
+                        : "task-updated",
+                    title: newStatus === "Completed"
+                        ? "Task completed"
+                        : "Task status updated",
+                    message: task.title,
+                    read: false,
+                    createdAt: new Date().toISOString(),
+                })
+            );
         } catch (error) {
             console.error(
                 "Failed to update task status:",

@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { CheckCheck, BellOff, } from "lucide-react";
-import { selectRecentNotifications, selectUnreadNotificationCount, } from "../notificationSelectors";
-import { markAllNotificationAsRead, markNotificationAsRead } from "../notificationSlice";
+import { selectRecentNotifications, selectUnreadNotificationCount } from "../notificationSelectors";
+import { deleteNotification, markAllNotificationAsRead, markNotificationAsRead } from "../notificationSlice";
 import NotificationItem from "./NotificationItem";
 
 const NotificationPanel = ({ onClose }) => {
@@ -15,6 +15,10 @@ const NotificationPanel = ({ onClose }) => {
 
     const handleMarkAllAsRead = () => {
         dispatch(markAllNotificationAsRead());
+    };
+
+    const handleDelete = (id) => {
+        dispatch(deleteNotification(id));
     };
 
     return (
@@ -70,6 +74,7 @@ const NotificationPanel = ({ onClose }) => {
                             key={notification.id}
                             notification={notification}
                             onRead={handleMarkAsRead}
+                            onDelete={handleDelete}
                         />
                     ))}
                 </div>

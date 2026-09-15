@@ -1,6 +1,6 @@
 import { CheckCircle2, Circle, FileEdit, Trash2 } from "lucide-react";
 
-const NotificationItem = ({ notification, onRead }) => {
+const NotificationItem = ({ notification, onRead, onDelete }) => {
     const getIcon = () => {
         switch (notification.type) {
             case "task-created":
@@ -39,14 +39,36 @@ const NotificationItem = ({ notification, onRead }) => {
 
                 <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-3">
-                        <p
-                            className={`text-sm ${notification.read ? "font-medium text-slate-700" : "font-semibold text-slate-900"}`}
+                        <p className={`text-sm ${notification.read ? "font-medium text-slate-700" : "font-semibold text-slate-900"}`}
                         >
                             {notification.title}
                         </p>
-                        {!notification.read && (
-                            <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-600" />
-                        )}
+
+                        <div className="flex shrink-0 items-center gap-2">
+                            {!notification.read && (
+                                <span className="mt-1 h-2 w-2 rounded-full bg-blue-600" />
+                            )}
+
+                            <span
+                                role="button"
+                                tabIndex={0}
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    onDelete(notification.id);
+                                }}
+                                onKeyDown={(event) => {
+                                    if (event.key === "Enter" || event.key === " ") {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                        onDelete(notification.id);
+                                    }
+                                }}
+                                className="rounded-md p-1 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600"
+                                aria-label={`Delete ${notification.title}`}
+                            >
+                                <Trash2 size={14} />
+                            </span>
+                        </div>
                     </div>
                     <p className="mt-1 truncate text-sm text-slate-500">{notification.message}</p>
                     <p className="mt-1 text-xs text-slate-400">{formattedTime}</p>

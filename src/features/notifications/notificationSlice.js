@@ -1,8 +1,29 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const savedNotifications = localStorage.getItem("taskflow-notifications");
+
+let initialNotifications = [];
+
+try {
+    const parsedNotifications = savedNotifications
+        ? JSON.parse(savedNotifications)
+        : [];
+
+    initialNotifications = Array.isArray(parsedNotifications)
+        ? parsedNotifications
+        : Array.isArray(parsedNotifications.notifications)
+            ? parsedNotifications.notifications
+            : [];
+} catch (error) {
+    console.error(
+        "Failed to load notifications:",
+        error
+    );
+}
+
 const initialState = {
-    notifications: [],
-};
+    notifications: initialNotifications,
+}
 
 const notificationSlice = createSlice({
     name: "notifications",
@@ -30,5 +51,5 @@ const notificationSlice = createSlice({
     },
 });
 
-export const {addNotification, markNotificationAsRead, markAllNotificationAsRead, deleteNotification, clearNotifications} = notificationSlice.actions;
+export const { addNotification, markNotificationAsRead, markAllNotificationAsRead, deleteNotification, clearNotifications } = notificationSlice.actions;
 export default notificationSlice.reducer;

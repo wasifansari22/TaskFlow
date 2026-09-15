@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { CheckCheck, BellOff, } from "lucide-react";
 import { selectRecentNotifications, selectUnreadNotificationCount } from "../notificationSelectors";
-import { deleteNotification, markAllNotificationAsRead, markNotificationAsRead } from "../notificationSlice";
+import { clearNotifications, deleteNotification, markAllNotificationAsRead, markNotificationAsRead } from "../notificationSlice";
 import NotificationItem from "./NotificationItem";
 
 const NotificationPanel = ({ onClose }) => {
@@ -20,6 +20,14 @@ const NotificationPanel = ({ onClose }) => {
     const handleDelete = (id) => {
         dispatch(deleteNotification(id));
     };
+
+    const handleClearAll = () => {
+        const confirmed = window.confirm("Are you sure you want to delete all notifications?")
+        if (!confirmed) {
+            return;
+        }
+        dispatch(clearNotifications())
+    }
 
     return (
         <div className="fixed inset-x-4 top-16 z-50 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl sm:absolute sm:inset-x-auto sm:right-0 sm:top-12 sm:w-96">
@@ -41,12 +49,20 @@ const NotificationPanel = ({ onClose }) => {
                     <button
                         type="button"
                         onClick={handleMarkAllAsRead}
-                        className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-xs font-medium text-blue-600 transition hover:bg-blue-50"
+                        className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-xs font-medium text-blue-600 transition hover:bg-blue-50 cursor-pointer"
                     >
                         <CheckCheck size={15} />
                         Mark all read
                     </button>
                 )}
+                <button
+                    type="button"
+                    onClick={handleClearAll}
+                    disabled={notifications.length === 0}
+                    className="rounded-md px-2 py-1 text-xs font-medium text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
+                >
+                    Clear all
+                </button>
             </div>
 
             {/* Notifications */}

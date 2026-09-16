@@ -72,8 +72,8 @@ const Calendar = () => {
     }, [dispatch]);
 
     const selectedTasks = useSelector((state) => selectTasksByDueDate(state, selectedDate));
-
     const taskStatus = useSelector((state) => state.tasks.status);
+    const taskError = useSelector((state) => state.tasks.error);
 
     const month = currentDate.getMonth();
     const year = currentDate.getFullYear();
@@ -313,7 +313,9 @@ const Calendar = () => {
                                         <span
                                             className={`flex h-7 w-7 items-center justify-center rounded-full text-sm font-medium ${selectedDate === dateString
                                                 ? "bg-blue-600 text-white"
-                                                : "text-slate-700"
+                                                : dateString === todayString
+                                                    ? "border border-blue-600 text-blue-600"
+                                                    : "text-slate-700"
                                                 }`}
                                         >
                                             {day}
@@ -324,7 +326,7 @@ const Calendar = () => {
                                                 <>
                                                     {/* Desktop */}
                                                     <div className="mt-2 hidden space-y-1 sm:block">
-                                                        {tasksForDay.map((task) => (
+                                                        {tasksForDay.slice(0, 3).map((task) => (
                                                             <div
                                                                 key={task.id}
                                                                 className={`truncate rounded-md px-2 py-1 text-xs font-medium ${getTaskStatusStyle(
@@ -335,6 +337,12 @@ const Calendar = () => {
                                                                 {task.title}
                                                             </div>
                                                         ))}
+
+                                                        {tasksForDay.length > 3 && (
+                                                            <p className="px-1 text-[11px] font-medium text-slate-400">
+                                                                + {tasksForDay.length - 3} more
+                                                            </p>
+                                                        )}
                                                     </div>
 
                                                     {/* Mobile */}
@@ -414,90 +422,101 @@ const Calendar = () => {
                             Loading tasks...
                         </p>
                     </div>
-                ) : selectedTasks.length === 0 ? (
-                    <div className="mt-6 rounded-lg border border-dashed border-slate-200 bg-slate-50 p-6 text-center">
-                        <p className="text-sm font-medium text-slate-700">
-                            No tasks scheduled
+                ) : taskStatus === "failed" ? (
+                    <div className="mt-6 rounded-lg border border-dashed border-rose-200 bg-rose-50 p-6 text-center">
+                        <p className="text-sm font-medium text-rose-700">
+                            Unable to load tasks
                         </p>
 
-                        <p className="mt-1 text-xs text-slate-500">
-                            There are no tasks due on
-                            this date.
+                        <p className="mt-1 text-xs text-rose-600">
+                            {taskError || "Something went wrong while loading your tasks."}
                         </p>
                     </div>
-                ) : (
-                    <div className="mt-5 space-y-3">
-                        {selectedTasks.map(
-                            (task) => (
-                                <div
-                                    key={task.id}
-                                    onClick={() =>
-                                        setEditingTask(
-                                            task
-                                        )
-                                    }
-                                    className="cursor-pointer rounded-lg border border-slate-200 p-4 transition hover:border-blue-300 hover:bg-blue-50/30 hover:shadow-sm"
-                                >
-                                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                        <div className="min-w-0">
-                                            <h3
-                                                className={`font-medium ${task.status === "Completed"
-                                                    ? "text-slate-400 line-through"
-                                                    : "text-slate-900"
-                                                    }`}
-                                            >
-                                                {task.title}
-                                            </h3>
+                ) :
+                    selectedTasks.length === 0 ? (
+                        <div className="mt-6 rounded-lg border border-dashed border-slate-200 bg-slate-50 p-6 text-center">
+                            <p className="text-sm font-medium text-slate-700">
+                                No tasks scheduled
+                            </p>
 
-                                            <p className="mt-1 text-sm text-slate-500">
-                                                {task.description}
-                                            </p>
-                                        </div>
+                            <p className="mt-1 text-xs text-slate-500">
+                                There are no tasks due on
+                                this date.
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="mt-5 space-y-3">
+                            {selectedTasks.map(
+                                (task) => (
+                                    <div
+                                        key={task.id}
+                                        onClick={() =>
+                                            setEditingTask(
+                                                task
+                                            )
+                                        }
+                                        className="cursor-pointer rounded-lg border border-slate-200 p-4 transition hover:border-blue-300 hover:bg-blue-50/30 hover:shadow-sm"
+                                    >
+                                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                            <div className="min-w-0">
+                                                <h3
+                                                    className={`font-medium ${task.status === "Completed"
+                                                        ? "text-slate-400 line-through"
+                                                        : "text-slate-900"
+                                                        }`}
+                                                >
+                                                    {task.title}
+                                                </h3>
 
-                                        <div className="flex shrink-0 items-center gap-2">
-                                            <span
-                                                className={`rounded-full px-2.5 py-1 text-xs font-medium ${task.priority === "High"
-                                                    ? "bg-rose-50 text-rose-700"
-                                                    : task.priority === "Medium"
-                                                        ? "bg-amber-50 text-amber-700"
-                                                        : "bg-slate-100 text-slate-600"
-                                                    }`}
-                                            >
-                                                {task.priority}
-                                            </span>
+                                                <p className="mt-1 text-sm text-slate-500">
+                                                    {task.description}
+                                                </p>
+                                            </div>
 
-                                            <select
-                                                value={task.status}
-                                                onChange={(event) => {
-                                                    event.stopPropagation();
+                                            <div className="flex shrink-0 items-center gap-2">
+                                                <span
+                                                    className={`rounded-full px-2.5 py-1 text-xs font-medium ${task.priority === "High"
+                                                        ? "bg-rose-50 text-rose-700"
+                                                        : task.priority === "Medium"
+                                                            ? "bg-amber-50 text-amber-700"
+                                                            : "bg-slate-100 text-slate-600"
+                                                        }`}
+                                                >
+                                                    {task.priority}
+                                                </span>
 
-                                                    handleStatusChange(event, task.id);
-                                                }}
-                                                onClick={(event) =>
-                                                    event.stopPropagation()
-                                                }
-                                                className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                                                aria-label={`Change status for ${task.title}`}
-                                            >
-                                                <option value="Pending">
-                                                    Pending
-                                                </option>
+                                                <select
+                                                    value={task.status}
+                                                    onChange={(event) => {
+                                                        event.stopPropagation();
 
-                                                <option value="In Progress">
-                                                    In Progress
-                                                </option>
+                                                        handleStatusChange(event, task.id);
+                                                    }}
+                                                    onClick={(event) =>
+                                                        event.stopPropagation()
+                                                    }
+                                                    className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                                    aria-label={`Change status for ${task.title}`}
+                                                >
+                                                    <option value="Pending">
+                                                        Pending
+                                                    </option>
 
-                                                <option value="Completed">
-                                                    Completed
-                                                </option>
-                                            </select>
+                                                    <option value="In Progress">
+                                                        In Progress
+                                                    </option>
+
+                                                    <option value="Completed">
+                                                        Completed
+                                                    </option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            )
-                        )}
-                    </div>
-                )}
+                                )
+                            )}
+                        </div>
+                    )}
             </section>
 
             {/* Mobile Daily Tasks */}

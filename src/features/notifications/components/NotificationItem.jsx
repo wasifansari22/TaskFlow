@@ -1,5 +1,47 @@
 import { CheckCircle2, Circle, FileEdit, Trash2 } from "lucide-react";
 
+const formatRelativeTime = (createdAt) => {
+    const createdTime = new Date(createdAt).getTime();
+    const currentTime = Date.now();
+    const differenceInSeconds = Math.floor(
+        (currentTime - createdTime) / 1000
+    );
+
+    if (differenceInSeconds < 60) {
+        return "Just now";
+    }
+
+    const differenceInMinutes = Math.floor(differenceInSeconds / 60);
+
+    if (differenceInMinutes < 60) {
+        return `${differenceInMinutes} ${differenceInMinutes === 1 ? "minute" : "minutes"
+            } ago`;
+    }
+
+    const differenceInHours = Math.floor(differenceInMinutes / 60);
+
+    if (differenceInHours < 24) {
+        return `${differenceInHours} ${differenceInHours === 1 ? "hour" : "hours"
+            } ago`;
+    }
+
+    const differenceInDays = Math.floor(differenceInHours / 24);
+
+    if (differenceInDays === 1) {
+        return "Yesterday";
+    }
+
+    if (differenceInDays < 7) {
+        return `${differenceInDays} days ago`;
+    }
+
+    return new Date(createdAt).toLocaleDateString([], {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+    });
+};
+
 const NotificationItem = ({ notification, onRead, onDelete }) => {
     const getIcon = () => {
         switch (notification.type) {
@@ -20,20 +62,19 @@ const NotificationItem = ({ notification, onRead, onDelete }) => {
         }
     };
 
-    const formattedTime = new Date(notification.createdAt).toLocaleTimeString([], {
-        hour: "numeric",
-        minute: "2-digit",
-    });
+    const formattedTime = formatRelativeTime(notification.createdAt);
 
     return (
         <button
             type="button"
             onClick={() => onRead(notification.id)}
-            className={`w-full border-b border-slate-100 px-4 py-4 text-left transition hover:bg-slate-50 ${notification.read ? "bg-white" : "bg-blue-50/40"
+            className={`w-full border-b border-slate-100 px-4 py-4 text-left transition hover:bg-slate-50 ${notification.read
+                ? "bg-white"
+                : "border-l-2 border-l-blue-500 bg-blue-50/40"
                 }`}
         >
             <div className="flex gap-3">
-                <div className="mt-0 5 shrink-0">
+                <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-50">
                     {getIcon()}
                 </div>
 

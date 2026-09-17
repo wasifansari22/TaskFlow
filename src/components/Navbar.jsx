@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { NavLink, useNavigate } from "react-router";
+import { Bell } from "lucide-react";
 import { mainNavigation, secondaryNavigation } from "../constants/navigation";
 import { selectUnreadNotificationCount } from "../features/notifications/notificationSelectors";
 import NotificationPanel from "../features/notifications/components/NotificationPanel";
@@ -99,11 +100,15 @@ function Navbar() {
                                 setIsNotificationOpen((previous) => !previous)
                             }
                             className="relative rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
-                            aria-label="Notifications"
+                            aria-label={
+                                unreadCount > 0
+                                    ? `Notifications, ${unreadCount} unread`
+                                    : "Notifications"
+                            }
                             aria-expanded={isNotificationOpen}
                             aria-haspopup="dialog"
                         >
-                            <span className="text-lg">🔔</span>
+                            <Bell size={20} />
                             {unreadCount > 0 && (
                                 <span className="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-blue-600 px-1 text-[10px] font-bold text-white">
                                     {unreadCount > 9 ? "9+" : unreadCount}

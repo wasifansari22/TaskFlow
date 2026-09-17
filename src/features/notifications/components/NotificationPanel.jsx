@@ -1,12 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
 import { CheckCheck, BellOff, } from "lucide-react";
-import { selectRecentNotifications, selectUnreadNotificationCount } from "../notificationSelectors";
+import { selectAllNotifications, selectUnreadNotificationCount } from "../notificationSelectors";
 import { clearNotifications, deleteNotification, markAllNotificationAsRead, markNotificationAsRead } from "../notificationSlice";
 import NotificationItem from "./NotificationItem";
 
 const NotificationPanel = ({ onClose }) => {
     const dispatch = useDispatch();
-    const notifications = useSelector(selectRecentNotifications);
+    const notifications = useSelector(selectAllNotifications);
     const unreadCount = useSelector(selectUnreadNotificationCount);
 
     const handleMarkAsRead = (id) => {

@@ -33,7 +33,7 @@ const NotificationPanel = ({ onClose }) => {
         <div className="fixed inset-x-4 top-16 z-50 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl sm:absolute sm:inset-x-auto sm:right-0 sm:top-12 sm:w-96">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
-                <div>
+                <div className="min-w-0">
                     <h2 className="font-semibold text-slate-900">
                         Notifications
                     </h2>
@@ -45,29 +45,32 @@ const NotificationPanel = ({ onClose }) => {
                     </p>
                 </div>
 
-                {unreadCount > 0 && (
+                <div className="flex shrink-0 items-center gap-1">
+                    {unreadCount > 0 && (
+                        <button
+                            type="button"
+                            onClick={handleMarkAllAsRead}
+                            className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-xs font-medium text-blue-600 transition hover:bg-blue-50 cursor-pointer"
+                        >
+                            <CheckCheck size={15} />
+                            Mark all read
+                        </button>
+                    )}
+
                     <button
                         type="button"
-                        onClick={handleMarkAllAsRead}
-                        className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-xs font-medium text-blue-600 transition hover:bg-blue-50 cursor-pointer"
+                        onClick={handleClearAll}
+                        disabled={notifications.length === 0}
+                        className="rounded-lg px-2.5 py-2 text-xs font-medium text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
                     >
-                        <CheckCheck size={15} />
-                        Mark all read
+                        Clear all
                     </button>
-                )}
-                <button
-                    type="button"
-                    onClick={handleClearAll}
-                    disabled={notifications.length === 0}
-                    className="rounded-md px-2 py-1 text-xs font-medium text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
-                >
-                    Clear all
-                </button>
+                </div>
             </div>
 
             {/* Notifications */}
             {notifications.length === 0 ? (
-                <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
+                <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
                         <BellOff
                             size={21}
@@ -84,7 +87,7 @@ const NotificationPanel = ({ onClose }) => {
                     </p>
                 </div>
             ) : (
-                <div className="max-h-105 overflow-y-auto">
+                <div className="max-h-[min(28rem,calc(100vh-10rem))] overflow-y-auto">
                     {notifications.map((notification) => (
                         <NotificationItem
                             key={notification.id}

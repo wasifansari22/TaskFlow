@@ -75,6 +75,7 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
                     message: formData.title.trim(),
                     read: false,
                     createdAt: new Date().toISOString(),
+                    relatedTaskId: task.id,
                 })
             );
         } else {
@@ -87,7 +88,7 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
                 dueDate: formData.dueDate || "No due date",
                 projectId: formData.projectId || null,
             };
-            await dispatch(createTask(newTask)).unwrap();
+            const createdTask = await dispatch(createTask(newTask)).unwrap();
 
             // Notification
             dispatch(
@@ -98,6 +99,7 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
                     message: newTask.title,
                     read: false,
                     createdAt: new Date().toISOString(),
+                    relatedTaskId: createdTask.id,
                 })
             );
         }

@@ -161,6 +161,7 @@ const Calendar = () => {
                     message: task.title,
                     read: false,
                     createdAt: new Date().toISOString(),
+                    relatedTaskId: task.id,
                 })
             );
         } catch (error) {

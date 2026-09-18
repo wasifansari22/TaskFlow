@@ -23,6 +23,7 @@ const TaskCard = ({ task, onEdit }) => {
                     message: task.title,
                     read: false,
                     createdAt: new Date().toISOString(),
+                    relatedTaskId: task.id,
                 })
             );
         } catch (error) {

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { CheckCheck, BellOff, } from "lucide-react";
 import { selectAllNotifications, selectUnreadNotificationCount } from "../notificationSelectors";
@@ -8,6 +9,8 @@ import Modal from "../../../components/ui/Modal";
 
 const NotificationPanel = ({ onClose }) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const notifications = useSelector(selectAllNotifications);
     const unreadCount = useSelector(selectUnreadNotificationCount);
     const [isClearModalOpen, setIsClearModalOpen] = useState(false);
@@ -31,6 +34,17 @@ const NotificationPanel = ({ onClose }) => {
 
     const handleClearAll = () => {
         setIsClearModalOpen(true);
+    };
+
+    const handleNotificationAction = (notification) => {
+        if (notification.relatedTaskId) {
+            onClose();
+            navigate("/tasks", {
+                state: {
+                    openTaskId: notification.relatedTaskId,
+                },
+            });
+        }
     };
 
     return (
@@ -99,6 +113,7 @@ const NotificationPanel = ({ onClose }) => {
                                 notification={notification}
                                 onRead={handleMarkAsRead}
                                 onDelete={handleDelete}
+                                onAction={handleNotificationAction}
                             />
                         ))}
                     </div>

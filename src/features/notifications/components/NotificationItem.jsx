@@ -42,7 +42,7 @@ const formatRelativeTime = (createdAt) => {
     });
 };
 
-const NotificationItem = ({ notification, onRead, onDelete }) => {
+const NotificationItem = ({ notification, onRead, onDelete, onAction }) => {
     const getIcon = () => {
         switch (notification.type) {
             case "task-created":
@@ -67,7 +67,13 @@ const NotificationItem = ({ notification, onRead, onDelete }) => {
     return (
         <button
             type="button"
-            onClick={() => onRead(notification.id)}
+            onClick={() => {
+                onRead(notification.id);
+
+                if (onAction) {
+                    onAction(notification);
+                }
+            }}
             className={`w-full border-b border-slate-100 px-4 py-4 text-left transition hover:bg-slate-50 ${notification.read
                 ? "bg-white"
                 : "border-l-2 border-l-blue-500 bg-blue-50/40"

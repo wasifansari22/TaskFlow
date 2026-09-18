@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate, useLocation } from "react-router";
 import { CheckCircle2, Clock3, ListTodo, Plus, Search, } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAllTasks, selectCompletedTasks, selectInProgressTasks, selectPendingTasks, } from "../features/tasks/taskSelectors";
@@ -10,6 +11,9 @@ import { fetchProjects } from "../features/projects/projectSlice";
 
 const Tasks = () => {
     const dispatch = useDispatch();
+    const location = useLocation();
+    const navigate = useNavigate();
+
     useEffect(() => {
         dispatch(fetchTasks());
         dispatch(fetchProjects());
@@ -27,6 +31,27 @@ const Tasks = () => {
     const completedTasks = useSelector(selectCompletedTasks);
     const inProgressTasks = useSelector(selectInProgressTasks);
     const pendingTasks = useSelector(selectPendingTasks);
+
+    useEffect(() => {
+        const openTaskId = location.state?.openTaskId;
+
+        if (!openTaskId || taskStatus !== "succeeded") {
+            return;
+        }
+
+        const taskToOpen = tasks.find(
+            (task) => Number(task.id) === Number(openTaskId)
+        );
+
+        if (taskToOpen) {
+            setEditingTask(taskToOpen);
+        }
+
+        navigate(location.pathname, {
+            replace: true,
+            state: null,
+        });
+    }, [location, navigate, taskStatus, tasks]);
 
     const stats = useMemo(
         () => [

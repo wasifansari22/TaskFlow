@@ -162,6 +162,7 @@ const Calendar = () => {
                     read: false,
                     createdAt: new Date().toISOString(),
                     relatedTaskId: task.id,
+                    relatedProjectId: null,
                 })
             );
         } catch (error) {

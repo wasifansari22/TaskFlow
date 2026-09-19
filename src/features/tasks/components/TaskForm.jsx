@@ -76,6 +76,7 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
                     read: false,
                     createdAt: new Date().toISOString(),
                     relatedTaskId: task.id,
+                    relatedProjectId: null,
                 })
             );
         } else {
@@ -100,6 +101,7 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
                     read: false,
                     createdAt: new Date().toISOString(),
                     relatedTaskId: createdTask.id,
+                    relatedProjectId: null,
                 })
             );
         }

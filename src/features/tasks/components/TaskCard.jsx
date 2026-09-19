@@ -24,6 +24,7 @@ const TaskCard = ({ task, onEdit }) => {
                     read: false,
                     createdAt: new Date().toISOString(),
                     relatedTaskId: task.id,
+                    relatedProjectId: null,
                 })
             );
         } catch (error) {
@@ -41,6 +42,8 @@ const TaskCard = ({ task, onEdit }) => {
                 message: task.title,
                 read: false,
                 createdAt: new Date().toISOString(),
+                relatedTaskId: null,
+                relatedProjectId: null,
             })
         );
     };

@@ -39,9 +39,22 @@ const NotificationPanel = ({ onClose }) => {
     const handleNotificationAction = (notification) => {
         if (notification.relatedTaskId) {
             onClose();
+
             navigate("/tasks", {
                 state: {
                     openTaskId: notification.relatedTaskId,
+                },
+            });
+
+            return;
+        }
+
+        if (notification.relatedProjectId) {
+            onClose();
+
+            navigate("/projects", {
+                state: {
+                    openProjectId: notification.relatedProjectId,
                 },
             });
         }

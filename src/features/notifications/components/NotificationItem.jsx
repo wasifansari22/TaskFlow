@@ -46,7 +46,7 @@ const NotificationItem = ({ notification, onRead, onDelete, onAction }) => {
     const getIcon = () => {
         switch (notification.type) {
             case "task-created":
-                return <Circle size={18} className="text-blue-500" />
+                return <Circle size={18} className="text-blue-500" />;
 
             case "task-updated":
                 return <FileEdit size={18} className="text-amber-500" />;

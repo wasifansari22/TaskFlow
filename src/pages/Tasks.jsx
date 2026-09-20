@@ -240,17 +240,12 @@ const Tasks = () => {
                     filter={filter}
                     search={search}
                     onEdit={setEditingTask}
+                    onClearFilters={() => {
+                        setFilter("All");
+                        setSearch("");
+                    }}
                 />
             )}
-
-            {/* Task List */}
-            {/* <section>
-                <TaskList
-                    filter={filter}
-                    search={search}
-                    onEdit={setEditingTask}
-                />
-            </section> */}
         </div>
     );
 }

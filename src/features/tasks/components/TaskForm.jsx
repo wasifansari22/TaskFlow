@@ -38,6 +38,8 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
             }
     );
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const handleChange = (event) => {
         const { name, value } = event.target;
 
@@ -49,63 +51,79 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if (!formData.title.trim()) {
+
+        if (!formData.title.trim() || isSubmitting) {
             return;
         }
 
-        if (task) {
-            await dispatch(
-                updateTaskAsync({
-                    id: task.id,
-                    updates: {
-                        title: formData.title.trim(),
-                        description: formData.description.trim() || "No description provided.",
-                        priority: formData.priority,
-                        status: task.status,
-                        dueDate: formData.dueDate || "No due date",
-                        projectId: formData.projectId || null,
-                    },
-                })
-            ).unwrap();
-            dispatch(
-                addNotification({
-                    id: `notification-${Date.now()}`,
-                    type: "task-updated",
-                    title: "Task updated",
-                    message: formData.title.trim(),
-                    read: false,
-                    createdAt: new Date().toISOString(),
-                    relatedTaskId: task.id,
-                    relatedProjectId: null,
-                })
-            );
-        } else {
-            const newTask = {
-                // id: `task-${Date.now()}`,
-                title: formData.title.trim(),
-                description: formData.description.trim() || "No description provided.",
-                priority: formData.priority,
-                status: defaultStatus,
-                dueDate: formData.dueDate || "No due date",
-                projectId: formData.projectId || null,
-            };
-            const createdTask = await dispatch(createTask(newTask)).unwrap();
+        setIsSubmitting(true);
 
-            // Notification
-            dispatch(
-                addNotification({
-                    id: `notification-${Date.now()}`,
-                    type: "task-created",
-                    title: "Task created",
-                    message: newTask.title,
-                    read: false,
-                    createdAt: new Date().toISOString(),
-                    relatedTaskId: createdTask.id,
-                    relatedProjectId: null,
-                })
-            );
+        try {
+            if (task) {
+                await dispatch(
+                    updateTaskAsync({
+                        id: task.id,
+                        updates: {
+                            title: formData.title.trim(),
+                            description:
+                                formData.description.trim() ||
+                                "No description provided.",
+                            priority: formData.priority,
+                            status: task.status,
+                            dueDate: formData.dueDate || "No due date",
+                            projectId: formData.projectId || null,
+                        },
+                    })
+                ).unwrap();
+
+                dispatch(
+                    addNotification({
+                        id: `notification-${Date.now()}`,
+                        type: "task-updated",
+                        title: "Task updated",
+                        message: formData.title.trim(),
+                        read: false,
+                        createdAt: new Date().toISOString(),
+                        relatedTaskId: task.id,
+                        relatedProjectId: null,
+                    })
+                );
+            } else {
+                const newTask = {
+                    title: formData.title.trim(),
+                    description:
+                        formData.description.trim() ||
+                        "No description provided.",
+                    priority: formData.priority,
+                    status: defaultStatus,
+                    dueDate: formData.dueDate || "No due date",
+                    projectId: formData.projectId || null,
+                };
+
+                const createdTask = await dispatch(
+                    createTask(newTask)
+                ).unwrap();
+
+                dispatch(
+                    addNotification({
+                        id: `notification-${Date.now()}`,
+                        type: "task-created",
+                        title: "Task created",
+                        message: newTask.title,
+                        read: false,
+                        createdAt: new Date().toISOString(),
+                        relatedTaskId: createdTask.id,
+                        relatedProjectId: null,
+                    })
+                );
+            }
+
+            onClose();
+        } catch (error) {
+            console.error("Task save failed:", error);
+        } finally {
+            setIsSubmitting(false);
         }
-        onClose();
     };
 
     return (
@@ -221,16 +239,24 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
                 <button
                     type="button"
                     onClick={onClose}
-                    className="rounded-lg px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100"
+                    disabled={isSubmitting}
+                    className="rounded-lg px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                     Cancel
                 </button>
 
                 <button
                     type="submit"
-                    className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
+                    disabled={isSubmitting}
+                    className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                    {task ? "Save Changes" : "Create Task"}
+                    {isSubmitting
+                        ? task
+                            ? "Saving..."
+                            : "Creating..."
+                        : task
+                            ? "Save Changes"
+                            : "Create Task"}
                 </button>
             </div>
         </form>

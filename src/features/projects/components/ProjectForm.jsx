@@ -25,6 +25,8 @@ function ProjectForm({ project = null, onClose }) {
             : initialForm
     );
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const handleChange = (event) => {
         const { name, value } = event.target;
 
@@ -37,9 +39,11 @@ function ProjectForm({ project = null, onClose }) {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (!formData.name.trim()) {
+        if (!formData.name.trim() || isSubmitting) {
             return;
         }
+
+        setIsSubmitting(true);
 
         try {
             if (project) {
@@ -76,6 +80,8 @@ function ProjectForm({ project = null, onClose }) {
             onClose();
         } catch (error) {
             console.error("Project save failed:", error);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -163,16 +169,24 @@ function ProjectForm({ project = null, onClose }) {
                 <button
                     type="button"
                     onClick={onClose}
-                    className="rounded-lg px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100"
+                    disabled={isSubmitting}
+                    className="rounded-lg px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                     Cancel
                 </button>
 
                 <button
                     type="submit"
-                    className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
+                    disabled={isSubmitting}
+                    className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                    {project ? "Save Changes" : "Create Project"}
+                    {isSubmitting
+                        ? project
+                            ? "Saving..."
+                            : "Creating..."
+                        : project
+                            ? "Save Changes"
+                            : "Create Project"}
                 </button>
             </div>
         </form>

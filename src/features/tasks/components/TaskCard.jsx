@@ -1,10 +1,14 @@
 import { CalendarDays, CheckCircle2, Circle, Clock3, Trash2, Pencil } from "lucide-react";
 import { useDispatch } from "react-redux";
+import { useState } from "react";
 import { deleteTaskAsync, updateTaskStatusAsync } from "../taskSlice";
 import { addNotification } from "../../notifications/notificationSlice";
+import Modal from "../../../components/ui/Modal";
 
 const TaskCard = ({ task, onEdit }) => {
     const dispatch = useDispatch();
+
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const handleStatusChange = async (event) => {
         const newStatus = event.target.value;
@@ -33,19 +37,26 @@ const TaskCard = ({ task, onEdit }) => {
     };
 
     const handleDelete = async () => {
-        await dispatch(deleteTaskAsync(task.id)).unwrap();
-        dispatch(
-            addNotification({
-                id: `notification-${Date.now()}`,
-                type: "task-deleted",
-                title: "Task deleted",
-                message: task.title,
-                read: false,
-                createdAt: new Date().toISOString(),
-                relatedTaskId: null,
-                relatedProjectId: null,
-            })
-        );
+        try {
+            await dispatch(deleteTaskAsync(task.id)).unwrap();
+
+            dispatch(
+                addNotification({
+                    id: `notification-${Date.now()}`,
+                    type: "task-deleted",
+                    title: "Task deleted",
+                    message: task.title,
+                    read: false,
+                    createdAt: new Date().toISOString(),
+                    relatedTaskId: null,
+                    relatedProjectId: null,
+                })
+            );
+
+            setShowDeleteModal(false);
+        } catch (error) {
+            console.error("Task deletion failed:", error);
+        }
     };
 
     const statusIcon =
@@ -136,7 +147,7 @@ const TaskCard = ({ task, onEdit }) => {
 
                             <button
                                 type="button"
-                                onClick={handleDelete}
+                                onClick={() => setShowDeleteModal(true)}
                                 className="rounded-lg p-2 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600"
                                 aria-label={`Delete ${task.title}`}
                             >
@@ -147,6 +158,38 @@ const TaskCard = ({ task, onEdit }) => {
 
                 </div>
             </div>
+
+            <Modal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                title="Delete task?"
+            >
+                <p className="text-sm text-slate-600">
+                    Are you sure you want to delete{" "}
+                    <span className="font-medium text-slate-900">
+                        "{task.title}"
+                    </span>
+                    ? This action cannot be undone.
+                </p>
+
+                <div className="mt-6 flex justify-end gap-3">
+                    <button
+                        type="button"
+                        onClick={() => setShowDeleteModal(false)}
+                        className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={handleDelete}
+                        className="rounded-lg bg-rose-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-rose-700"
+                    >
+                        Delete
+                    </button>
+                </div>
+            </Modal>
         </div>
     );
 }

@@ -1,12 +1,17 @@
 import { CalendarDays, FolderKanban, Trash2, Pencil } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
 import { deleteProjectAsync, updateProjectAsync } from "../projectSlice";
 import { selectProjectProgress } from "../projectSelectors";
 import { selectTasksByProject } from "../../tasks/taskSelectors";
 import { Link } from "react-router";
+import Modal from "../../../components/ui/Modal";
 
 const ProjectCard = ({ project, onEdit }) => {
     const dispatch = useDispatch();
+
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
     const progress = useSelector((state) =>
         selectProjectProgress(state, project.id)
     );
@@ -38,6 +43,7 @@ const ProjectCard = ({ project, onEdit }) => {
     const handleDelete = async () => {
         try {
             await dispatch(deleteProjectAsync(project.id)).unwrap();
+            setShowDeleteModal(false);
         } catch (error) {
             console.error("Project deletion failed:", error);
         }
@@ -58,7 +64,7 @@ const ProjectCard = ({ project, onEdit }) => {
                 : "bg-blue-50 text-blue-700";
 
     return (
-        <article className="group rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+        <article className="group rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
             {/* Header */}
             <div className="flex items-start justify-between gap-4">
                 <Link
@@ -150,7 +156,7 @@ const ProjectCard = ({ project, onEdit }) => {
                         type="button"
                         onClick={(event) => {
                             event.stopPropagation();
-                            handleDelete();
+                            setShowDeleteModal(true);
                         }}
                         className="rounded-lg p-2 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600"
                         aria-label={`Delete ${project.name}`}
@@ -159,6 +165,38 @@ const ProjectCard = ({ project, onEdit }) => {
                     </button>
                 </div>
             </div>
+
+            <Modal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                title="Delete project?"
+            >
+                <p className="text-sm text-slate-600">
+                    Are you sure you want to delete{" "}
+                    <span className="font-medium text-slate-900">
+                        "{project.name}"
+                    </span>
+                    ? This action cannot be undone.
+                </p>
+
+                <div className="mt-6 flex justify-end gap-3">
+                    <button
+                        type="button"
+                        onClick={() => setShowDeleteModal(false)}
+                        className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={handleDelete}
+                        className="rounded-lg bg-rose-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-rose-700"
+                    >
+                        Delete
+                    </button>
+                </div>
+            </Modal>
         </article>
     );
 }

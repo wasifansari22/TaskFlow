@@ -1,5 +1,21 @@
 const API_BASE_URL = "http://127.0.0.1:8000/api";
 
+const getApiErrorMessage = (data, fallbackMessage) => {
+    if (data?.detail) {
+        return data.detail;
+    }
+
+    const firstFieldError = Object.values(data || {}).find(
+        (value) => Array.isArray(value) && value.length > 0
+    );
+
+    if (firstFieldError) {
+        return firstFieldError[0];
+    }
+
+    return fallbackMessage;
+};
+
 const getAuthHeaders = () => {
     const token = localStorage.getItem("taskflow-token");
 
@@ -22,7 +38,7 @@ export const getProjects = async () => {
 
     if (!response.ok) {
         throw new Error(
-            data.detail || "Failed to fetch projects."
+            getApiErrorMessage(data, "Failed to fetch projects.")
         );
     }
 
@@ -43,7 +59,7 @@ export const createProjectRequest = async (projectData) => {
 
     if (!response.ok) {
         throw new Error(
-            data.detail || "Failed to create project."
+            getApiErrorMessage(data, "Failed to create project.")
         );
     }
 
@@ -67,7 +83,7 @@ export const updateProjectRequest = async (
 
     if (!response.ok) {
         throw new Error(
-            data.detail || "Failed to update project."
+            getApiErrorMessage(data, "Failed to update project.")
         );
     }
 
@@ -93,7 +109,7 @@ export const deleteProjectRequest = async (id) => {
         }
 
         throw new Error(
-            data.detail || "Failed to delete project."
+            getApiErrorMessage(data, "Failed to delete project.")
         );
     }
 

@@ -26,6 +26,7 @@ function ProjectForm({ project = null, onClose }) {
     );
 
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [validationError, setValidationError] = useState("");
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -34,15 +35,25 @@ function ProjectForm({ project = null, onClose }) {
             ...previous,
             [name]: value,
         }));
+
+        if (name === "name" && value.trim()) {
+            setValidationError("");
+        }
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (!formData.name.trim() || isSubmitting) {
+        if (isSubmitting) {
             return;
         }
 
+        if (!formData.name.trim()) {
+            setValidationError("Project name is required.")
+            return;
+        }
+
+        setValidationError("");
         setIsSubmitting(true);
 
         try {
@@ -80,6 +91,9 @@ function ProjectForm({ project = null, onClose }) {
             onClose();
         } catch (error) {
             console.error("Project save failed:", error);
+            setValidationError(
+                error.message || "Unable to save project. Please try again."
+            );
         } finally {
             setIsSubmitting(false);
         }
@@ -103,6 +117,11 @@ function ProjectForm({ project = null, onClose }) {
                     placeholder="e.g. E-commerce Website"
                     className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
+                {validationError && (
+                    <p className="mt-1.5 text-xs text-red-600" role="alert">
+                        {validationError}
+                    </p>
+                )}
             </div>
 
             <div>

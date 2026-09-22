@@ -1,5 +1,22 @@
 const API_BASE_URL = "http://127.0.0.1:8000/api";
 
+
+const getApiErrorMessage = (data, fallbackMessage) => {
+    if (data.detail) {
+        return data.detail;
+    }
+
+    const firstFieldError = Object.values(data || {}).find(
+        (value) => Array.isArray(value) && value.length > 0
+    );
+
+    if (firstFieldError) {
+        return firstFieldError[0];
+    }
+
+    return fallbackMessage;
+}
+
 const mapTaskFromBackend = (task) => ({
     ...task,
     dueDate: task.due_date || "No due date",
@@ -21,7 +38,7 @@ export const getTasks = async () => {
 
     if (!response.ok) {
         throw new Error(
-            data.detail || "Failed to fetch tasks."
+            getApiErrorMessage(data, "Failed to fetch task.")
         );
     }
 
@@ -44,7 +61,7 @@ export const createTaskRequest = async (taskData) => {
 
     if (!response.ok) {
         throw new Error(
-            data.detail || "Failed to create task."
+            getApiErrorMessage(data, "Failed to create task.")
         );
     }
 
@@ -67,7 +84,7 @@ export const updateTaskRequest = async (id, taskData) => {
 
     if (!response.ok) {
         throw new Error(
-            data.detail || "Failed to update task."
+            getApiErrorMessage(data, "Failed to update task.")
         );
     }
 
@@ -97,7 +114,7 @@ export const deleteTaskRequest = async (id) => {
         }
 
         throw new Error(
-            data.detail || "Failed to delete task."
+            getApiErrorMessage(data, "Failed to delete task.")
         );
     }
 

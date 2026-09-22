@@ -39,6 +39,7 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
     );
 
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [validationError, setValidationError] = useState("");
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -47,15 +48,25 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
             ...previous,
             [name]: value,
         }));
+
+        if (name === "title" && value.trim()) {
+            setValidationError("");
+        }
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (!formData.title.trim() || isSubmitting) {
+        if (isSubmitting) {
             return;
         }
 
+        if (!formData.title.trim()) {
+            setValidationError("Task title is required.")
+            return;
+        }
+
+        setValidationError("");
         setIsSubmitting(true);
 
         try {
@@ -65,9 +76,7 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
                         id: task.id,
                         updates: {
                             title: formData.title.trim(),
-                            description:
-                                formData.description.trim() ||
-                                "No description provided.",
+                            description: formData.description.trim() || "No description provided.",
                             priority: formData.priority,
                             status: task.status,
                             dueDate: formData.dueDate || "No due date",
@@ -121,6 +130,9 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
             onClose();
         } catch (error) {
             console.error("Task save failed:", error);
+            setValidationError(
+                error.message || "Unable to save task. Please try again."
+            );
         } finally {
             setIsSubmitting(false);
         }
@@ -144,6 +156,11 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
                     placeholder="e.g. Build authentication flow"
                     className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
+                {validationError && (
+                    <p className="mt-1.5 text-xs text-red-600" role="alert">
+                        {validationError}
+                    </p>
+                )}
             </div>
 
             <div>

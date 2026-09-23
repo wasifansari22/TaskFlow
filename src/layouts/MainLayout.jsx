@@ -1,17 +1,33 @@
-import { Outlet } from "react-router";
+import { useEffect, useRef } from "react";
+import { Outlet, useLocation } from "react-router";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 
 function MainLayout() {
+    const location = useLocation();
+    const mainRef = useRef(null);
+
+    useEffect(() => {
+        mainRef.current?.scrollTo({
+            top: 0,
+            behavior: "auto",
+        });
+    }, [location.pathname]);
+
     return (
-        <div className="flex min-h-screen bg-slate-50">
+        <div className="flex h-screen overflow-hidden bg-slate-50">
             <Sidebar />
 
-            <div className="flex min-w-0 flex-1 flex-col">
+            <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
                 <Navbar />
 
-                <main className="flex-1 overflow-auto p-6 lg:p-8">
-                    <Outlet />
+                <main
+                    ref={mainRef}
+                    className="min-h-0 flex-1 overflow-auto p-6 lg:p-8"
+                >
+                    <div key={location.pathname} className="page-enter">
+                        <Outlet />
+                    </div>
                 </main>
             </div>
         </div>

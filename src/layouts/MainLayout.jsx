@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { Outlet, useLocation } from "react-router";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
+import BackToTopButton from "../components/ui/BackToTopButton";
 
 function MainLayout() {
     const location = useLocation();
@@ -29,6 +30,8 @@ function MainLayout() {
                         <Outlet />
                     </div>
                 </main>
+
+                <BackToTopButton scrollContainerRef={mainRef} />
             </div>
         </div>
     );

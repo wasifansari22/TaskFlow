@@ -1,10 +1,14 @@
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 import { mainNavigation, secondaryNavigation, } from "../constants/navigation";
 
 function Sidebar() {
     return (
         <aside className="hidden w-64 shrink-0 border-r border-slate-200 bg-white lg:flex lg:flex-col">
-            <div className="flex h-20 items-center border-b border-slate-200 px-5">
+            <Link
+                to="/"
+                className="flex h-20 items-center border-b border-slate-200 px-5"
+                aria-label="Go to Dashboard"
+            >
                 <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-lg font-bold text-white shadow-sm">
                         T
@@ -20,7 +24,7 @@ function Sidebar() {
                         </p>
                     </div>
                 </div>
-            </div>
+            </Link>
 
             <nav className="flex-1 space-y-1 p-4">
                 {mainNavigation.map((item) => (

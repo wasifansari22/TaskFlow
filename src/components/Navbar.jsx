@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { NavLink, useNavigate } from "react-router";
+import { Link, NavLink, useNavigate } from "react-router";
 import { Bell } from "lucide-react";
 import { mainNavigation, secondaryNavigation } from "../constants/navigation";
 import { selectUnreadNotificationCount } from "../features/notifications/notificationSelectors";
@@ -183,6 +183,27 @@ function Navbar() {
 
             {isMenuOpen && (
                 <div className="border-b border-slate-200 bg-white p-4 lg:hidden">
+                    <Link
+                        to="/"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="mb-4 flex items-center gap-3 rounded-lg px-2 py-2"
+                        aria-label="Go to Dashboard"
+                    >
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-lg font-bold text-white shadow-sm">
+                            T
+                        </div>
+
+                        <div>
+                            <p className="text-base font-bold leading-tight tracking-tight text-slate-900">
+                                TaskFlow
+                            </p>
+
+                            <p className="mt-0.5 text-xs text-slate-500">
+                                Work smarter
+                            </p>
+                        </div>
+                    </Link>
+
                     <nav className="space-y-1">
                         {navigation.map((item) => (
                             <NavLink

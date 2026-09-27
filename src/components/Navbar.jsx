@@ -8,10 +8,7 @@ import NotificationPanel from "../features/notifications/components/Notification
 import { logout } from "../features/auth/authSlice";
 import { selectCurrentUser } from "../features/auth/authSelectors";
 
-const navigation = [
-    ...mainNavigation,
-    ...secondaryNavigation,
-];
+const navigation = [...mainNavigation, ...secondaryNavigation];
 
 function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,7 +22,9 @@ function Navbar() {
     const currentUser = useSelector(selectCurrentUser);
 
     const notificationRef = useRef(null);
+    const notificationButtonRef = useRef(null);
     const profileRef = useRef(null);
+    const profileButtonRef = useRef(null);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -35,31 +34,54 @@ function Navbar() {
             ) {
                 setIsNotificationOpen(false);
             }
+
             if (
-                profileRef.current && !profileRef.current.contains(event.target)
+                profileRef.current &&
+                !profileRef.current.contains(event.target)
             ) {
                 setIsProfileOpen(false);
             }
         };
+
         document.addEventListener("mousedown", handleClickOutside);
+
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
 
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key !== "Escape") return;
+
+            if (isNotificationOpen) {
+                setIsNotificationOpen(false);
+                notificationButtonRef.current?.focus();
+                return;
+            }
+
+            if (isProfileOpen) {
+                setIsProfileOpen(false);
+                profileButtonRef.current?.focus();
+            }
+        };
+
+        document.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [isNotificationOpen, isProfileOpen]);
+
     const handleLogout = () => {
         dispatch(logout());
         setIsProfileOpen(false);
         navigate("/login", { replace: true });
-    }
+    };
 
-    // Lock body scroll while it's open
     useEffect(() => {
-        if (isNotificationOpen) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "";
-        }
+        document.body.style.overflow = isNotificationOpen ? "hidden" : "";
+
         return () => {
             document.body.style.overflow = "";
         };
@@ -85,7 +107,6 @@ function Navbar() {
                         <h2 className="text-sm font-semibold text-slate-900">
                             Workspace
                         </h2>
-
                         <p className="hidden text-xs text-slate-500 sm:block">
                             Personal workspace
                         </p>
@@ -95,6 +116,7 @@ function Navbar() {
                 <div className="flex items-center gap-3 sm:gap-4">
                     <div ref={notificationRef} className="relative">
                         <button
+                            ref={notificationButtonRef}
                             type="button"
                             onClick={() =>
                                 setIsNotificationOpen((previous) => !previous)
@@ -109,6 +131,7 @@ function Navbar() {
                             aria-haspopup="dialog"
                         >
                             <Bell size={20} />
+
                             {unreadCount > 0 && (
                                 <span className="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-blue-600 px-1 text-[10px] font-bold text-white">
                                     {unreadCount > 9 ? "9+" : unreadCount}
@@ -118,14 +141,17 @@ function Navbar() {
 
                         {isNotificationOpen && (
                             <NotificationPanel
-                                onClose={() => setIsNotificationOpen(false)}
+                                onClose={() => {
+                                    setIsNotificationOpen(false);
+                                    notificationButtonRef.current?.focus();
+                                }}
                             />
                         )}
                     </div>
 
-                    {/* Navbar Profile Section */}
                     <div ref={profileRef} className="relative">
                         <button
+                            ref={profileButtonRef}
                             type="button"
                             onClick={() =>
                                 setIsProfileOpen((previous) => !previous)
@@ -133,6 +159,7 @@ function Navbar() {
                             className="flex items-center gap-3 rounded-lg p-1.5 transition hover:bg-slate-50"
                             aria-label="Open profile menu"
                             aria-expanded={isProfileOpen}
+                            aria-haspopup="menu"
                         >
                             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
                                 {currentUser?.name
@@ -157,7 +184,10 @@ function Navbar() {
                         </button>
 
                         {isProfileOpen && (
-                            <div className="absolute right-0 top-full z-50 mt-2 w-64 rounded-xl border border-slate-200 bg-white p-2 shadow-lg">
+                            <div
+                                role="menu"
+                                className="absolute right-0 top-full z-50 mt-2 w-64 rounded-xl border border-slate-200 bg-white p-2 shadow-lg"
+                            >
                                 <div className="border-b border-slate-100 px-3 py-3">
                                     <p className="text-sm font-semibold text-slate-900">
                                         {currentUser?.name || "User"}
@@ -170,6 +200,7 @@ function Navbar() {
 
                                 <button
                                     type="button"
+                                    role="menuitem"
                                     onClick={handleLogout}
                                     className="mt-1 w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium text-rose-600 transition hover:bg-rose-50"
                                 >

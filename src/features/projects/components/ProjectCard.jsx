@@ -6,9 +6,12 @@ import { selectProjectProgress } from "../projectSelectors";
 import { selectTasksByProject } from "../../tasks/taskSelectors";
 import { Link } from "react-router";
 import Modal from "../../../components/ui/Modal";
+import { addNotification } from "../../notifications/notificationSlice";
+import { selectNotifications } from "../../settings/settingsSelectors";
 
 const ProjectCard = ({ project, onEdit }) => {
     const dispatch = useDispatch();
+    const notifications = useSelector(selectNotifications);
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -21,6 +24,10 @@ const ProjectCard = ({ project, onEdit }) => {
 
     const handleStatusChange = async (event) => {
         const newStatus = event.target.value;
+
+        if (newStatus === project.status) {
+            return;
+        }
 
         try {
             await dispatch(
@@ -35,6 +42,21 @@ const ProjectCard = ({ project, onEdit }) => {
                     },
                 })
             ).unwrap();
+
+            if (notifications.projectUpdates) {
+                dispatch(
+                    addNotification({
+                        id: `project-status-${project.id}-${Date.now()}`,
+                        type: "project-status-changed",
+                        title: "Project status changed",
+                        message: `${project.name} is now ${newStatus}.`,
+                        read: false,
+                        createdAt: new Date().toISOString(),
+                        relatedTaskId: null,
+                        relatedProjectId: project.id,
+                    })
+                );
+            }
         } catch (error) {
             console.error("Project status update failed:", error);
         }
@@ -43,6 +65,22 @@ const ProjectCard = ({ project, onEdit }) => {
     const handleDelete = async () => {
         try {
             await dispatch(deleteProjectAsync(project.id)).unwrap();
+
+            if (notifications.projectUpdates) {
+                dispatch(
+                    addNotification({
+                        id: `project-deleted-${project.id}-${Date.now()}`,
+                        type: "project-deleted",
+                        title: "Project deleted",
+                        message: `${project.name} was deleted.`,
+                        read: false,
+                        createdAt: new Date().toISOString(),
+                        relatedTaskId: null,
+                        relatedProjectId: project.id,
+                    })
+                );
+            }
+
             setShowDeleteModal(false);
         } catch (error) {
             console.error("Project deletion failed:", error);

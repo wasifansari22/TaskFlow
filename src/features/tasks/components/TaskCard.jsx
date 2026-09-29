@@ -2,7 +2,7 @@ import { CalendarDays, CheckCircle2, Circle, Clock3, Trash2, Pencil } from "luci
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { deleteTaskAsync, updateTaskStatusAsync } from "../taskSlice";
-import { addNotification } from "../../notifications/notificationSlice";
+import { addNotification, deleteNotification } from "../../notifications/notificationSlice";
 import Modal from "../../../components/ui/Modal";
 
 const TaskCard = ({ task, onEdit }) => {
@@ -12,6 +12,7 @@ const TaskCard = ({ task, onEdit }) => {
 
     const handleStatusChange = async (event) => {
         const newStatus = event.target.value;
+
         try {
             await dispatch(
                 updateTaskStatusAsync({
@@ -19,6 +20,17 @@ const TaskCard = ({ task, onEdit }) => {
                     status: newStatus,
                 })
             ).unwrap();
+
+            // Remove the deadline reminder when the task is completed
+            if (
+                newStatus === "Completed" && task.dueDate && task.dueDate !== "No due date") {
+                dispatch(
+                    deleteNotification(
+                        `deadline-reminder-${task.id}-${task.dueDate}`
+                    )
+                );
+            }
+
             dispatch(
                 addNotification({
                     id: `notification-${Date.now()}`,

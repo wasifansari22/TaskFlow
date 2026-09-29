@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createProjectAsync, updateProjectAsync } from "../projectSlice";
+import { addNotification } from "../../notifications/notificationSlice";
+import { selectNotifications } from "../../settings/settingsSelectors";
 
 const initialForm = {
     name: "",
@@ -11,6 +13,7 @@ const initialForm = {
 
 function ProjectForm({ project = null, onClose }) {
     const dispatch = useDispatch();
+    const notifications = useSelector(selectNotifications);
     const [formData, setFormData] = useState(
         project
             ? {
@@ -58,7 +61,7 @@ function ProjectForm({ project = null, onClose }) {
 
         try {
             if (project) {
-                await dispatch(
+                const updatedProject = await dispatch(
                     updateProjectAsync({
                         id: project.id,
                         updates: {
@@ -73,8 +76,23 @@ function ProjectForm({ project = null, onClose }) {
                         },
                     })
                 ).unwrap();
+
+                if (notifications.projectUpdates) {
+                    dispatch(
+                        addNotification({
+                            id: `project-updated-${updatedProject.id}-${Date.now()}`,
+                            type: "project-updated",
+                            title: "Project updated",
+                            message: updatedProject.name,
+                            read: false,
+                            createdAt: new Date().toISOString(),
+                            relatedTaskId: null,
+                            relatedProjectId: updatedProject.id,
+                        })
+                    );
+                }
             } else {
-                await dispatch(
+                const createdProject = await dispatch(
                     createProjectAsync({
                         name: formData.name.trim(),
                         description:
@@ -86,6 +104,21 @@ function ProjectForm({ project = null, onClose }) {
                             formData.dueDate || "No due date",
                     })
                 ).unwrap();
+
+                if (notifications.projectUpdates) {
+                    dispatch(
+                        addNotification({
+                            id: `project-created-${createdProject.id}-${Date.now()}`,
+                            type: "project-created",
+                            title: "Project created",
+                            message: createdProject.name,
+                            read: false,
+                            createdAt: new Date().toISOString(),
+                            relatedTaskId: null,
+                            relatedProjectId: createdProject.id,
+                        })
+                    );
+                }
             }
 
             onClose();

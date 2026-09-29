@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createTask, updateTaskAsync } from "../taskSlice";
 import { selectAllProjects } from "../../projects/projectSelectors";
-import { addNotification } from "../../notifications/notificationSlice";
-import { selectDefaultPriority, selectDefaultStatus } from "../../settings/settingsSelectors";
+import { addNotification, deleteNotification, } from "../../notifications/notificationSlice";
+import { selectAllNotifications } from "../../notifications/notificationSelectors";
+import { selectDefaultPriority, selectDefaultStatus, selectNotifications, } from "../../settings/settingsSelectors";
 
 const initialForm = {
     title: "",
@@ -18,6 +19,8 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
     const projects = useSelector(selectAllProjects);
     const defaultPriority = useSelector(selectDefaultPriority);
     const defaultStatus = useSelector(selectDefaultStatus);
+    const notifications = useSelector(selectNotifications);
+    const allNotifications = useSelector(selectAllNotifications);
 
     const [formData, setFormData] = useState(
         task
@@ -54,6 +57,63 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
         }
     };
 
+    // Deadline helper
+    const createDeadlineReminder = (taskId, taskTitle, dueDate) => {
+        if (!notifications.deadlineReminders) {
+            return;
+        }
+
+        if (!dueDate || dueDate === "No due date") {
+            return;
+        }
+
+        const due = new Date(`${dueDate}T00:00:00`);
+        const today = new Date();
+
+        due.setHours(0, 0, 0, 0);
+        today.setHours(0, 0, 0, 0);
+
+        const difference = Math.round(
+            (due - today) / (1000 * 60 * 60 * 24)
+        );
+
+        if (difference < 0) {
+            return;
+        }
+
+        const reminderId = `deadline-reminder-${taskId}-${dueDate}`;
+        const alreadyExists = allNotifications.some(
+            (notification) => notification.id === reminderId
+        );
+
+        if (alreadyExists) {
+            return;
+        }
+
+        let deadlineMessage;
+
+        if (difference === 0) {
+            deadlineMessage = `${taskTitle} is due today.`;
+        } else if (difference === 1) {
+            deadlineMessage = `${taskTitle} is due tomorrow.`;
+        } else {
+            deadlineMessage = `${taskTitle} is due in ${difference} days.`;
+        }
+
+        dispatch(
+            addNotification({
+                id: reminderId,
+                type: "deadline-reminder",
+                title: "Upcoming deadline",
+                message: deadlineMessage,
+                read: false,
+                createdAt: new Date().toISOString(),
+                relatedTaskId: taskId,
+                relatedProjectId: null,
+            })
+        );
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -71,6 +131,21 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
 
         try {
             if (task) {
+                // Users can change a deadline. So to remember the old deadline
+                const oldDueDate =
+                    task.dueDate === "No due date"
+                        ? ""
+                        : task.dueDate || "";
+
+                const newDueDate = formData.dueDate || "";
+
+                if (oldDueDate && oldDueDate !== newDueDate) {
+                    dispatch(
+                        deleteNotification(
+                            `deadline-reminder-${task.id}-${oldDueDate}`
+                        )
+                    );
+                }
                 await dispatch(
                     updateTaskAsync({
                         id: task.id,
@@ -97,12 +172,17 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
                         relatedProjectId: null,
                     })
                 );
+                if (newDueDate && task.status !== "Completed") {
+                    createDeadlineReminder(
+                        task.id,
+                        formData.title.trim(),
+                        newDueDate
+                    );
+                }
             } else {
                 const newTask = {
                     title: formData.title.trim(),
-                    description:
-                        formData.description.trim() ||
-                        "No description provided.",
+                    description: formData.description.trim() || "No description provided.",
                     priority: formData.priority,
                     status: defaultStatus,
                     dueDate: formData.dueDate || "No due date",
@@ -124,6 +204,11 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
                         relatedTaskId: createdTask.id,
                         relatedProjectId: null,
                     })
+                );
+                createDeadlineReminder(
+                    createdTask.id,
+                    newTask.title,
+                    newTask.dueDate
                 );
             }
 

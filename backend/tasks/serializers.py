@@ -21,3 +21,10 @@ class TaskSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
+
+    def validate_project(self, project):
+        request = self.context.get("request")
+        if request and project and project.owner != request.user:
+            raise serializers.ValidationError(
+                "You can only assign tasks to your own projects.")
+        return project

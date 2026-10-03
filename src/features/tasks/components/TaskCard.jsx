@@ -1,12 +1,15 @@
 import { CalendarDays, CheckCircle2, Circle, Clock3, Trash2, Pencil } from "lucide-react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { deleteTaskAsync, updateTaskStatusAsync } from "../taskSlice";
 import { addNotification, deleteNotification } from "../../notifications/notificationSlice";
+import { selectNotifications } from "../../settings/settingsSelectors";
 import Modal from "../../../components/ui/Modal";
 
 const TaskCard = ({ task, onEdit }) => {
     const dispatch = useDispatch();
+
+    const notifications = useSelector(selectNotifications);
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -31,18 +34,20 @@ const TaskCard = ({ task, onEdit }) => {
                 );
             }
 
-            dispatch(
-                addNotification({
-                    id: `notification-${Date.now()}`,
-                    type: newStatus === "Completed" ? "task-completed" : "task-updated",
-                    title: newStatus === "Completed" ? "Task completed" : "Task status updated",
-                    message: task.title,
-                    read: false,
-                    createdAt: new Date().toISOString(),
-                    relatedTaskId: task.id,
-                    relatedProjectId: null,
-                })
-            );
+            if (notifications.taskUpdates) {
+                dispatch(
+                    addNotification({
+                        id: `notification-${Date.now()}`,
+                        type: newStatus === "Completed" ? "task-completed" : "task-updated",
+                        title: newStatus === "Completed" ? "Task completed" : "Task status updated",
+                        message: task.title,
+                        read: false,
+                        createdAt: new Date().toISOString(),
+                        relatedTaskId: task.id,
+                        relatedProjectId: null,
+                    })
+                );
+            }
         } catch (error) {
             console.error("Failed to update task status:", error);
         }

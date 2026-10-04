@@ -6,7 +6,8 @@ import { fetchTasks, updateTaskStatusAsync, } from "../features/tasks/taskSlice"
 import Modal from "../components/ui/Modal";
 import TaskForm from "../features/tasks/components/TaskForm";
 import { fetchProjects } from "../features/projects/projectSlice";
-import { addNotification } from "../features/notifications/notificationSlice";
+import { addNotification, deleteNotification } from "../features/notifications/notificationSlice";
+import { selectNotifications } from "../features/settings/settingsSelectors";
 
 const getTaskStatusStyle = (status) => {
     switch (status) {
@@ -25,6 +26,8 @@ const getTaskStatusStyle = (status) => {
 const Calendar = () => {
     const today = new Date();
     const dispatch = useDispatch();
+
+    const notifications = useSelector(selectNotifications);
 
     const tasks = useSelector((state) => state.tasks.tasks);
 
@@ -149,22 +152,32 @@ const Calendar = () => {
                 })
             ).unwrap();
 
-            dispatch(
-                addNotification({
-                    id: `notification-${Date.now()}`,
-                    type: newStatus === "Completed"
-                        ? "task-completed"
-                        : "task-updated",
-                    title: newStatus === "Completed"
-                        ? "Task completed"
-                        : "Task status updated",
-                    message: task.title,
-                    read: false,
-                    createdAt: new Date().toISOString(),
-                    relatedTaskId: task.id,
-                    relatedProjectId: null,
-                })
-            );
+            // Remove the deadline reminder when the task is completed
+            if (
+                newStatus === "Completed" && task.dueDate && task.dueDate !== "No due date"
+            ) {
+                dispatch(
+                    deleteNotification(
+                        `deadline-reminder-${task.id}-${task.dueDate}`
+                    )
+                );
+            }
+
+            // Task notification depends only on taskUpdates setting.
+            if (notifications.taskUpdates) {
+                dispatch(
+                    addNotification({
+                        id: `notification-${Date.now()}`,
+                        type: newStatus === "Completed" ? "task-completed" : "task-updated",
+                        title: newStatus === "Completed" ? "Task completed" : "Task status updated",
+                        message: task.title,
+                        read: false,
+                        createdAt: new Date().toISOString(),
+                        relatedTaskId: task.id,
+                        relatedProjectId: null,
+                    })
+                );
+            }
         } catch (error) {
             console.error(
                 "Failed to update task status:",

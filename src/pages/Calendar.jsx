@@ -660,6 +660,8 @@ const Calendar = () => {
                     setShowTaskForm(false)
                 }
                 title="Create New Task"
+                closeOnOverlayClick={false}
+                closeOnEscape={false}
             >
                 <TaskForm
                     initialDueDate={selectedDate}
@@ -676,6 +678,8 @@ const Calendar = () => {
                     setEditingTask(null)
                 }
                 title="Edit Task"
+                closeOnOverlayClick={false}
+                closeOnEscape={false}
             >
                 <TaskForm
                     task={editingTask}

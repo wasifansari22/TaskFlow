@@ -166,6 +166,8 @@ const Tasks = () => {
                     setEditingTask(null);
                 }}
                 title={editingTask ? "Edit Task" : "Create New Task"}
+                closeOnOverlayClick={false}
+                closeOnEscape={false}
             >
                 <TaskForm
                     task={editingTask}

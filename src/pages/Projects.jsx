@@ -143,6 +143,8 @@ const Projects = () => {
                         ? "Edit Project"
                         : "Create New Project"
                 }
+                closeOnOverlayClick={false}
+                closeOnEscape={false}
             >
                 <ProjectForm
                     project={editingProject}

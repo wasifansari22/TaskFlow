@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { X } from "lucide-react";
 
-const Modal = ({ isOpen, onClose, title, children }) => {
+const Modal = ({ isOpen, onClose, title, children, closeOnOverlayClick = true, closeOnEscape = true }) => {
     const modalRef = useRef(null);
     const previousFocusRef = useRef(null);
 
@@ -24,7 +24,9 @@ const Modal = ({ isOpen, onClose, title, children }) => {
 
         const handleKeyDown = (event) => {
             if (event.key === "Escape") {
-                onClose();
+                if (closeOnEscape) {
+                    onClose();
+                }
                 return;
             }
 
@@ -81,7 +83,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
     if (!isOpen) return null;
 
     const handleOverlayClick = (event) => {
-        if (event.target === event.currentTarget) {
+        if (closeOnOverlayClick && event.target === event.currentTarget) {
             onClose();
         }
     };

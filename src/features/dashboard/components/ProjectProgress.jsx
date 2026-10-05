@@ -56,7 +56,11 @@ const ProjectProgress = () => {
                 ) : (
                     <div className="space-y-6">
                         {projects.slice(0, 4).map((project) => (
-                            <div key={project.id}>
+                            <Link
+                                key={project.id}
+                                to="/projects"
+                                className="block rounded-lg p-2 -m-2 transition hover:bg-slate-50"
+                            >
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <p className="text-sm font-medium text-slate-900">
@@ -81,7 +85,7 @@ const ProjectProgress = () => {
                                         }}
                                     />
                                 </div>
-                            </div>
+                            </Link>
                         ))}
                     </div>
                 )}

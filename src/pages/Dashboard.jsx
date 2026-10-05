@@ -83,10 +83,14 @@ const Dashboard = () => {
                     {/* Statistics */}
                     <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
                         {dashboardStats.map((stat) => {
-                            const destination =
-                                stat.title === "Active Projects"
-                                    ? "/projects"
-                                    : "/tasks";
+                            const destinationMap = {
+                                "Total Tasks": "/tasks?status=All",
+                                "Pending": "/tasks?status=Pending",
+                                "In Progress": "/tasks?status=In%20Progress",
+                                "Completed": "/tasks?status=Completed",
+                                "Active Projects": "/projects",
+                            };
+                            const destination = destinationMap[stat.title] || "/tasks";
 
                             return (
                                 <StatCard

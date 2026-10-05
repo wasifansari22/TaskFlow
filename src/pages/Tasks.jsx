@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { use, useEffect, useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { CheckCircle2, Clock3, ListTodo, Plus, Search, } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -52,6 +52,13 @@ const Tasks = () => {
             state: null,
         });
     }, [location, navigate, taskStatus, tasks]);
+
+    useEffect(() => {
+        const status = new URLSearchParams(location.search).get("status");
+        if (status && ["All", "Pending", "In Progress", "Completed"].includes(status)) {
+            setFilter(status);
+        }
+    }, [location.search]);
 
     const stats = useMemo(
         () => [

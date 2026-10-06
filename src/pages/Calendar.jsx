@@ -62,6 +62,8 @@ const Calendar = () => {
         )
     );
 
+    const [viewMode, setViewMode] = useState("month");
+
     const [showTaskForm, setShowTaskForm] = useState(false);
 
     const [showMobileTasks, setShowMobileTasks] = useState(false);
@@ -88,6 +90,27 @@ const Calendar = () => {
         }
     );
 
+    // Week Calculation
+    const weekStart = new Date(currentDate);
+    weekStart.setDate(currentDate.getDate() - currentDate.getDay());
+
+    const weekDays = Array.from({ length: 7 }, (_, index) => {
+        const date = new Date(weekStart);
+        date.setDate(weekStart.getDate() + index);
+        return date;
+    });
+
+    const weekEnd = weekDays[6];
+
+    const weekLabel = `${weekStart.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+    })} - ${weekEnd.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+    })}`;
+
     const firstDayOfMonth = new Date(year, month, 1).getDay();
 
     const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -107,9 +130,17 @@ const Calendar = () => {
         }
     );
 
+    // Functions
     const goToPreviousMonth = () => {
-        const previousMonth = new Date(year, month - 1, 1);
+        if (viewMode == "week") {
+            const previousWeek = new Date(currentDate);
+            previousWeek.setDate(previousWeek.getDate() - 7);
+            setCurrentDate(previousWeek);
+            setSelectedDate(previousWeek.toISOString().split("T")[0]);
+            return;
+        }
 
+        const previousMonth = new Date(year, month - 1, 1);
         setCurrentDate(previousMonth);
         setSelectedDate(
             `${previousMonth.getFullYear()}-${String(previousMonth.getMonth() + 1).padStart(2, "0")}-01`
@@ -117,8 +148,15 @@ const Calendar = () => {
     };
 
     const goToNextMonth = () => {
-        const nextMonth = new Date(year, month + 1, 1);
+        if (viewMode == "week") {
+            const nextWeek = new Date(currentDate);
+            nextWeek.setDate(nextWeek.getDate() + 7);
+            setCurrentDate(nextWeek);
+            setSelectedDate(nextWeek.toISOString().split("T")[0]);
+            return;
+        }
 
+        const nextMonth = new Date(year, month + 1, 1);
         setCurrentDate(nextMonth);
         setSelectedDate(
             `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, "0")}-01`
@@ -126,6 +164,11 @@ const Calendar = () => {
     };
 
     const goToToday = () => {
+        if (viewMode == "week") {
+            setCurrentDate(new Date(today));
+            setSelectedDate(todayString);
+            return;
+        }
         setCurrentDate(
             new Date(
                 today.getFullYear(),
@@ -133,7 +176,6 @@ const Calendar = () => {
                 1
             )
         );
-
         setSelectedDate(todayString);
     };
 
@@ -210,11 +252,37 @@ const Calendar = () => {
                 <div className="flex flex-col gap-4 border-b border-slate-200 p-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h2 className="text-xl font-semibold text-slate-900">
-                            {monthName} {year}
+                            {viewMode === "month"
+                                ? `${monthName} ${year}`
+                                : weekLabel}
                         </h2>
                     </div>
 
                     <div className="flex items-center gap-2">
+                        <div className="flex rounded-lg bg-slate-100 p-1">
+                            <button
+                                type="button"
+                                onClick={() => setViewMode("month")}
+                                className={`rounded-md px-3 py-1.5 text-sm font-medium transition ${viewMode === "month"
+                                    ? "bg-white text-blue-600 shadow-sm"
+                                    : "text-slate-500 hover:text-slate-900"
+                                    }`}
+                            >
+                                Month
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() => setViewMode("week")}
+                                className={`rounded-md px-3 py-1.5 text-sm font-medium transition ${viewMode === "week"
+                                    ? "bg-white text-blue-600 shadow-sm"
+                                    : "text-slate-500 hover:text-slate-900"
+                                    }`}
+                            >
+                                Week
+                            </button>
+                        </div>
+
                         <button
                             type="button"
                             onClick={goToToday}
@@ -286,118 +354,183 @@ const Calendar = () => {
                 </div>
 
                 {/* Days */}
-                <div className="grid grid-cols-7">
-                    {days.map((day, index) => {
-                        const dateString = day
-                            ? `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
-                            : null;
+                {viewMode == "month" ? (
+                    <div className="grid grid-cols-7">
+                        {days.map((day, index) => {
+                            const dateString = day
+                                ? `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+                                : null;
 
-                        const tasksForDay = dateString
-                            ? tasksByDate[dateString] || []
-                            : [];
+                            const tasksForDay = dateString
+                                ? tasksByDate[dateString] || []
+                                : [];
 
-                        return (
-                            <div
-                                key={index}
-                                onClick={() => {
-                                    if (!day) {
-                                        return;
-                                    }
+                            return (
+                                <div
+                                    key={index}
+                                    onClick={() => {
+                                        if (!day) {
+                                            return;
+                                        }
 
-                                    setSelectedDate(
-                                        dateString
-                                    );
-
-                                    if (
-                                        window.matchMedia(
-                                            "(max-width: 639px)"
-                                        ).matches
-                                    ) {
-                                        setShowMobileTasks(
-                                            true
+                                        setSelectedDate(
+                                            dateString
                                         );
-                                    }
-                                }}
-                                className={`min-h-24 border-b border-r border-slate-100 p-1.5 sm:min-h-28 sm:p-3 ${day
-                                    ? "cursor-pointer transition hover:bg-slate-50"
-                                    : ""
-                                    }`}
-                            >
-                                {day && (
-                                    <>
+
+                                        if (
+                                            window.matchMedia(
+                                                "(max-width: 639px)"
+                                            ).matches
+                                        ) {
+                                            setShowMobileTasks(
+                                                true
+                                            );
+                                        }
+                                    }}
+                                    className={`min-h-24 border-b border-r border-slate-100 p-1.5 sm:min-h-28 sm:p-3 ${day
+                                        ? "cursor-pointer transition hover:bg-slate-50"
+                                        : ""
+                                        }`}
+                                >
+                                    {day && (
+                                        <>
+                                            <span
+                                                className={`flex h-7 w-7 items-center justify-center rounded-full text-sm font-medium ${selectedDate === dateString
+                                                    ? "bg-blue-600 text-white"
+                                                    : dateString === todayString
+                                                        ? "border border-blue-600 text-blue-600"
+                                                        : "text-slate-700"
+                                                    }`}
+                                            >
+                                                {day}
+                                            </span>
+
+                                            {tasksForDay.length >
+                                                0 && (
+                                                    <>
+                                                        {/* Desktop */}
+                                                        <div className="mt-2 hidden space-y-1 sm:block">
+                                                            {tasksForDay.slice(0, 3).map((task) => (
+                                                                <div
+                                                                    key={task.id}
+                                                                    className={`truncate rounded-md px-2 py-1 text-xs font-medium ${getTaskStatusStyle(
+                                                                        task.status
+                                                                    )}`}
+                                                                    title={`${task.title} — ${task.status}`}
+                                                                >
+                                                                    {task.title}
+                                                                </div>
+                                                            ))}
+
+                                                            {tasksForDay.length > 3 && (
+                                                                <p className="px-1 text-[11px] font-medium text-slate-400">
+                                                                    + {tasksForDay.length - 3} more
+                                                                </p>
+                                                            )}
+                                                        </div>
+
+                                                        {/* Mobile */}
+                                                        <div className="mt-2 flex flex-col items-center gap-1 sm:hidden">
+                                                            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600">
+                                                                {tasksForDay.length}
+                                                            </span>
+
+                                                            <div
+                                                                className="flex h-1.5 w-8 overflow-hidden rounded-full bg-slate-100"
+                                                                title={`${tasksForDay.length} task${tasksForDay.length > 1 ? "s" : ""
+                                                                    }`}
+                                                            >
+                                                                {tasksForDay.some(
+                                                                    (task) => task.status === "Pending"
+                                                                ) && (
+                                                                        <span className="flex-1 bg-blue-500" />
+                                                                    )}
+
+                                                                {tasksForDay.some(
+                                                                    (task) => task.status === "In Progress"
+                                                                ) && (
+                                                                        <span className="flex-1 bg-amber-500" />
+                                                                    )}
+
+                                                                {tasksForDay.some(
+                                                                    (task) => task.status === "Completed"
+                                                                ) && (
+                                                                        <span className="flex-1 bg-emerald-500" />
+                                                                    )}
+                                                            </div>
+                                                        </div>
+                                                    </>
+                                                )}
+                                        </>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-7">
+                        {weekDays.map((date) => {
+                            const dateString =
+                                date.toISOString().split("T")[0];
+
+                            const tasksForDay =
+                                tasksByDate[dateString] || [];
+
+                            return (
+                                <div
+                                    key={dateString}
+                                    onClick={() => {
+                                        setSelectedDate(dateString);
+
+                                        if (
+                                            window.matchMedia(
+                                                "(max-width: 639px)"
+                                            ).matches
+                                        ) {
+                                            setShowMobileTasks(true);
+                                        }
+                                    }}
+                                    className="min-h-40 cursor-pointer border-b border-r border-slate-100 p-2 transition hover:bg-slate-50 sm:p-3"
+                                >
+                                    <div className="flex items-center justify-between">
                                         <span
-                                            className={`flex h-7 w-7 items-center justify-center rounded-full text-sm font-medium ${selectedDate === dateString
-                                                ? "bg-blue-600 text-white"
-                                                : dateString === todayString
-                                                    ? "border border-blue-600 text-blue-600"
+                                            className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium ${dateString === todayString
+                                                ? "border border-blue-600 text-blue-600"
+                                                : selectedDate === dateString
+                                                    ? "bg-blue-600 text-white"
                                                     : "text-slate-700"
                                                 }`}
                                         >
-                                            {day}
+                                            {date.getDate()}
                                         </span>
+                                    </div>
 
-                                        {tasksForDay.length >
-                                            0 && (
-                                                <>
-                                                    {/* Desktop */}
-                                                    <div className="mt-2 hidden space-y-1 sm:block">
-                                                        {tasksForDay.slice(0, 3).map((task) => (
-                                                            <div
-                                                                key={task.id}
-                                                                className={`truncate rounded-md px-2 py-1 text-xs font-medium ${getTaskStatusStyle(
-                                                                    task.status
-                                                                )}`}
-                                                                title={`${task.title} — ${task.status}`}
-                                                            >
-                                                                {task.title}
-                                                            </div>
-                                                        ))}
+                                    {tasksForDay.length > 0 && (
+                                        <div className="mt-3 space-y-1">
+                                            {tasksForDay.map((task) => (
+                                                <div
+                                                    key={task.id}
+                                                    className={`truncate rounded-md px-2 py-1.5 text-xs font-medium ${getTaskStatusStyle(
+                                                        task.status
+                                                    )}`}
+                                                    title={`${task.title} — ${task.status}`}
+                                                >
+                                                    {task.title}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
 
-                                                        {tasksForDay.length > 3 && (
-                                                            <p className="px-1 text-[11px] font-medium text-slate-400">
-                                                                + {tasksForDay.length - 3} more
-                                                            </p>
-                                                        )}
-                                                    </div>
-
-                                                    {/* Mobile */}
-                                                    <div className="mt-2 flex flex-col items-center gap-1 sm:hidden">
-                                                        <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600">
-                                                            {tasksForDay.length}
-                                                        </span>
-
-                                                        <div
-                                                            className="flex h-1.5 w-8 overflow-hidden rounded-full bg-slate-100"
-                                                            title={`${tasksForDay.length} task${tasksForDay.length > 1 ? "s" : ""
-                                                                }`}
-                                                        >
-                                                            {tasksForDay.some(
-                                                                (task) => task.status === "Pending"
-                                                            ) && (
-                                                                    <span className="flex-1 bg-blue-500" />
-                                                                )}
-
-                                                            {tasksForDay.some(
-                                                                (task) => task.status === "In Progress"
-                                                            ) && (
-                                                                    <span className="flex-1 bg-amber-500" />
-                                                                )}
-
-                                                            {tasksForDay.some(
-                                                                (task) => task.status === "Completed"
-                                                            ) && (
-                                                                    <span className="flex-1 bg-emerald-500" />
-                                                                )}
-                                                        </div>
-                                                    </div>
-                                                </>
-                                            )}
-                                    </>
-                                )}
-                            </div>
-                        );
-                    })}
-                </div>
+                                    {tasksForDay.length === 0 && (
+                                        <p className="mt-3 text-xs text-slate-400">
+                                            No tasks
+                                        </p>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
             </section>
 
             {/* Daily Task Panel */}

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { ChevronLeft, ChevronRight, } from "lucide-react";
 import { selectTasksByDueDate, } from "../features/tasks/taskSelectors";
-import { fetchTasks, updateTaskStatusAsync, } from "../features/tasks/taskSlice";
+import { fetchTasks, updateTaskStatusAsync, updateTaskAsync } from "../features/tasks/taskSlice";
 import Modal from "../components/ui/Modal";
 import TaskForm from "../features/tasks/components/TaskForm";
 import { fetchProjects } from "../features/projects/projectSlice";
@@ -69,6 +69,9 @@ const Calendar = () => {
     const [showMobileTasks, setShowMobileTasks] = useState(false);
 
     const [editingTask, setEditingTask] = useState(null);
+
+    const [draggedTaskId, setDraggedTaskId] = useState(null);
+    const [dragOverDate, setDragOverDate] = useState(null);
 
     // Load the latest tasks when Calendar opens
     useEffect(() => {
@@ -228,6 +231,165 @@ const Calendar = () => {
         }
     };
 
+    // Drag and Drop Handlers
+    const handleDragStart = (event, taskId) => {
+        setDraggedTaskId(taskId);
+
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData(
+            "text/plain",
+            String(taskId)
+        );
+    };
+
+    const handleDragEnd = () => {
+        setDraggedTaskId(null);
+        setDragOverDate(null);
+    };
+
+    const handleDragOver = (event, dateString) => {
+        event.preventDefault();
+
+        event.dataTransfer.dropEffect = "move";
+
+        if (dragOverDate !== dateString) {
+            setDragOverDate(dateString);
+        }
+    };
+
+    const handleDragLeave = (event) => {
+        if (event.currentTarget === event.target) {
+            setDragOverDate(null);
+        }
+    };
+
+    const handleDrop = async (event, dateString) => {
+        event.preventDefault();
+
+        const taskId = Number(
+            event.dataTransfer.getData("text/plain")
+        );
+
+        setDragOverDate(null);
+        setDraggedTaskId(null);
+
+        if (!taskId || !dateString) {
+            return;
+        }
+
+        const task = tasks.find(
+            (item) => Number(item.id) === taskId
+        );
+
+        if (!task) {
+            return;
+        }
+
+        const oldDueDate =
+            task.dueDate === "No due date"
+                ? ""
+                : task.dueDate || "";
+
+        if (oldDueDate === dateString) {
+            return;
+        }
+
+        try {
+            if (oldDueDate) {
+                dispatch(
+                    deleteNotification(
+                        `deadline-reminder-${task.id}-${oldDueDate}`
+                    )
+                );
+            }
+
+            await dispatch(
+                updateTaskAsync({
+                    id: task.id,
+                    updates: {
+                        title: task.title,
+                        description:
+                            task.description ||
+                            "No description provided.",
+                        priority: task.priority,
+                        status: task.status,
+                        dueDate: dateString,
+                        projectId: task.projectId || null,
+                    },
+                })
+            ).unwrap();
+
+            if (
+                notifications.deadlineReminders &&
+                task.status !== "Completed"
+            ) {
+                const due = new Date(
+                    `${dateString}T00:00:00`
+                );
+
+                const todayDate = new Date();
+
+                due.setHours(0, 0, 0, 0);
+                todayDate.setHours(0, 0, 0, 0);
+
+                const difference = Math.round(
+                    (due - todayDate) /
+                    (1000 * 60 * 60 * 24)
+                );
+
+                if (difference >= 0) {
+                    let deadlineMessage;
+
+                    if (difference === 0) {
+                        deadlineMessage =
+                            `${task.title} is due today.`;
+                    } else if (difference === 1) {
+                        deadlineMessage =
+                            `${task.title} is due tomorrow.`;
+                    } else {
+                        deadlineMessage =
+                            `${task.title} is due in ${difference} days.`;
+                    }
+
+                    dispatch(
+                        addNotification({
+                            id: `deadline-reminder-${task.id}-${dateString}`,
+                            type: "deadline-reminder",
+                            title: "Upcoming deadline",
+                            message: deadlineMessage,
+                            read: false,
+                            createdAt:
+                                new Date().toISOString(),
+                            relatedTaskId: task.id,
+                            relatedProjectId: null,
+                        })
+                    );
+                }
+            }
+
+            if (notifications.taskUpdates) {
+                dispatch(
+                    addNotification({
+                        id: `notification-${Date.now()}`,
+                        type: "task-updated",
+                        title: "Task updated",
+                        message: `${task.title} due date changed.`,
+                        read: false,
+                        createdAt:
+                            new Date().toISOString(),
+                        relatedTaskId: task.id,
+                        relatedProjectId: null,
+                    })
+                );
+            }
+        } catch (error) {
+            console.error(
+                "Failed to move task:",
+                error
+            );
+        }
+    };
+
     return (
         <div className="mx-auto w-full max-w-7xl space-y-8">
             {/* Header */}
@@ -241,8 +403,7 @@ const Calendar = () => {
                 </h1>
 
                 <p className="mt-2 text-slate-600">
-                    View your schedule and upcoming
-                    deadlines.
+                    View your schedule and upcoming deadlines.
                 </p>
             </section>
 
@@ -373,23 +534,29 @@ const Calendar = () => {
                                             return;
                                         }
 
-                                        setSelectedDate(
-                                            dateString
-                                        );
+                                        setSelectedDate(dateString);
 
-                                        if (
-                                            window.matchMedia(
-                                                "(max-width: 639px)"
-                                            ).matches
-                                        ) {
-                                            setShowMobileTasks(
-                                                true
-                                            );
+                                        if (window.matchMedia("(max-width: 639px)").matches) {
+                                            setShowMobileTasks(true);
                                         }
                                     }}
-                                    className={`min-h-24 border-b border-r border-slate-100 p-1.5 sm:min-h-28 sm:p-3 ${day
-                                        ? "cursor-pointer transition hover:bg-slate-50"
+                                    onDragOver={(event) => {
+                                        if (day) {
+                                            handleDragOver(event, dateString);
+                                        }
+                                    }}
+                                    onDragLeave={handleDragLeave}
+                                    onDrop={(event) => {
+                                        if (day) {
+                                            handleDrop(event, dateString);
+                                        }
+                                    }}
+                                    className={`min-h-24 border-b border-r border-slate-100 p-1.5 transition sm:min-h-28 sm:p-3 ${day
+                                        ? "cursor-pointer hover:bg-slate-50"
                                         : ""
+                                        } ${day && dragOverDate === dateString
+                                            ? "bg-blue-50 ring-2 ring-inset ring-blue-300"
+                                            : ""
                                         }`}
                                 >
                                     {day && (
@@ -413,9 +580,14 @@ const Calendar = () => {
                                                             {tasksForDay.slice(0, 3).map((task) => (
                                                                 <div
                                                                     key={task.id}
-                                                                    className={`truncate rounded-md px-2 py-1 text-xs font-medium ${getTaskStatusStyle(
-                                                                        task.status
-                                                                    )}`}
+                                                                    draggable
+                                                                    onDragStart={(event) =>
+                                                                        handleDragStart(event, task.id)
+                                                                    }
+                                                                    onDragEnd={handleDragEnd}
+                                                                    className={`truncate rounded-md px-2 py-1 text-xs font-medium ${getTaskStatusStyle(task.status)
+                                                                        } ${draggedTaskId === task.id ? "cursor-grabbing opacity-50" : "cursor-grab"
+                                                                        }`}
                                                                     title={`${task.title} — ${task.status}`}
                                                                 >
                                                                     {task.title}
@@ -482,15 +654,21 @@ const Calendar = () => {
                                     onClick={() => {
                                         setSelectedDate(dateString);
 
-                                        if (
-                                            window.matchMedia(
-                                                "(max-width: 639px)"
-                                            ).matches
-                                        ) {
+                                        if (window.matchMedia("(max-width: 639px)").matches) {
                                             setShowMobileTasks(true);
                                         }
                                     }}
-                                    className="min-h-40 cursor-pointer border-b border-r border-slate-100 p-2 transition hover:bg-slate-50 sm:p-3"
+                                    onDragOver={(event) =>
+                                        handleDragOver(event, dateString)
+                                    }
+                                    onDragLeave={handleDragLeave}
+                                    onDrop={(event) =>
+                                        handleDrop(event, dateString)
+                                    }
+                                    className={`min-h-40 cursor-pointer border-b border-r border-slate-100 p-2 transition sm:p-3 ${dragOverDate === dateString
+                                        ? "bg-blue-50 ring-2 ring-inset ring-blue-300"
+                                        : "hover:bg-slate-50"
+                                        }`}
                                 >
                                     <div className="flex items-center justify-between">
                                         <span
@@ -510,9 +688,13 @@ const Calendar = () => {
                                             {tasksForDay.map((task) => (
                                                 <div
                                                     key={task.id}
+                                                    draggable
+                                                    onDragStart={(event) => handleDragStart(event, task.id)}
+                                                    onDragEnd={handleDragEnd}
                                                     className={`truncate rounded-md px-2 py-1.5 text-xs font-medium ${getTaskStatusStyle(
                                                         task.status
-                                                    )}`}
+                                                    )} ${draggedTaskId === task.id ? "cursor-grabbing opacity-50" : "cursor-grab"
+                                                        }`}
                                                     title={`${task.title} — ${task.status}`}
                                                 >
                                                     {task.title}

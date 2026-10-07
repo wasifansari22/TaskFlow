@@ -92,7 +92,7 @@ const Projects = () => {
                         setEditingProject(null);
                         setShowForm(true);
                     }}
-                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700"
+                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700 cursor-pointer"
                 >
                     <Plus size={18} />
                     New Project
@@ -180,7 +180,7 @@ const Projects = () => {
                             key={item}
                             type="button"
                             onClick={() => setFilter(item)}
-                            className={`whitespace-nowrap rounded-md px-3 py-2 text-xs font-medium transition ${filter === item
+                            className={`whitespace-nowrap rounded-md px-3 py-2 text-xs font-medium transition cursor-pointer ${filter === item
                                 ? "bg-white text-blue-600 shadow-sm"
                                 : "text-slate-500 hover:text-slate-900"
                                 }`}
@@ -219,6 +219,10 @@ const Projects = () => {
                     filter={filter}
                     search={search}
                     onEdit={setEditingProject}
+                    onClearFilters={() => {
+                        setFilter("All");
+                        setSearch("");
+                    }}
                 />
             )}
         </div>

@@ -342,7 +342,7 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
                     type="button"
                     onClick={onClose}
                     disabled={isSubmitting}
-                    className="rounded-lg px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="rounded-lg px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 cursor-pointer disabled:opacity-50"
                 >
                     Cancel
                 </button>
@@ -350,7 +350,7 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 cursor-pointer disabled:opacity-60"
                 >
                     {isSubmitting
                         ? task

@@ -37,7 +37,7 @@ function TaskList({ filter, search, onEdit, onClearFilters }) {
                     <button
                         type="button"
                         onClick={onClearFilters}
-                        className="mt-4 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                        className="mt-4 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 cursor-pointer"
                     >
                         Clear search & filters
                     </button>

@@ -126,7 +126,7 @@ const Tasks = () => {
                         setEditingTask(null);
                         setShowForm(true);
                     }}
-                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700"
+                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700 cursor-pointer"
                 >
                     <Plus size={18} />
                     New Task
@@ -210,7 +210,7 @@ const Tasks = () => {
                             key={item}
                             type="button"
                             onClick={() => setFilter(item)}
-                            className={`whitespace-nowrap rounded-md px-3 py-2 text-xs font-medium transition ${filter === item
+                            className={`whitespace-nowrap rounded-md px-3 py-2 text-xs font-medium transition cursor-pointer ${filter === item
                                 ? "bg-white text-blue-600 shadow-sm"
                                 : "text-slate-500 hover:text-slate-900"
                                 }`}
@@ -237,7 +237,7 @@ const Tasks = () => {
                     <button
                         type="button"
                         onClick={() => dispatch(fetchTasks())}
-                        className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
+                        className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700 cursor-pointer"
                     >
                         Try Again
                     </button>

@@ -121,7 +121,7 @@ function Navbar() {
                             onClick={() =>
                                 setIsNotificationOpen((previous) => !previous)
                             }
-                            className="relative rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+                            className="relative rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 Workspace cursor-pointer"
                             aria-label={
                                 unreadCount > 0
                                     ? `Notifications, ${unreadCount} unread`
@@ -156,7 +156,7 @@ function Navbar() {
                             onClick={() =>
                                 setIsProfileOpen((previous) => !previous)
                             }
-                            className="flex items-center gap-3 rounded-lg p-1.5 transition hover:bg-slate-50"
+                            className="flex items-center gap-3 rounded-lg p-1.5 transition hover:bg-slate-50 cursor-pointer"
                             aria-label="Open profile menu"
                             aria-expanded={isProfileOpen}
                             aria-haspopup="menu"

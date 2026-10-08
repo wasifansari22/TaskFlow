@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { loginUser } from "../../api/authApi";
+import { loginUser, registerUser } from "../../api/authApi";
 
 const savedAuth = JSON.parse(localStorage.getItem("taskflow-auth") || "null");
 
@@ -13,9 +13,9 @@ const initialState = savedAuth || {
 
 export const login = createAsyncThunk(
     "auth/login",
-    async ({ username, password }, thunkAPI) => {
+    async ({ identifier, password }, thunkAPI) => {
         try {
-            return await loginUser(username, password);
+            return await loginUser(identifier, password);
         } catch (error) {
             return thunkAPI.rejectWithValue(
                 error.message === "Failed to fetch"
@@ -78,9 +78,64 @@ const authSlice = createSlice({
                 state.isAuthenticated = false;
                 state.user = null;
                 state.token = null;
+            })
+
+            .addCase(register.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.isAuthenticated = true;
+                state.user = action.payload.user;
+                state.token = action.payload.token;
+
+                localStorage.setItem(
+                    "taskflow-token",
+                    action.payload.token
+                );
+
+                localStorage.setItem(
+                    "taskflow-auth",
+                    JSON.stringify({
+                        isAuthenticated: true,
+                        user: action.payload.user,
+                        token: action.payload.token,
+                        status: "succeeded",
+                        error: null,
+                    })
+                );
             });
     },
 });
+
+export const register = createAsyncThunk(
+    "auth/register",
+    async (
+        {
+            firstName,
+            lastName,
+            username,
+            email,
+            password,
+            passwordConfirm,
+        },
+        thunkAPI
+    ) => {
+        try {
+            return await registerUser({
+                firstName,
+                lastName,
+                username,
+                email,
+                password,
+                passwordConfirm,
+            });
+        } catch (error) {
+            return thunkAPI.rejectWithValue(
+                error.message === "Failed to fetch"
+                    ? "Unable to connect to the server. Please make sure the server is running and try again."
+                    : error.message
+            );
+        }
+    }
+);
 
 export const { logout } = authSlice.actions;
 export default authSlice.reducer;

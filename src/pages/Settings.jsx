@@ -3,11 +3,14 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setTheme, toggleNotification, setDefaultPriority, setDefaultStatus, resetSettings } from "../features/settings/settingsSlice";
 import { selectTheme, selectNotifications, selectDefaultPriority, selectDefaultStatus } from "../features/settings/settingsSelectors";
+import { selectCurrentUser } from "../features/auth/authSelectors";
 
 const Settings = () => {
     const dispatch = useDispatch();
     const theme = useSelector(selectTheme);
     const notifications = useSelector(selectNotifications);
+    const currentUser = useSelector(selectCurrentUser);
+
     const defaultPriority = useSelector(selectDefaultPriority);
     const defaultStatus = useSelector(selectDefaultStatus);
 
@@ -57,11 +60,31 @@ const Settings = () => {
                         </p>
 
                         <p className="mt-1 font-medium text-slate-900">
-                            Wasif
+                            {currentUser?.name || currentUser?.username || "User"}
                         </p>
                     </div>
 
                     <div>
+                        <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                            Username
+                        </p>
+
+                        <p className="mt-1 font-medium text-slate-900">
+                            {currentUser?.username || "—"}
+                        </p>
+                    </div>
+
+                    <div>
+                        <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                            Email
+                        </p>
+
+                        <p className="mt-1 font-medium text-slate-900">
+                            {currentUser?.email || "—"}
+                        </p>
+                    </div>
+
+                    {/* <div>
                         <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
                             Role
                         </p>
@@ -69,7 +92,7 @@ const Settings = () => {
                         <p className="mt-1 font-medium text-slate-900">
                             Developer
                         </p>
-                    </div>
+                    </div> */}
 
                     <div>
                         <p className="text-xs font-medium uppercase tracking-wide text-slate-400">

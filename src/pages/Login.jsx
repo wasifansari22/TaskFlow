@@ -7,7 +7,7 @@ const Login = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const [username, setUsername] = useState("");
+    const [identifier, setIdentifier] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -15,15 +15,15 @@ const Login = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log("button clicked");
+
         if (isSubmittingRef.current) {
             return;
         }
 
         setError("");
 
-        if (!username.trim() || !password.trim()) {
-            setError("Please enter your username and password.");
+        if (!identifier.trim() || !password.trim()) {
+            setError("Please enter your username/email and password.");
             return;
         }
 
@@ -33,7 +33,7 @@ const Login = () => {
         try {
             await dispatch(
                 login({
-                    username: username.trim(),
+                    identifier: identifier.trim(),
                     password,
                 })
             ).unwrap();
@@ -77,18 +77,19 @@ const Login = () => {
                     >
                         <div>
                             <label
-                                htmlFor="email"
+                                htmlFor="identifier"
                                 className="mb-1.5 block text-sm font-medium text-slate-700"
                             >
-                                Email
+                                Username or Email
                             </label>
 
                             <input
-                                id="username"
+                                id="identifier"
                                 type="text"
-                                value={username}
-                                onChange={(event) => setUsername(event.target.value)}
-                                placeholder="Enter your username"
+                                value={identifier}
+                                onChange={(event) => setIdentifier(event.target.value)}
+                                placeholder="Enter your username or email"
+                                autoComplete="username"
                                 className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                             />
                         </div>
@@ -118,7 +119,7 @@ const Login = () => {
                                 {error}
                             </p>
                         )}
-                    
+
                         <button
                             type="submit"
                             disabled={isSubmitting}

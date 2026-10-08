@@ -9,12 +9,14 @@ import NotFound from "../pages/NotFound";
 import MainLayout from "../layouts/MainLayout";
 import ProjectDetails from "../pages/ProjectDetails";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
+import Register from "../pages/Register";
 
 const AppRoutes = () => {
     return (
         <Routes>
             {/* Public Routes */}
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
             {/* Protected Routes */}
             <Route element={<ProtectedRoute />}>

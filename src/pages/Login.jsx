@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { login } from "../features/auth/authSlice";
 
 const Login = () => {
@@ -128,6 +128,16 @@ const Login = () => {
                             {isSubmitting ? "Signing in..." : "Sign in"}
                         </button>
                     </form>
+
+                    <p className="mt-6 text-center text-sm text-slate-500">
+                        Create an account?{" "}
+                        <Link
+                            to="/register"
+                            className="font-medium text-blue-600 hover:text-blue-700"
+                        >
+                            Register
+                        </Link>
+                    </p>
                 </div>
             </div>
         </div>

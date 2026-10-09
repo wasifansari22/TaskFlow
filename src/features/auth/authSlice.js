@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { loginUser, registerUser } from "../../api/authApi";
+import { loginUser, registerUser, updateProfileUser } from "../../api/authApi";
 
 const savedAuth = JSON.parse(localStorage.getItem("taskflow-auth") || "null");
 
@@ -101,6 +101,33 @@ const authSlice = createSlice({
                         error: null,
                     })
                 );
+            })
+
+            .addCase(updateProfile.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+            })
+
+            .addCase(updateProfile.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.user = action.payload;
+                state.error = null;
+
+                localStorage.setItem(
+                    "taskflow-auth",
+                    JSON.stringify({
+                        isAuthenticated: true,
+                        user: action.payload,
+                        token: state.token,
+                        status: "succeeded",
+                        error: null,
+                    })
+                );
+            })
+
+            .addCase(updateProfile.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
             });
     },
 });
@@ -131,6 +158,23 @@ export const register = createAsyncThunk(
             return thunkAPI.rejectWithValue(
                 error.message === "Failed to fetch"
                     ? "Unable to connect to the server. Please make sure the server is running and try again."
+                    : error.message
+            );
+        }
+    }
+);
+
+export const updateProfile = createAsyncThunk(
+    "auth/updateProfile",
+    async (profileData, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.token;
+
+            return await updateProfileUser(profileData, token);
+        } catch (error) {
+            return thunkAPI.rejectWithValue(
+                error.message === "Failed to fetch"
+                    ? "Unable to connect to the server."
                     : error.message
             );
         }

@@ -84,3 +84,40 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
 
         return user
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=True)
+    name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "name",
+        ]
+        read_only_fields = ["id", "username", "name"]
+
+    def validate_email(self, value):
+        value = value.strip().lower()
+
+        existing_user = User.objects.filter(
+            email__iexact=value
+        ).exclude(
+            pk=self.instance.pk
+        )
+
+        if existing_user.exists():
+            raise serializers.ValidationError(
+                "An account with this email already exists."
+            )
+
+        return value
+
+    def get_name(self, obj):
+        full_name = f"{obj.first_name} {obj.last_name}".strip()
+        return full_name or obj.username

@@ -59,3 +59,26 @@ export const registerUser = async ({
 
     return data;
 };
+
+export const updateProfileUser = async (profileData, token) => {
+    const response = await fetch(`${API_BASE_URL}/auth/profile/`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${token}`,
+        },
+        body: JSON.stringify(profileData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        const message = Object.values(data)
+            .flat()
+            .join(" ");
+
+        throw new Error(message || "Failed to update profile.");
+    }
+
+    return data;
+};

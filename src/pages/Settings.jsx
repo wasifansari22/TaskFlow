@@ -1,9 +1,10 @@
 import { User, Palette, Bell, ListTodo } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setTheme, toggleNotification, setDefaultPriority, setDefaultStatus, resetSettings } from "../features/settings/settingsSlice";
 import { selectTheme, selectNotifications, selectDefaultPriority, selectDefaultStatus } from "../features/settings/settingsSelectors";
 import { selectCurrentUser } from "../features/auth/authSelectors";
+import { updateProfile } from "../features/auth/authSlice";
 
 const Settings = () => {
     const dispatch = useDispatch();
@@ -11,12 +12,60 @@ const Settings = () => {
     const notifications = useSelector(selectNotifications);
     const currentUser = useSelector(selectCurrentUser);
 
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+
+    const [profileError, setProfileError] = useState("");
+    const [profileSuccess, setProfileSuccess] = useState("");
+    const [isSavingProfile, setIsSavingProfile] = useState(false);
+
     const defaultPriority = useSelector(selectDefaultPriority);
     const defaultStatus = useSelector(selectDefaultStatus);
 
     useEffect(() => {
         document.documentElement.classList.toggle("dark", theme === "dark");
     }, [theme]);
+
+    useEffect(() => {
+        setFirstName(currentUser?.first_name || "");
+        setLastName(currentUser?.last_name || "");
+        setEmail(currentUser?.email || "");
+    }, [currentUser]);
+
+    const handleProfileSubmit = async (event) => {
+        event.preventDefault();
+
+        setProfileError("");
+        setProfileSuccess("");
+
+        if (!email.trim()) {
+            setProfileError("Email is required.");
+            return;
+        }
+
+        setIsSavingProfile(true);
+
+        try {
+            await dispatch(
+                updateProfile({
+                    first_name: firstName.trim(),
+                    last_name: lastName.trim(),
+                    email: email.trim(),
+                })
+            ).unwrap();
+
+            setProfileSuccess("Profile updated successfully.");
+        } catch (error) {
+            setProfileError(
+                typeof error === "string"
+                    ? error
+                    : "Unable to update your profile."
+            );
+        } finally {
+            setIsSavingProfile(false);
+        }
+    };
 
     return (
         <div className="mx-auto w-full max-w-5xl space-y-8">
@@ -53,67 +102,85 @@ const Settings = () => {
                     </div>
                 </div>
 
-                <div className="grid gap-5 p-5 sm:grid-cols-2">
-                    <div>
-                        <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                            Name
-                        </p>
 
-                        <p className="mt-1 font-medium text-slate-900">
-                            {currentUser?.name || currentUser?.username || "User"}
-                        </p>
+                <form onSubmit={handleProfileSubmit} className="space-y-5 p-5">
+                    <div className="grid gap-5 sm:grid-cols-2">
+                        <div>
+                            <label
+                                htmlFor="profile-first-name"
+                                className="mb-1.5 block text-sm font-medium text-slate-700"
+                            >
+                                First name
+                            </label>
+                            <input
+                                id="profile-first-name"
+                                type="text"
+                                autoComplete="given-name"
+                                value={firstName}
+                                onChange={(event) => setFirstName(event.target.value)}
+                                className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                            />
+                        </div>
+
+                        <div>
+                            <label
+                                htmlFor="profile-last-name"
+                                className="mb-1.5 block text-sm font-medium text-slate-700"
+                            >
+                                Last name
+                            </label>
+                            <input
+                                id="profile-last-name"
+                                type="text"
+                                autoComplete="family-name"
+                                value={lastName}
+                                onChange={(event) => setLastName(event.target.value)}
+                                className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                            />
+                        </div>
+
+                        <div className="sm:col-span-2">
+                            <label
+                                htmlFor="profile-email"
+                                className="mb-1.5 block text-sm font-medium text-slate-700"
+                            >
+                                Email
+                            </label>
+                            <input
+                                id="profile-email"
+                                type="email"
+                                autoComplete="email"
+                                required
+                                value={email}
+                                onChange={(event) => setEmail(event.target.value)}
+                                className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                            />
+                        </div>
                     </div>
 
-                    <div>
-                        <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                            Username
+                    {profileError && (
+                        <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2.5 text-sm text-rose-700">
+                            {profileError}
                         </p>
+                    )}
 
-                        <p className="mt-1 font-medium text-slate-900">
-                            {currentUser?.username || "—"}
+                    {profileSuccess && (
+                        <p role="status" className="rounded-lg bg-emerald-50 px-3 py-2.5 text-sm text-emerald-700">
+                            {profileSuccess}
                         </p>
+                    )}
+
+                    <div className="flex justify-end">
+                        <button
+                            type="submit"
+                            disabled={isSavingProfile}
+                            className="cursor-pointer rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                            {isSavingProfile ? "Saving..." : "Save Changes"}
+                        </button>
                     </div>
+                </form>
 
-                    <div>
-                        <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                            Email
-                        </p>
-
-                        <p className="mt-1 font-medium text-slate-900">
-                            {currentUser?.email || "—"}
-                        </p>
-                    </div>
-
-                    {/* <div>
-                        <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                            Role
-                        </p>
-
-                        <p className="mt-1 font-medium text-slate-900">
-                            Developer
-                        </p>
-                    </div> */}
-
-                    <div>
-                        <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                            Workspace
-                        </p>
-
-                        <p className="mt-1 font-medium text-slate-900">
-                            Personal workspace
-                        </p>
-                    </div>
-
-                    <div>
-                        <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                            Account
-                        </p>
-
-                        <p className="mt-1 font-medium text-emerald-600">
-                            Active
-                        </p>
-                    </div>
-                </div>
             </section>
 
             {/* Appearance */}

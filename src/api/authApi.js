@@ -82,3 +82,31 @@ export const updateProfileUser = async (profileData, token) => {
 
     return data;
 };
+
+export const changePasswordUser = async (passwordData, token) => {
+    const response = await fetch(
+        `${API_BASE_URL}/auth/change-password/`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Token ${token}`,
+            },
+            body: JSON.stringify(passwordData),
+        }
+    );
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+        const messages = Object.values(data)
+            .flat(Infinity)
+            .filter((message) => typeof message === "string");
+
+        throw new Error(
+            messages.join(" ") || "Unable to change your password."
+        );
+    }
+
+    return data;
+};

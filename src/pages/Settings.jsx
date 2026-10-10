@@ -5,6 +5,8 @@ import { setTheme, toggleNotification, setDefaultPriority, setDefaultStatus, res
 import { selectTheme, selectNotifications, selectDefaultPriority, selectDefaultStatus } from "../features/settings/settingsSelectors";
 import { selectCurrentUser } from "../features/auth/authSelectors";
 import { updateProfile } from "../features/auth/authSlice";
+import { LockKeyhole } from "lucide-react";
+import { changePasswordUser } from "../api/authApi";
 import toast from "react-hot-toast";
 
 const Settings = () => {
@@ -20,6 +22,86 @@ const Settings = () => {
 
     const defaultPriority = useSelector(selectDefaultPriority);
     const defaultStatus = useSelector(selectDefaultStatus);
+
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmNewPassword, setConfirmNewPassword] = useState("");
+    const [isChangingPassword, setIsChangingPassword] = useState(false);
+
+    const handlePasswordSubmit = async (event) => {
+        event.preventDefault();
+
+        if (isChangingPassword) return;
+
+        if (!currentPassword || !newPassword || !confirmNewPassword) {
+            toast.error("Please fill in all password fields.");
+            return;
+        }
+
+        if (newPassword !== confirmNewPassword) {
+            toast.error("The new passwords do not match.");
+            return;
+        }
+
+        if (currentPassword === newPassword) {
+            toast.error("Choose a password different from your current one.");
+            return;
+        }
+
+        const token = localStorage.getItem("taskflow-token");
+
+        if (!token) {
+            toast.error("Your session has expired. Please log in again.");
+            return;
+        }
+
+        setIsChangingPassword(true);
+
+        try {
+            const result = await changePasswordUser(
+                {
+                    current_password: currentPassword,
+                    new_password: newPassword,
+                    confirm_new_password: confirmNewPassword,
+                },
+                token
+            );
+
+            // Keep the current session working with the replacement token.
+            localStorage.setItem("taskflow-token", result.token);
+
+            // Keep persisted auth data in sync if it also stores a token.
+            const savedAuth = localStorage.getItem("taskflow-auth");
+
+            if (savedAuth) {
+                try {
+                    const authData = JSON.parse(savedAuth);
+
+                    if (authData && typeof authData === "object") {
+                        authData.token = result.token;
+                        localStorage.setItem(
+                            "taskflow-auth",
+                            JSON.stringify(authData)
+                        );
+                    }
+                } catch {
+                    // The standalone taskflow-token has already been updated.
+                }
+            }
+
+            setCurrentPassword("");
+            setNewPassword("");
+            setConfirmNewPassword("");
+
+            toast.success(result.detail || "Password changed successfully.");
+        } catch (error) {
+            toast.error(
+                error.message || "Unable to change your password. Please try again."
+            );
+        } finally {
+            setIsChangingPassword(false);
+        }
+    };
 
     useEffect(() => {
         document.documentElement.classList.toggle("dark", theme === "dark");
@@ -166,6 +248,95 @@ const Settings = () => {
                     </div>
                 </form>
 
+            </section>
+
+            {/* Change Password */}
+            <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
+                <div className="flex items-center gap-3 border-b border-slate-200 p-5">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-rose-50 text-rose-600">
+                        <LockKeyhole size={19} />
+                    </div>
+
+                    <div>
+                        <h2 className="font-semibold text-slate-900">
+                            Change Password
+                        </h2>
+                        <p className="text-sm text-slate-500">
+                            Update your password to keep your account secure.
+                        </p>
+                    </div>
+                </div>
+
+                <form onSubmit={handlePasswordSubmit} className="space-y-5 p-5">
+                    <div>
+                        <label
+                            htmlFor="current-password"
+                            className="mb-1.5 block text-sm font-medium text-slate-700"
+                        >
+                            Current password
+                        </label>
+                        <input
+                            id="current-password"
+                            type="password"
+                            autoComplete="current-password"
+                            value={currentPassword}
+                            onChange={(event) => setCurrentPassword(event.target.value)}
+                            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <label
+                            htmlFor="new-password"
+                            className="mb-1.5 block text-sm font-medium text-slate-700"
+                        >
+                            New password
+                        </label>
+                        <input
+                            id="new-password"
+                            type="password"
+                            autoComplete="new-password"
+                            value={newPassword}
+                            onChange={(event) => setNewPassword(event.target.value)}
+                            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                            required
+                        />
+                        <p className="mt-1.5 text-xs text-slate-500">
+                            Your password must meet the server's password requirements.
+                        </p>
+                    </div>
+
+                    <div>
+                        <label
+                            htmlFor="confirm-new-password"
+                            className="mb-1.5 block text-sm font-medium text-slate-700"
+                        >
+                            Confirm new password
+                        </label>
+                        <input
+                            id="confirm-new-password"
+                            type="password"
+                            autoComplete="new-password"
+                            value={confirmNewPassword}
+                            onChange={(event) =>
+                                setConfirmNewPassword(event.target.value)
+                            }
+                            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                            required
+                        />
+                    </div>
+
+                    <div className="flex justify-end">
+                        <button
+                            type="submit"
+                            disabled={isChangingPassword}
+                            className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                            {isChangingPassword ? "Updating..." : "Update Password"}
+                        </button>
+                    </div>
+                </form>
             </section>
 
             {/* Appearance */}

@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import RegisterSerializer, ProfileSerializer
+from .serializers import RegisterSerializer, ProfileSerializer, ChangePasswordSerializer
 from rest_framework.permissions import IsAuthenticated
 
 User = get_user_model()
@@ -118,3 +118,28 @@ class ProfileView(APIView):
         serializer.save()
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = ChangePasswordSerializer(
+            data=request.data,
+            context={"request": request},
+        )
+        serializer.is_valid(raise_exception=True)
+
+        request.user.set_password(
+            serializer.validated_data["new_password"]
+        )
+        request.user.save(update_fields=["password"])
+
+        # Invalidate the old token and issue a replacement.
+        Token.objects.filter(user=request.user).delete()
+        new_token = Token.objects.create(user=request.user)
+
+        return Response({
+            "detail": "Password changed successfully.",
+            "token": new_token.key,
+        })

@@ -5,6 +5,7 @@ import { setTheme, toggleNotification, setDefaultPriority, setDefaultStatus, res
 import { selectTheme, selectNotifications, selectDefaultPriority, selectDefaultStatus } from "../features/settings/settingsSelectors";
 import { selectCurrentUser } from "../features/auth/authSelectors";
 import { updateProfile } from "../features/auth/authSlice";
+import toast from "react-hot-toast";
 
 const Settings = () => {
     const dispatch = useDispatch();
@@ -15,9 +16,6 @@ const Settings = () => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
-
-    const [profileError, setProfileError] = useState("");
-    const [profileSuccess, setProfileSuccess] = useState("");
     const [isSavingProfile, setIsSavingProfile] = useState(false);
 
     const defaultPriority = useSelector(selectDefaultPriority);
@@ -36,8 +34,7 @@ const Settings = () => {
     const handleProfileSubmit = async (event) => {
         event.preventDefault();
 
-        setProfileError("");
-        setProfileSuccess("");
+        if (isSavingProfile) return;
 
         if (!email.trim()) {
             setProfileError("Email is required.");
@@ -55,9 +52,9 @@ const Settings = () => {
                 })
             ).unwrap();
 
-            setProfileSuccess("Profile updated successfully.");
+            toast.success("Profile updated successfully.");
         } catch (error) {
-            setProfileError(
+            toast.error(
                 typeof error === "string"
                     ? error
                     : "Unable to update your profile."
@@ -157,18 +154,6 @@ const Settings = () => {
                             />
                         </div>
                     </div>
-
-                    {profileError && (
-                        <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2.5 text-sm text-rose-700">
-                            {profileError}
-                        </p>
-                    )}
-
-                    {profileSuccess && (
-                        <p role="status" className="rounded-lg bg-emerald-50 px-3 py-2.5 text-sm text-emerald-700">
-                            {profileSuccess}
-                        </p>
-                    )}
 
                     <div className="flex justify-end">
                         <button

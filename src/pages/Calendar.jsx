@@ -23,6 +23,9 @@ const getTaskStatusStyle = (status) => {
     }
 };
 
+const toDateString = (date) =>
+    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+
 const Calendar = () => {
     const today = new Date();
     const dispatch = useDispatch();
@@ -50,7 +53,7 @@ const Calendar = () => {
         }, {});
     }, [tasks]);
 
-    const todayString = today.toISOString().split("T")[0];
+    const todayString = toDateString(today);
 
     const [selectedDate, setSelectedDate] = useState(todayString);
 
@@ -139,7 +142,7 @@ const Calendar = () => {
             const previousWeek = new Date(currentDate);
             previousWeek.setDate(previousWeek.getDate() - 7);
             setCurrentDate(previousWeek);
-            setSelectedDate(previousWeek.toISOString().split("T")[0]);
+            setSelectedDate(toDateString(previousWeek));
             return;
         }
 
@@ -155,7 +158,7 @@ const Calendar = () => {
             const nextWeek = new Date(currentDate);
             nextWeek.setDate(nextWeek.getDate() + 7);
             setCurrentDate(nextWeek);
-            setSelectedDate(nextWeek.toISOString().split("T")[0]);
+            setSelectedDate(toDateString(nextWeek));
             return;
         }
 
@@ -434,7 +437,11 @@ const Calendar = () => {
 
                             <button
                                 type="button"
-                                onClick={() => setViewMode("week")}
+                                onClick={() => {
+                                    setViewMode("week");
+                                    setCurrentDate(new Date(today));
+                                    setSelectedDate(todayString);
+                                }}
                                 className={`rounded-md px-3 py-1.5 text-sm font-medium transition ${viewMode === "week"
                                     ? "bg-white text-blue-600 shadow-sm"
                                     : "text-slate-500 hover:text-slate-900"
@@ -642,11 +649,8 @@ const Calendar = () => {
                 ) : (
                     <div className="grid grid-cols-7">
                         {weekDays.map((date) => {
-                            const dateString =
-                                date.toISOString().split("T")[0];
-
-                            const tasksForDay =
-                                tasksByDate[dateString] || [];
+                            const dateString = toDateString(date);
+                            const tasksForDay = tasksByDate[dateString] || [];
 
                             return (
                                 <div
@@ -672,10 +676,10 @@ const Calendar = () => {
                                 >
                                     <div className="flex items-center justify-between">
                                         <span
-                                            className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium ${dateString === todayString
-                                                ? "border border-blue-600 text-blue-600"
-                                                : selectedDate === dateString
-                                                    ? "bg-blue-600 text-white"
+                                            className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium ${selectedDate === dateString
+                                                ? "bg-blue-600 text-white"
+                                                : dateString === todayString
+                                                    ? "border border-blue-600 text-blue-600"
                                                     : "text-slate-700"
                                                 }`}
                                         >

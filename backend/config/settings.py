@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "tasks",
     "projects",
     "corsheaders",
+    "notifications",
 ]
 
 # When an API request contains an authentication token, use that token to determine which Django user is making the request.

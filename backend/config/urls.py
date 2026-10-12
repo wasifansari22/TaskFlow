@@ -7,4 +7,5 @@ urlpatterns = [
     path("api/", include("tasks.urls")),
     path("api/", include("projects.urls")),
     path("api/auth/", include("authentication.urls")),
+    path("api/", include("notifications.urls")),
 ]

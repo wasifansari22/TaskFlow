@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createProjectAsync, updateProjectAsync } from "../projectSlice";
-import { addNotification } from "../../notifications/notificationSlice";
+import { createNotificationAsync, getNotificationOwnerKey } from "../../notifications/notificationSlice";
 import { selectNotifications } from "../../settings/settingsSelectors";
 
 const initialForm = {
@@ -14,6 +14,11 @@ const initialForm = {
 function ProjectForm({ project = null, onClose }) {
     const dispatch = useDispatch();
     const notifications = useSelector(selectNotifications);
+
+    const ownerKey = useSelector((state) =>
+        getNotificationOwnerKey(state.auth)
+    );
+
     const [formData, setFormData] = useState(
         project
             ? {
@@ -52,7 +57,7 @@ function ProjectForm({ project = null, onClose }) {
         }
 
         if (!formData.name.trim()) {
-            setValidationError("Project name is required.")
+            setValidationError("Project name is required.");
             return;
         }
 
@@ -60,8 +65,12 @@ function ProjectForm({ project = null, onClose }) {
         setIsSubmitting(true);
 
         try {
+            let savedProject;
+            let notificationType;
+            let notificationTitle;
+
             if (project) {
-                const updatedProject = await dispatch(
+                savedProject = await dispatch(
                     updateProjectAsync({
                         id: project.id,
                         updates: {
@@ -71,28 +80,15 @@ function ProjectForm({ project = null, onClose }) {
                                 "No description provided.",
                             priority: formData.priority,
                             status: project.status,
-                            dueDate:
-                                formData.dueDate || "No due date",
+                            dueDate: formData.dueDate || "No due date",
                         },
                     })
                 ).unwrap();
 
-                if (notifications.projectUpdates) {
-                    dispatch(
-                        addNotification({
-                            id: `project-updated-${updatedProject.id}-${Date.now()}`,
-                            type: "project-updated",
-                            title: "Project updated",
-                            message: updatedProject.name,
-                            read: false,
-                            createdAt: new Date().toISOString(),
-                            relatedTaskId: null,
-                            relatedProjectId: updatedProject.id,
-                        })
-                    );
-                }
+                notificationType = "project-updated";
+                notificationTitle = "Project updated";
             } else {
-                const createdProject = await dispatch(
+                savedProject = await dispatch(
                     createProjectAsync({
                         name: formData.name.trim(),
                         description:
@@ -100,23 +96,31 @@ function ProjectForm({ project = null, onClose }) {
                             "No description provided.",
                         priority: formData.priority,
                         status: "Active",
-                        dueDate:
-                            formData.dueDate || "No due date",
+                        dueDate: formData.dueDate || "No due date",
                     })
                 ).unwrap();
 
-                if (notifications.projectUpdates) {
-                    dispatch(
-                        addNotification({
-                            id: `project-created-${createdProject.id}-${Date.now()}`,
-                            type: "project-created",
-                            title: "Project created",
-                            message: createdProject.name,
-                            read: false,
-                            createdAt: new Date().toISOString(),
-                            relatedTaskId: null,
-                            relatedProjectId: createdProject.id,
+                notificationType = "project-created";
+                notificationTitle = "Project created";
+            }
+
+            // The project save succeeded. Handle notification failure separately
+            // so it doesn't make a successful project save look like a failure.
+            if (notifications.projectUpdates && ownerKey) {
+                try {
+                    await dispatch(
+                        createNotificationAsync({
+                            ownerKey,
+                            type: notificationType,
+                            title: notificationTitle,
+                            message: savedProject.name,
+                            relatedProjectId: savedProject.id,
                         })
+                    ).unwrap();
+                } catch (notificationError) {
+                    console.error(
+                        "Project was saved, but its notification could not be created:",
+                        notificationError
                     );
                 }
             }

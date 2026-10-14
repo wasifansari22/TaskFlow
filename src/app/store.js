@@ -18,6 +18,4 @@ export const store = configureStore({
 store.subscribe(() => {
     const state = store.getState();
     localStorage.setItem("taskflow-settings", JSON.stringify(state.settings));
-    localStorage.setItem("taskflow-notifications", JSON.stringify(state.notifications.notifications)
-    );
 });

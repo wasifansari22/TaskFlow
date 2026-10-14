@@ -6,12 +6,16 @@ import { selectProjectProgress } from "../projectSelectors";
 import { selectTasksByProject } from "../../tasks/taskSelectors";
 import { Link } from "react-router";
 import Modal from "../../../components/ui/Modal";
-import { addNotification } from "../../notifications/notificationSlice";
+import { createNotificationAsync, getNotificationOwnerKey } from "../../notifications/notificationSlice";
 import { selectNotifications } from "../../settings/settingsSelectors";
 
 const ProjectCard = ({ project, onEdit }) => {
     const dispatch = useDispatch();
     const notifications = useSelector(selectNotifications);
+
+    const ownerKey = useSelector((state) =>
+        getNotificationOwnerKey(state.auth)
+    );
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -25,9 +29,7 @@ const ProjectCard = ({ project, onEdit }) => {
     const handleStatusChange = async (event) => {
         const newStatus = event.target.value;
 
-        if (newStatus === project.status) {
-            return;
-        }
+        if (newStatus === project.status) return;
 
         try {
             await dispatch(
@@ -43,19 +45,20 @@ const ProjectCard = ({ project, onEdit }) => {
                 })
             ).unwrap();
 
-            if (notifications.projectUpdates) {
-                dispatch(
-                    addNotification({
-                        id: `project-status-${project.id}-${Date.now()}`,
-                        type: "project-status-changed",
-                        title: "Project status changed",
-                        message: `${project.name} is now ${newStatus}.`,
-                        read: false,
-                        createdAt: new Date().toISOString(),
-                        relatedTaskId: null,
-                        relatedProjectId: project.id,
-                    })
-                );
+            if (notifications.projectUpdates && ownerKey) {
+                try {
+                    await dispatch(
+                        createNotificationAsync({
+                            ownerKey,
+                            type: "project-status-changed",
+                            title: "Project status changed",
+                            message: `${project.name} is now ${newStatus}.`,
+                            relatedProjectId: project.id,
+                        })
+                    ).unwrap();
+                } catch (notificationError) {
+                    console.error("Project updated, but notification failed:", notificationError);
+                }
             }
         } catch (error) {
             console.error("Project status update failed:", error);
@@ -66,19 +69,19 @@ const ProjectCard = ({ project, onEdit }) => {
         try {
             await dispatch(deleteProjectAsync(project.id)).unwrap();
 
-            if (notifications.projectUpdates) {
-                dispatch(
-                    addNotification({
-                        id: `project-deleted-${project.id}-${Date.now()}`,
-                        type: "project-deleted",
-                        title: "Project deleted",
-                        message: `${project.name} was deleted.`,
-                        read: false,
-                        createdAt: new Date().toISOString(),
-                        relatedTaskId: null,
-                        relatedProjectId: project.id,
-                    })
-                );
+            if (notifications.projectUpdates && ownerKey) {
+                try {
+                    await dispatch(
+                        createNotificationAsync({
+                            ownerKey,
+                            type: "project-deleted",
+                            title: "Project deleted",
+                            message: `${project.name} was deleted.`,
+                        })
+                    ).unwrap();
+                } catch (notificationError) {
+                    console.error("Project deleted, but notification failed:", notificationError);
+                }
             }
 
             setShowDeleteModal(false);

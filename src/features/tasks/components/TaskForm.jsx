@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createTask, updateTaskAsync } from "../taskSlice";
 import { selectAllProjects } from "../../projects/projectSelectors";
-import { addNotification, deleteNotification, } from "../../notifications/notificationSlice";
+import { createNotificationAsync, deleteNotificationAsync, getNotificationOwnerKey } from "../../notifications/notificationSlice";
 import { selectAllNotifications } from "../../notifications/notificationSelectors";
 import { selectDefaultPriority, selectDefaultStatus, selectNotifications, } from "../../settings/settingsSelectors";
 
@@ -16,6 +16,11 @@ const initialForm = {
 
 const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
     const dispatch = useDispatch();
+
+    const ownerKey = useSelector((state) =>
+        getNotificationOwnerKey(state.auth)
+    );
+
     const projects = useSelector(selectAllProjects);
     const defaultPriority = useSelector(selectDefaultPriority);
     const defaultStatus = useSelector(selectDefaultStatus);
@@ -57,13 +62,34 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
         }
     };
 
-    // Deadline helper
-    const createDeadlineReminder = (taskId, taskTitle, dueDate) => {
-        if (!notifications.deadlineReminders) {
-            return;
+    // Sync the task's deadline reminder with the API
+    const syncDeadlineReminder = async (taskId, taskTitle, dueDate, taskStatus) => {
+        if (!ownerKey) return;
+
+        // Find existing deadline reminders for this task.
+        const existingReminders = allNotifications.filter(
+            (notification) =>
+                notification.type === "deadline-reminder" &&
+                String(notification.relatedTaskId) === String(taskId)
+        );
+
+        // Delete the existing reminders using their actual API IDs.
+        for (const reminder of existingReminders) {
+            await dispatch(
+                deleteNotificationAsync({
+                    ownerKey,
+                    id: reminder.id,
+                })
+            ).unwrap();
         }
 
-        if (!dueDate || dueDate === "No due date") {
+        // Do not create a new reminder if reminders are disabled, the task is completed, or the task has no deadline.
+        if (
+            !notifications.deadlineReminders ||
+            taskStatus === "Completed" ||
+            !dueDate ||
+            dueDate === "No due date"
+        ) {
             return;
         }
 
@@ -74,21 +100,11 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
         today.setHours(0, 0, 0, 0);
 
         const difference = Math.round(
-            (due - today) / (1000 * 60 * 60 * 24)
+            (due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
         );
 
-        if (difference < 0) {
-            return;
-        }
-
-        const reminderId = `deadline-reminder-${taskId}-${dueDate}`;
-        const alreadyExists = allNotifications.some(
-            (notification) => notification.id === reminderId
-        );
-
-        if (alreadyExists) {
-            return;
-        }
+        // Do not create reminders for deadlines in the past.
+        if (difference < 0) return;
 
         let deadlineMessage;
 
@@ -100,18 +116,15 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
             deadlineMessage = `${taskTitle} is due in ${difference} days.`;
         }
 
-        dispatch(
-            addNotification({
-                id: reminderId,
+        await dispatch(
+            createNotificationAsync({
+                ownerKey,
                 type: "deadline-reminder",
                 title: "Upcoming deadline",
                 message: deadlineMessage,
-                read: false,
-                createdAt: new Date().toISOString(),
                 relatedTaskId: taskId,
-                relatedProjectId: null,
             })
-        );
+        ).unwrap();
     };
 
     const handleSubmit = async (event) => {
@@ -122,7 +135,7 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
         }
 
         if (!formData.title.trim()) {
-            setValidationError("Task title is required.")
+            setValidationError("Task title is required.");
             return;
         }
 
@@ -131,21 +144,12 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
 
         try {
             if (task) {
-                // Users can change a deadline. So to remember the old deadline
                 const oldDueDate =
-                    task.dueDate === "No due date"
-                        ? ""
-                        : task.dueDate || "";
+                    task.dueDate === "No due date" ? "" : task.dueDate || "";
 
                 const newDueDate = formData.dueDate || "";
 
-                if (oldDueDate && oldDueDate !== newDueDate) {
-                    dispatch(
-                        deleteNotification(
-                            `deadline-reminder-${task.id}-${oldDueDate}`
-                        )
-                    );
-                }
+                // Save the task first.
                 await dispatch(
                     updateTaskAsync({
                         id: task.id,
@@ -154,30 +158,44 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
                             description: formData.description.trim() || "No description provided.",
                             priority: formData.priority,
                             status: task.status,
-                            dueDate: formData.dueDate || "No due date",
+                            dueDate: newDueDate || "No due date",
                             projectId: formData.projectId || null,
                         },
                     })
                 ).unwrap();
 
-                dispatch(
-                    addNotification({
-                        id: `notification-${Date.now()}`,
-                        type: "task-updated",
-                        title: "Task updated",
-                        message: formData.title.trim(),
-                        read: false,
-                        createdAt: new Date().toISOString(),
-                        relatedTaskId: task.id,
-                        relatedProjectId: null,
-                    })
-                );
-                if (newDueDate && task.status !== "Completed") {
-                    createDeadlineReminder(
-                        task.id,
-                        formData.title.trim(),
-                        newDueDate
-                    );
+                // Create the task-updated notification through the API.
+                if (notifications.taskUpdates && ownerKey) {
+                    try {
+                        await dispatch(
+                            createNotificationAsync({
+                                ownerKey,
+                                type: "task-updated",
+                                title: "Task updated",
+                                message: formData.title.trim(),
+                                relatedTaskId: task.id,
+                            })
+                        ).unwrap();
+                    } catch (notificationError) {
+                        console.error("Task was updated, but its notification failed:", notificationError);
+                    }
+                }
+
+                // Sync reminders only when the deadline changes or the task is completed.
+                // This avoids deleting and recreating a reminder every time an unrelated task field is edited.
+                const deadlineChanged = oldDueDate !== newDueDate;
+
+                if (deadlineChanged || task.status === "Completed") {
+                    try {
+                        await syncDeadlineReminder(
+                            task.id,
+                            formData.title.trim(),
+                            newDueDate,
+                            task.status
+                        );
+                    } catch (notificationError) {
+                        console.error("Task was updated, but its deadline reminder could not be synced:", notificationError);
+                    }
                 }
             } else {
                 const newTask = {
@@ -193,31 +211,40 @@ const TaskForm = ({ task = null, onClose, initialDueDate = "" }) => {
                     createTask(newTask)
                 ).unwrap();
 
-                dispatch(
-                    addNotification({
-                        id: `notification-${Date.now()}`,
-                        type: "task-created",
-                        title: "Task created",
-                        message: newTask.title,
-                        read: false,
-                        createdAt: new Date().toISOString(),
-                        relatedTaskId: createdTask.id,
-                        relatedProjectId: null,
-                    })
-                );
-                createDeadlineReminder(
-                    createdTask.id,
-                    newTask.title,
-                    newTask.dueDate
-                );
+                // Create the task-created notification through the API.
+                if (notifications.taskUpdates && ownerKey) {
+                    try {
+                        await dispatch(
+                            createNotificationAsync({
+                                ownerKey,
+                                type: "task-created",
+                                title: "Task created",
+                                message: createdTask.title,
+                                relatedTaskId: createdTask.id,
+                            })
+                        ).unwrap();
+                    } catch (notificationError) {
+                        console.error("Task was created, but its notification failed:", notificationError);
+                    }
+                }
+
+                // Create a deadline reminder for the new task, if appropriate.
+                try {
+                    await syncDeadlineReminder(
+                        createdTask.id,
+                        createdTask.title,
+                        createdTask.dueDate,
+                        createdTask.status
+                    );
+                } catch (notificationError) {
+                    console.error("Task was created, but its deadline reminder failed:", notificationError);
+                }
             }
 
             onClose();
         } catch (error) {
             console.error("Task save failed:", error);
-            setValidationError(
-                error.message || "Unable to save task. Please try again."
-            );
+            setValidationError(error.message || "Unable to save task. Please try again.");
         } finally {
             setIsSubmitting(false);
         }

@@ -2,14 +2,21 @@ import { CalendarDays, CheckCircle2, Circle, Clock3, Trash2, Pencil } from "luci
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { deleteTaskAsync, updateTaskStatusAsync } from "../taskSlice";
-import { addNotification, deleteNotification } from "../../notifications/notificationSlice";
+import { createNotificationAsync, getNotificationOwnerKey, deleteNotificationAsync } from "../../notifications/notificationSlice";
 import { selectNotifications } from "../../settings/settingsSelectors";
 import Modal from "../../../components/ui/Modal";
 
 const TaskCard = ({ task, onEdit }) => {
     const dispatch = useDispatch();
-
     const notifications = useSelector(selectNotifications);
+
+    const ownerKey = useSelector((state) =>
+        getNotificationOwnerKey(state.auth)
+    );
+
+    const apiNotifications = useSelector(
+        (state) => state.notifications.notifications
+    );
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -24,32 +31,50 @@ const TaskCard = ({ task, onEdit }) => {
                 })
             ).unwrap();
 
-            // Remove the deadline reminder when the task is completed
-            if (
-                newStatus === "Completed" && task.dueDate && task.dueDate !== "No due date") {
-                dispatch(
-                    deleteNotification(
-                        `deadline-reminder-${task.id}-${task.dueDate}`
-                    )
+            // Delete API-backed deadline reminders when the task is completed.
+            if (newStatus === "Completed" && ownerKey) {
+                const deadlineReminders = apiNotifications.filter(
+                    (notification) =>
+                        notification.type === "deadline-reminder" &&
+                        String(notification.relatedTaskId) === String(task.id)
                 );
+
+                for (const reminder of deadlineReminders) {
+                    try {
+                        await dispatch(
+                            deleteNotificationAsync({
+                                ownerKey,
+                                id: reminder.id,
+                            })
+                        ).unwrap();
+                    } catch (notificationError) {
+                        console.error(
+                            "Task status changed, but a deadline reminder could not be deleted:",
+                            notificationError
+                        );
+                    }
+                }
             }
 
-            if (notifications.taskUpdates) {
-                dispatch(
-                    addNotification({
-                        id: `notification-${Date.now()}`,
-                        type: newStatus === "Completed" ? "task-completed" : "task-updated",
-                        title: newStatus === "Completed" ? "Task completed" : "Task status updated",
+            if (notifications.taskUpdates && ownerKey) {
+                await dispatch(
+                    createNotificationAsync({
+                        ownerKey,
+                        type:
+                            newStatus === "Completed"
+                                ? "task-completed"
+                                : "task-updated",
+                        title:
+                            newStatus === "Completed"
+                                ? "Task completed"
+                                : "Task status updated",
                         message: task.title,
-                        read: false,
-                        createdAt: new Date().toISOString(),
                         relatedTaskId: task.id,
-                        relatedProjectId: null,
                     })
-                );
+                ).unwrap();
             }
         } catch (error) {
-            console.error("Failed to update task status:", error);
+            console.error("Failed to update task or create notification:", error);
         }
     };
 
@@ -57,18 +82,23 @@ const TaskCard = ({ task, onEdit }) => {
         try {
             await dispatch(deleteTaskAsync(task.id)).unwrap();
 
-            dispatch(
-                addNotification({
-                    id: `notification-${Date.now()}`,
-                    type: "task-deleted",
-                    title: "Task deleted",
-                    message: task.title,
-                    read: false,
-                    createdAt: new Date().toISOString(),
-                    relatedTaskId: null,
-                    relatedProjectId: null,
-                })
-            );
+            if (ownerKey) {
+                try {
+                    await dispatch(
+                        createNotificationAsync({
+                            ownerKey,
+                            type: "task-deleted",
+                            title: "Task deleted",
+                            message: task.title,
+                        })
+                    ).unwrap();
+                } catch (notificationError) {
+                    console.error(
+                        "Task was deleted, but its notification failed:",
+                        notificationError
+                    );
+                }
+            }
 
             setShowDeleteModal(false);
         } catch (error) {

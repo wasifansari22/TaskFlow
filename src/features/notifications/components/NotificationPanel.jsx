@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { CheckCheck, BellOff, } from "lucide-react";
 import { selectAllNotifications, selectUnreadNotificationCount } from "../notificationSelectors";
-import { clearNotifications, deleteNotification, markAllNotificationAsRead, markNotificationAsRead } from "../notificationSlice";
+import { clearNotificationsAsync, deleteNotificationAsync, fetchNotificationsAsync, getNotificationOwnerKey, markAllNotificationsReadAsync, markNotificationAsReadAsync, } from "../notificationSlice";
 import NotificationItem from "./NotificationItem";
 import Modal from "../../../components/ui/Modal";
 
@@ -15,21 +15,64 @@ const NotificationPanel = ({ onClose }) => {
     const unreadCount = useSelector(selectUnreadNotificationCount);
     const [isClearModalOpen, setIsClearModalOpen] = useState(false);
 
-    const handleMarkAsRead = (id) => {
-        dispatch(markNotificationAsRead(id));
+    const ownerKey = useSelector((state) =>
+        getNotificationOwnerKey(state.auth)
+    );
+
+    useEffect(() => {
+        if (ownerKey) {
+            dispatch(fetchNotificationsAsync(ownerKey));
+        }
+    }, [dispatch, ownerKey]);
+
+    const handleMarkAsRead = async (id) => {
+        if (!ownerKey) return;
+
+        try {
+            await dispatch(
+                markNotificationAsReadAsync({ id, ownerKey })
+            ).unwrap();
+        } catch (error) {
+            console.error("Failed to mark notification as read:", error);
+        }
     };
 
-    const handleMarkAllAsRead = () => {
-        dispatch(markAllNotificationAsRead());
+    const handleMarkAllAsRead = async () => {
+        if (!ownerKey) return;
+
+        try {
+            await dispatch(
+                markAllNotificationsReadAsync(ownerKey)
+            ).unwrap();
+        } catch (error) {
+            console.error("Failed to mark all notifications as read:", error);
+        }
     };
 
-    const handleDelete = (id) => {
-        dispatch(deleteNotification(id));
+    const handleDelete = async (id) => {
+        if (!ownerKey) return;
+
+        try {
+            await dispatch(
+                deleteNotificationAsync({ id, ownerKey })
+            ).unwrap();
+        } catch (error) {
+            console.error("Failed to delete notification:", error);
+        }
     };
 
-    const handleConfirmClearAll = () => {
-        dispatch(clearNotifications());
-        setIsClearModalOpen(false);
+    const handleConfirmClearAll = async () => {
+        if (!ownerKey) return;
+
+        try {
+            await dispatch(
+                clearNotificationsAsync(ownerKey)
+            ).unwrap();
+
+            setIsClearModalOpen(false);
+        } catch (error) {
+            console.error("Failed to clear notifications:", error);
+        }
     };
 
     const handleClearAll = () => {

@@ -11,6 +11,8 @@ class Notification(models.Model):
         ("project-created", "Project Created"),
         ("project-updated", "Project Updated"),
         ("project-deleted", "Project Deleted"),
+        ("project-status-changed", "Project Status Changed"),
+        ("deadline-reminder", "Deadline Reminder"),
     ]
 
     owner = models.ForeignKey(

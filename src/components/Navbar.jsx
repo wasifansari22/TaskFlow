@@ -4,13 +4,14 @@ import { Link, NavLink, useNavigate } from "react-router";
 import { Bell } from "lucide-react";
 import { mainNavigation, secondaryNavigation } from "../constants/navigation";
 import { selectUnreadNotificationCount } from "../features/notifications/notificationSelectors";
+import { fetchNotificationsAsync, getNotificationOwnerKey } from "../features/notifications/notificationSlice";
 import NotificationPanel from "../features/notifications/components/NotificationPanel";
 import { logout } from "../features/auth/authSlice";
 import { selectCurrentUser } from "../features/auth/authSelectors";
 
 const navigation = [...mainNavigation, ...secondaryNavigation];
 
-function Navbar() {
+const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -21,10 +22,21 @@ function Navbar() {
     const unreadCount = useSelector(selectUnreadNotificationCount);
     const currentUser = useSelector(selectCurrentUser);
 
+    const ownerKey = useSelector((state) =>
+        getNotificationOwnerKey(state.auth)
+    );
+
     const notificationRef = useRef(null);
     const notificationButtonRef = useRef(null);
     const profileRef = useRef(null);
     const profileButtonRef = useRef(null);
+
+    // Fetch notification when the authenticated user is available
+    useEffect(() => {
+        if (ownerKey) {
+            dispatch(fetchNotificationsAsync(ownerKey));
+        }
+    }, [dispatch, ownerKey]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {

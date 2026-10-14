@@ -8,10 +8,9 @@ const apiRequest = async (endpoint, options = {}) => {
         ...options.headers,
     };
 
-    if (token) {
+    if (token && !headers.Authorization) {
         headers.Authorization = `Token ${token}`;
     }
-
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         ...options,
         headers,

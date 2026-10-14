@@ -1,7 +1,15 @@
 import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
-const Modal = ({ isOpen, onClose, title, children, closeOnOverlayClick = true, closeOnEscape = true }) => {
+const Modal = ({
+    isOpen,
+    onClose,
+    title,
+    children,
+    closeOnOverlayClick = true,
+    closeOnEscape = true,
+}) => {
     const modalRef = useRef(null);
     const previousFocusRef = useRef(null);
 
@@ -11,13 +19,17 @@ const Modal = ({ isOpen, onClose, title, children, closeOnOverlayClick = true, c
         previousFocusRef.current = document.activeElement;
 
         const modal = modalRef.current;
+        const previousOverflow = document.body.style.overflow;
+
+        // Prevent the page behind the modal from scrolling.
+        document.body.style.overflow = "hidden";
 
         const getFocusableElements = () => {
             if (!modal) return [];
 
             return Array.from(
                 modal.querySelectorAll(
-                    'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+                    'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
                 )
             );
         };
@@ -44,7 +56,10 @@ const Modal = ({ isOpen, onClose, title, children, closeOnOverlayClick = true, c
             const lastElement =
                 focusableElements[focusableElements.length - 1];
 
-            if (event.shiftKey && document.activeElement === firstElement) {
+            if (
+                event.shiftKey &&
+                document.activeElement === firstElement
+            ) {
                 event.preventDefault();
                 lastElement.focus();
             } else if (
@@ -58,7 +73,7 @@ const Modal = ({ isOpen, onClose, title, children, closeOnOverlayClick = true, c
 
         document.addEventListener("keydown", handleKeyDown);
 
-        requestAnimationFrame(() => {
+        const animationFrame = requestAnimationFrame(() => {
             const focusableElements = getFocusableElements();
 
             if (focusableElements.length > 0) {
@@ -70,6 +85,9 @@ const Modal = ({ isOpen, onClose, title, children, closeOnOverlayClick = true, c
 
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
+            cancelAnimationFrame(animationFrame);
+
+            document.body.style.overflow = previousOverflow;
 
             if (
                 previousFocusRef.current &&
@@ -78,30 +96,33 @@ const Modal = ({ isOpen, onClose, title, children, closeOnOverlayClick = true, c
                 previousFocusRef.current.focus();
             }
         };
-    }, [isOpen, onClose]);
+    }, [isOpen, onClose, closeOnEscape]);
 
     if (!isOpen) return null;
 
     const handleOverlayClick = (event) => {
-        if (closeOnOverlayClick && event.target === event.currentTarget) {
+        if (
+            closeOnOverlayClick &&
+            event.target === event.currentTarget
+        ) {
             onClose();
         }
     };
 
-    return (
+    return createPortal(
         <div
-            className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/50 p-0 backdrop-blur-sm sm:items-center sm:p-4"
+            className="fixed inset-0 z-100 flex items-center justify-center overflow-y-auto bg-slate-900/50 p-2 backdrop-blur-sm sm:p-4"
             onMouseDown={handleOverlayClick}
         >
             <div
                 ref={modalRef}
-                className="max-h-[95vh] w-full overflow-y-auto rounded-t-2xl bg-white shadow-2xl sm:max-w-lg sm:rounded-2xl"
+                className="my-auto flex max-h-[calc(100dvh-1rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]"
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="modal-title"
                 tabIndex="-1"
             >
-                <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-100 bg-white px-5 py-4">
+                <div className="flex shrink-0 items-center justify-between border-b border-slate-100 bg-white px-5 py-4">
                     <h2
                         id="modal-title"
                         className="text-lg font-semibold text-slate-900"
@@ -119,11 +140,12 @@ const Modal = ({ isOpen, onClose, title, children, closeOnOverlayClick = true, c
                     </button>
                 </div>
 
-                <div className="p-5">
+                <div className="min-h-0 overflow-y-auto overscroll-contain p-5">
                     {children}
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };
 

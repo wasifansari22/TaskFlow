@@ -34,8 +34,8 @@ const Dashboard = () => {
             {isLoading ? (
                 <div className="flex min-h-100 items-center justify-center">
                     <div className="text-center">
-                        <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600" />
-                        <p className="mt-4 text-sm font-medium text-slate-600">
+                        <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600 dark:border-slate-700 dark:border-t-blue-400" />
+                        <p className="mt-4 text-sm font-medium text-slate-600 dark:text-slate-300">
                             Loading dashboard...
                         </p>
                     </div>
@@ -43,11 +43,11 @@ const Dashboard = () => {
             ) : hasError ? (
                 <div className="flex min-h-100 items-center justify-center">
                     <div className="max-w-md text-center">
-                        <h2 className="text-lg font-semibold text-slate-900">
+                        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                             Unable to load dashboard
                         </h2>
 
-                        <p className="mt-2 text-sm text-slate-900">
+                        <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
                             {taskError || projectError || "Something went wrong while loading your dashboard."}
                         </p>
 
@@ -67,15 +67,15 @@ const Dashboard = () => {
                 <>
                     {/* Page Header */}
                     <section>
-                        <p className="text-sm font-medium text-blue-600">
+                        <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
                             Overview
                         </p>
 
-                        <h1 className="mt-1 text-3xl font-bold tracking-tight text-slate-900">
+                        <h1 className="mt-1 text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-300">
                             Dashboard
                         </h1>
 
-                        <p className="mt-2 max-w-2xl text-slate-600">
+                        <p className="mt-2 max-w-2xl text-slate-600 dark:text-slate-400">
                             Welcome back. Here's what's happening with your work.
                         </p>
                     </section>

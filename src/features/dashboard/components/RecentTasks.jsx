@@ -17,22 +17,22 @@ const RecentTasks = () => {
         .slice(0, 4);
 
     return (
-        <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
+        <div className="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-slate-200 p-5">
+            <div className="flex items-center justify-between border-b border-slate-200 p-5 dark:border-slate-700">
                 <div>
-                    <h2 className="font-semibold text-slate-900">
+                    <h2 className="font-semibold text-slate-900 dark:text-slate-100">
                         Recent Tasks
                     </h2>
 
-                    <p className="mt-1 text-sm text-slate-500">
+                    <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                         Keep track of your latest work.
                     </p>
                 </div>
 
                 <Link
                     to="/tasks"
-                    className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 transition hover:text-blue-700"
+                    className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 transition hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
                 >
                     View all
                     <ArrowRight size={16} />
@@ -40,19 +40,19 @@ const RecentTasks = () => {
             </div>
 
             {/* Tasks / Empty State */}
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-slate-100 dark:divide-slate-800">
                 {recentTasks.length === 0 ? (
                     <div className="p-8 text-center">
                         <Circle
                             size={32}
-                            className="mx-auto text-slate-300"
+                            className="mx-auto text-slate-300 dark:text-slate-600"
                         />
 
-                        <p className="mt-3 font-medium text-slate-900">
+                        <p className="mt-3 font-medium text-slate-900 dark:text-slate-100">
                             No tasks yet
                         </p>
 
-                        <p className="mt-1 text-sm text-slate-500">
+                        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                             Create your first task to start tracking your work.
                         </p>
 
@@ -67,9 +67,15 @@ const RecentTasks = () => {
                     recentTasks.map((task) => {
                         const project = projects.find(
                             (project) =>
-                                Number(project.id) ===
-                                Number(task.projectId)
+                                Number(project.id) === Number(task.projectId)
                         );
+
+                        const statusStyle =
+                            task.status === "Completed"
+                                ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
+                                : task.status === "In Progress"
+                                    ? "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300"
+                                    : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300";
 
                         return (
                             <div
@@ -91,29 +97,24 @@ const RecentTasks = () => {
                                         ) : (
                                             <Circle
                                                 size={20}
-                                                className="text-slate-400"
+                                                className="text-slate-400 dark:text-slate-500"
                                             />
                                         )}
                                     </div>
 
                                     <div className="min-w-0">
-                                        <p className="truncate text-sm font-medium text-slate-900">
+                                        <p className="truncate text-sm font-medium text-slate-900 dark:text-slate-100">
                                             {task.title}
                                         </p>
 
-                                        <p className="mt-1 truncate text-xs text-slate-500">
+                                        <p className="mt-1 truncate text-xs text-slate-500 dark:text-slate-400">
                                             {project?.name || "No project"}
                                         </p>
                                     </div>
                                 </div>
 
                                 <span
-                                    className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${task.status === "Completed"
-                                            ? "bg-emerald-50 text-emerald-700"
-                                            : task.status === "In Progress"
-                                                ? "bg-amber-50 text-amber-700"
-                                                : "bg-slate-100 text-slate-600"
-                                        }`}
+                                    className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${statusStyle}`}
                                 >
                                     {task.status}
                                 </span>

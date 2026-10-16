@@ -7,21 +7,21 @@ const ProjectProgress = () => {
     const projects = useSelector(selectDashboardProjects);
 
     return (
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="font-semibold text-slate-900">
+                    <h2 className="font-semibold text-slate-900 dark:text-slate-100">
                         Project Progress
                     </h2>
 
-                    <p className="mt-1 text-sm text-slate-500">
+                    <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                         Track the progress of your active projects.
                     </p>
                 </div>
 
                 <Link
                     to="/projects"
-                    className="flex items-center gap-1 text-sm font-medium text-blue-600 transition hover:text-blue-700"
+                    className="flex items-center gap-1 text-sm font-medium text-blue-600 transition hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
                 >
                     View all
                     <ArrowRight size={16} />
@@ -31,18 +31,18 @@ const ProjectProgress = () => {
             <div className="mt-6">
                 {projects.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-12 text-center">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800">
                             <FolderKanban
                                 size={24}
-                                className="text-slate-400"
+                                className="text-slate-400 dark:text-slate-500"
                             />
                         </div>
 
-                        <h3 className="mt-4 text-sm font-semibold text-slate-900">
+                        <h3 className="mt-4 text-sm font-semibold text-slate-900 dark:text-slate-100">
                             No active projects
                         </h3>
 
-                        <p className="mt-1 max-w-sm text-sm text-slate-500">
+                        <p className="mt-1 max-w-sm text-sm text-slate-500 dark:text-slate-400">
                             Create a project to start tracking your progress.
                         </p>
 
@@ -59,25 +59,25 @@ const ProjectProgress = () => {
                             <Link
                                 key={project.id}
                                 to="/projects"
-                                className="block rounded-lg p-2 -m-2 transition hover:bg-slate-50"
+                                className="block -m-2 rounded-lg p-2 transition hover:bg-slate-50 dark:hover:bg-slate-800"
                             >
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm font-medium text-slate-900">
+                                        <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
                                             {project.name}
                                         </p>
 
-                                        <p className="mt-1 text-xs text-slate-500">
+                                        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                                             {project.completedTasks} / {project.totalTasks} tasks
                                         </p>
                                     </div>
 
-                                    <span className="text-sm font-semibold text-slate-700">
+                                    <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                                         {project.progress}%
                                     </span>
                                 </div>
 
-                                <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
+                                <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700">
                                     <div
                                         className="h-full rounded-full bg-blue-600 transition-all"
                                         style={{
@@ -92,6 +92,6 @@ const ProjectProgress = () => {
             </div>
         </div>
     );
-}
+};
 
 export default ProjectProgress;

@@ -5,7 +5,7 @@ const StatCard = ({ title, value, description, icon: Icon, iconStyle = "bg-blue-
     return (
         <Link
             to={to}
-            className="group block rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            className="group block rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800"
         >
             <div className="flex items-start justify-between">
                 <div
@@ -16,20 +16,20 @@ const StatCard = ({ title, value, description, icon: Icon, iconStyle = "bg-blue-
 
                 <ArrowUpRight
                     size={18}
-                    className="text-slate-400 transition group-hover:text-blue-600"
+                    className="text-slate-400 transition group-hover:text-blue-600 dark:text-slate-500 dark:group-hover:text-blue-400"
                 />
             </div>
 
             <div className="mt-4">
-                <p className="text-sm font-medium text-slate-500">
+                <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
                     {title}
                 </p>
 
-                <p className="mt-1 text-3xl font-bold tracking-tight text-slate-900">
+                <p className="mt-1 text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
                     {value}
                 </p>
 
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                     {description}
                 </p>
             </div>

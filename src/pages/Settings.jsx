@@ -104,10 +104,6 @@ const Settings = () => {
     };
 
     useEffect(() => {
-        document.documentElement.classList.toggle("dark", theme === "dark");
-    }, [theme]);
-
-    useEffect(() => {
         setFirstName(currentUser?.first_name || "");
         setLastName(currentUser?.last_name || "");
         setEmail(currentUser?.email || "");

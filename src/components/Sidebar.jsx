@@ -3,10 +3,10 @@ import { mainNavigation, secondaryNavigation, } from "../constants/navigation";
 
 function Sidebar() {
     return (
-        <aside className="hidden w-64 shrink-0 border-r border-slate-200 bg-white lg:flex lg:flex-col">
+        <aside className="hidden w-64 shrink-0 border-r border-slate-200 bg-white transition-colors duration-200 dark:border-slate-700 dark:bg-slate-900 lg:flex lg:flex-col">
             <Link
                 to="/"
-                className="flex h-20 items-center border-b border-slate-200 px-5"
+                className="flex h-20 items-center border-b border-slate-200 px-5 dark:border-slate-700"
                 aria-label="Go to Dashboard"
             >
                 <div className="flex items-center gap-3">
@@ -15,11 +15,11 @@ function Sidebar() {
                     </div>
 
                     <div>
-                        <h1 className="text-lg font-bold leading-tight tracking-tight text-slate-900">
+                        <h1 className="text-lg font-bold leading-tight tracking-tight text-slate-900 dark:text-slate-100">
                             TaskFlow
                         </h1>
 
-                        <p className="mt-0.5 text-xs text-slate-500">
+                        <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                             Work smarter
                         </p>
                     </div>
@@ -33,8 +33,8 @@ function Sidebar() {
                         to={item.path}
                         className={({ isActive }) =>
                             `flex items-center rounded-lg px-3 py-2.5 text-sm font-medium transition ${isActive
-                                ? "bg-blue-50 text-blue-700"
-                                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                                ? "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
+                                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
                             }`
                         }
                     >
@@ -50,8 +50,8 @@ function Sidebar() {
                         to={item.path}
                         className={({ isActive }) =>
                             `flex items-center rounded-lg px-3 py-2.5 text-sm font-medium transition ${isActive
-                                ? "bg-blue-50 text-blue-700"
-                                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                                ? "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
+                                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
                             }`
                         }
                     >
@@ -61,17 +61,17 @@ function Sidebar() {
             </nav>
 
             <div className="border-t border-slate-200 p-4">
-                <div className="rounded-lg bg-slate-50 p-3">
-                    <p className="text-sm font-medium text-slate-900">
+                <div className="rounded-lg bg-slate-50 p-3 dark:bg-slate-800">
+                    <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
                         TaskFlow
                     </p>
 
-                    <p className="mt-1 text-xs text-slate-500">
+                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                         Stay organized. Get things done.
                     </p>
                 </div>
             </div>
-        </aside>
+        </aside >
     );
 }
 

@@ -101,12 +101,12 @@ const Navbar = () => {
 
     return (
         <>
-            <header className="relative flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-6">
+            <header className="relative flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4 transition-colors duration-200 dark:border-slate-700 dark:bg-slate-900 sm:px-6">
                 <div className="flex items-center gap-3">
                     <button
                         type="button"
                         onClick={() => setIsMenuOpen((previous) => !previous)}
-                        className="rounded-lg p-2 text-slate-600 transition hover:bg-slate-100 lg:hidden"
+                        className="rounded-lg p-2 text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 lg:hidden"
                         aria-label="Toggle navigation menu"
                         aria-expanded={isMenuOpen}
                     >
@@ -116,10 +116,10 @@ const Navbar = () => {
                     </button>
 
                     <div>
-                        <h2 className="text-sm font-semibold text-slate-900">
+                        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                             Workspace
                         </h2>
-                        <p className="hidden text-xs text-slate-500 sm:block">
+                        <p className="hidden text-xs text-slate-500 dark:text-slate-400 sm:block">
                             Personal workspace
                         </p>
                     </div>
@@ -133,7 +133,7 @@ const Navbar = () => {
                             onClick={() =>
                                 setIsNotificationOpen((previous) => !previous)
                             }
-                            className="relative rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 Workspace cursor-pointer"
+                            className="relative cursor-pointer rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
                             aria-label={
                                 unreadCount > 0
                                     ? `Notifications, ${unreadCount} unread`
@@ -168,7 +168,7 @@ const Navbar = () => {
                             onClick={() =>
                                 setIsProfileOpen((previous) => !previous)
                             }
-                            className="flex items-center gap-3 rounded-lg p-1.5 transition hover:bg-slate-50 cursor-pointer"
+                            className="flex cursor-pointer items-center gap-3 rounded-lg p-1.5 transition hover:bg-slate-50 dark:hover:bg-slate-800"
                             aria-label="Open profile menu"
                             aria-expanded={isProfileOpen}
                             aria-haspopup="menu"
@@ -185,11 +185,11 @@ const Navbar = () => {
                             </div>
 
                             <div className="hidden text-left sm:block">
-                                <p className="text-sm font-medium text-slate-900">
+                                <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
                                     {currentUser?.name || "User"}
                                 </p>
 
-                                <p className="text-xs text-slate-500">
+                                <p className="text-xs text-slate-500 dark:text-slate-400">
                                     Developer
                                 </p>
                             </div>
@@ -198,14 +198,14 @@ const Navbar = () => {
                         {isProfileOpen && (
                             <div
                                 role="menu"
-                                className="absolute right-0 top-full z-50 mt-2 w-64 rounded-xl border border-slate-200 bg-white p-2 shadow-lg"
+                                className="absolute right-0 top-full z-50 mt-2 w-64 rounded-xl border border-slate-200 bg-white p-2 shadow-lg dark:border-slate-700 dark:bg-slate-900"
                             >
-                                <div className="border-b border-slate-100 px-3 py-3">
-                                    <p className="text-sm font-semibold text-slate-900">
+                                <div className="border-b border-slate-100 px-3 py-3 dark:border-slate-700">
+                                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                                         {currentUser?.name || "User"}
                                     </p>
 
-                                    <p className="mt-1 truncate text-xs text-slate-500">
+                                    <p className="mt-1 truncate text-xs text-slate-500 dark:text-slate-400">
                                         {currentUser?.email || ""}
                                     </p>
                                 </div>
@@ -214,7 +214,7 @@ const Navbar = () => {
                                     type="button"
                                     role="menuitem"
                                     onClick={handleLogout}
-                                    className="mt-1 w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium text-rose-600 transition hover:bg-rose-50"
+                                    className="mt-1 w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium text-rose-600 transition hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950"
                                 >
                                     Log out
                                 </button>
@@ -225,7 +225,7 @@ const Navbar = () => {
             </header>
 
             {isMenuOpen && (
-                <div className="border-b border-slate-200 bg-white p-4 lg:hidden">
+                <div className="border-b border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900 lg:hidden">
                     <Link
                         to="/"
                         onClick={() => setIsMenuOpen(false)}
@@ -237,11 +237,11 @@ const Navbar = () => {
                         </div>
 
                         <div>
-                            <p className="text-base font-bold leading-tight tracking-tight text-slate-900">
+                            <p className="text-base font-bold leading-tight tracking-tight text-slate-900 dark:text-slate-100">
                                 TaskFlow
                             </p>
 
-                            <p className="mt-0.5 text-xs text-slate-500">
+                            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                                 Work smarter
                             </p>
                         </div>
@@ -255,8 +255,8 @@ const Navbar = () => {
                                 onClick={() => setIsMenuOpen(false)}
                                 className={({ isActive }) =>
                                     `block rounded-lg px-3 py-2.5 text-sm font-medium transition ${isActive
-                                        ? "bg-blue-50 text-blue-700"
-                                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                                        ? "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
+                                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
                                     }`
                                 }
                             >

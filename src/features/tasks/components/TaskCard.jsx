@@ -126,13 +126,13 @@ const TaskCard = ({ task, onEdit }) => {
 
     const priorityStyle =
         task.priority === "High"
-            ? "bg-rose-50 text-rose-700"
+            ? "bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300"
             : task.priority === "Medium"
-                ? "bg-amber-50 text-amber-700"
-                : "bg-slate-100 text-slate-600";
+                ? "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300"
+                : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300";
 
     return (
-        <div className="group rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:shadow-md">
+        <div className="group rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:shadow-md dark:border-slate-700 dark:bg-slate-900">
             <div className="flex items-start gap-4">
                 <div className="mt-0.5 shrink-0">
                     {statusIcon}
@@ -143,14 +143,14 @@ const TaskCard = ({ task, onEdit }) => {
                         <div>
                             <h3
                                 className={`font-semibold ${task.status === "Completed"
-                                    ? "text-slate-400 line-through"
-                                    : "text-slate-900"
+                                    ? "text-slate-400 line-through dark:text-slate-500"
+                                    : "text-slate-900 dark:text-slate-100"
                                     }`}
                             >
                                 {task.title}
                             </h3>
 
-                            <p className="mt-1 text-sm text-slate-500">
+                            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                                 {task.description}
                             </p>
                         </div>
@@ -164,7 +164,7 @@ const TaskCard = ({ task, onEdit }) => {
 
                     {/* dropdown */}
                     <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="flex items-center gap-4 text-xs text-slate-500">
+                        <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
                             <span className="flex items-center gap-1.5">
                                 <CalendarDays size={14} />
                                 {task.dueDate}
@@ -175,7 +175,7 @@ const TaskCard = ({ task, onEdit }) => {
                             <button
                                 type="button"
                                 onClick={() => onEdit(task)}
-                                className="rounded-lg p-2 text-slate-400 transition hover:bg-blue-50 hover:text-blue-600"
+                                className="rounded-lg p-2 text-slate-400 transition hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950 dark:hover:text-blue-400"
                                 aria-label={`Edit ${task.title}`}
                             >
                                 <Pencil size={16} />
@@ -184,7 +184,7 @@ const TaskCard = ({ task, onEdit }) => {
                             <select
                                 value={task.status}
                                 onChange={handleStatusChange}
-                                className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:focus:ring-blue-900"
                                 aria-label={`Change status for ${task.title}`}
                             >
                                 <option value="Pending">Pending</option>
@@ -195,7 +195,7 @@ const TaskCard = ({ task, onEdit }) => {
                             <button
                                 type="button"
                                 onClick={() => setShowDeleteModal(true)}
-                                className="rounded-lg p-2 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600"
+                                className="rounded-lg p-2 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950 dark:hover:text-rose-400"
                                 aria-label={`Delete ${task.title}`}
                             >
                                 <Trash2 size={16} />
@@ -211,9 +211,9 @@ const TaskCard = ({ task, onEdit }) => {
                 onClose={() => setShowDeleteModal(false)}
                 title="Delete task?"
             >
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-slate-600 dark:text-slate-400">
                     Are you sure you want to delete{" "}
-                    <span className="font-medium text-slate-900">
+                    <span className="font-medium text-slate-900 dark:text-slate-600">
                         "{task.title}"
                     </span>
                     ? This action cannot be undone.
@@ -223,7 +223,7 @@ const TaskCard = ({ task, onEdit }) => {
                     <button
                         type="button"
                         onClick={() => setShowDeleteModal(false)}
-                        className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                        className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer"
                     >
                         Cancel
                     </button>
@@ -231,7 +231,7 @@ const TaskCard = ({ task, onEdit }) => {
                     <button
                         type="button"
                         onClick={handleDelete}
-                        className="rounded-lg bg-rose-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-rose-700"
+                        className="rounded-lg bg-rose-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-rose-700 cursor-pointer"
                     >
                         Delete
                     </button>

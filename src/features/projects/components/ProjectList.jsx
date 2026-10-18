@@ -22,12 +22,12 @@ function ProjectList({ filter, search, onEdit, onClearFilters }) {
         const hasProjects = projects.length > 0;
 
         return (
-            <div className="rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center">
-                <p className="font-medium text-slate-900">
+            <div className="rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-slate-700 dark:bg-slate-900">
+                <p className="font-medium text-slate-900 dark:text-slate-100">
                     {hasProjects ? "No projects found" : "No projects yet"}
                 </p>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                     {hasProjects
                         ? "Try changing your search or filter."
                         : "Create your first project to start organizing your work."
@@ -38,7 +38,7 @@ function ProjectList({ filter, search, onEdit, onClearFilters }) {
                     <button
                         type="button"
                         onClick={onClearFilters}
-                        className="mt-4 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 cursor-pointer"
+                        className="mt-4 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer"
                     >
                         Clear search & filters
                     </button>

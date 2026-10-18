@@ -141,7 +141,7 @@ function ProjectForm({ project = null, onClose }) {
             <div>
                 <label
                     htmlFor="project-name"
-                    className="mb-1.5 block text-sm font-medium text-slate-700"
+                    className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300"
                 >
                     Project name
                 </label>
@@ -152,10 +152,10 @@ function ProjectForm({ project = null, onClose }) {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="e.g. E-commerce Website"
-                    className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-blue-900"
                 />
                 {validationError && (
-                    <p className="mt-1.5 text-xs text-red-600" role="alert">
+                    <p className="mt-1.5 text-xs text-red-600 dark:text-red-400" role="alert">
                         {validationError}
                     </p>
                 )}
@@ -164,7 +164,7 @@ function ProjectForm({ project = null, onClose }) {
             <div>
                 <label
                     htmlFor="project-description"
-                    className="mb-1.5 block text-sm font-medium text-slate-700"
+                    className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300"
                 >
                     Description
                 </label>
@@ -176,7 +176,7 @@ function ProjectForm({ project = null, onClose }) {
                     onChange={handleChange}
                     rows={3}
                     placeholder="What is this project about?"
-                    className="w-full resize-none rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="w-full resize-none rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-blue-900"
                 />
             </div>
 
@@ -184,7 +184,7 @@ function ProjectForm({ project = null, onClose }) {
                 <div>
                     <label
                         htmlFor="project-priority"
-                        className="mb-1.5 block text-sm font-medium text-slate-700"
+                        className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300"
                     >
                         Priority
                     </label>
@@ -194,7 +194,7 @@ function ProjectForm({ project = null, onClose }) {
                         name="priority"
                         value={formData.priority}
                         onChange={handleChange}
-                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-blue-900"
                     >
                         <option value="High">High</option>
                         <option value="Medium">Medium</option>
@@ -205,7 +205,7 @@ function ProjectForm({ project = null, onClose }) {
                 <div>
                     <label
                         htmlFor="project-due-date"
-                        className="mb-1.5 block text-sm font-medium text-slate-700"
+                        className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300"
                     >
                         Due date
                     </label>
@@ -216,7 +216,7 @@ function ProjectForm({ project = null, onClose }) {
                         type="date"
                         value={formData.dueDate}
                         onChange={handleChange}
-                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-blue-900"
                     />
                 </div>
             </div>
@@ -226,7 +226,7 @@ function ProjectForm({ project = null, onClose }) {
                     type="button"
                     onClick={onClose}
                     disabled={isSubmitting}
-                    className="rounded-lg px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 cursor-pointer disabled:opacity-50"
+                    className="rounded-lg px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer disabled:opacity-50"
                 >
                     Cancel
                 </button>

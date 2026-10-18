@@ -1,8 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const savedSettings = JSON.parse(localStorage.getItem("taskflow-settings") || "null");
-
-const initialState = savedSettings || {
+const defaultSettings = {
     theme: "light",
     notifications: {
         taskUpdates: true,
@@ -12,6 +10,27 @@ const initialState = savedSettings || {
     taskPreferences: {
         defaultPriority: "Medium",
         defaultStatus: "Pending",
+    },
+};
+
+const savedSettings = (() => {
+    try {
+        return JSON.parse(localStorage.getItem("taskflow-settings") || "null");
+    } catch {
+        return null;
+    }
+})();
+
+const initialState = {
+    ...defaultSettings,
+    ...(savedSettings || {}),
+    notifications: {
+        ...defaultSettings.notifications,
+        ...(savedSettings?.notifications || {}),
+    },
+    taskPreferences: {
+        ...defaultSettings.taskPreferences,
+        ...(savedSettings?.taskPreferences || {}),
     },
 };
 

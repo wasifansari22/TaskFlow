@@ -41,7 +41,7 @@ const ProjectDetails = () => {
     if (projectStatus === "loading" || projectStatus === "idle") {
         return (
             <div className="flex min-h-[60vh] items-center justify-center px-4">
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-slate-500 dark:text-slate-400">
                     Loading project...
                 </p>
             </div>
@@ -51,11 +51,11 @@ const ProjectDetails = () => {
     if (projectStatus === "failed") {
         return (
             <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
-                <h1 className="text-2xl font-bold text-slate-900">
+                <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                     Unable to load project
                 </h1>
 
-                <p className="mt-2 max-w-md text-sm text-slate-500">
+                <p className="mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
                     {projectError ||
                         "Something went wrong while loading this project."}
                 </p>
@@ -73,7 +73,7 @@ const ProjectDetails = () => {
 
                 <Link
                     to="/projects"
-                    className="mt-3 text-sm font-medium text-slate-500 transition hover:text-slate-900"
+                    className="mt-3 text-sm font-medium text-slate-500 transition hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
                 >
                     Back to Projects
                 </Link>
@@ -114,19 +114,21 @@ const ProjectDetails = () => {
         (task) => task.status === "Pending"
     ).length;
 
+
     const priorityStyle =
         project.priority === "High"
-            ? "bg-rose-50 text-rose-700"
+            ? "bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300"
             : project.priority === "Medium"
-                ? "bg-amber-50 text-amber-700"
-                : "bg-slate-100 text-slate-600";
+                ? "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300"
+                : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300";
 
     const statusStyle =
         project.status === "Completed"
-            ? "bg-emerald-50 text-emerald-700"
+            ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
             : project.status === "On Hold"
-                ? "bg-slate-100 text-slate-600"
-                : "bg-blue-50 text-blue-700";
+                ? "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                : "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300";
+
 
     return (
         <div className="space-y-6 p-4 sm:p-6">
@@ -140,12 +142,12 @@ const ProjectDetails = () => {
             </Link>
 
             {/* Project Header */}
-            <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900 sm:p-6">
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
 
                     <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
-                            <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+                            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 sm:text-3xl">
                                 {project.name}
                             </h1>
 
@@ -162,11 +164,11 @@ const ProjectDetails = () => {
                             </span>
                         </div>
 
-                        <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-500">
+                        <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-500 dark:text-slate-400">
                             {project.description}
                         </p>
 
-                        <div className="mt-4 flex items-center gap-2 text-sm text-slate-500">
+                        <div className="mt-4 flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
                             <CalendarDays size={16} />
 
                             <span>
@@ -178,16 +180,16 @@ const ProjectDetails = () => {
                     {/* Progress */}
                     <div className="w-full shrink-0 lg:w-56">
                         <div className="mb-2 flex items-center justify-between text-sm">
-                            <span className="font-medium text-slate-600">
+                            <span className="font-medium text-slate-600 dark:text-slate-300">
                                 Progress
                             </span>
 
-                            <span className="font-semibold text-slate-900">
+                            <span className="font-semibold text-slate-900 dark:text-slate-100">
                                 {progress}%
                             </span>
                         </div>
 
-                        <div className="h-2.5 overflow-hidden rounded-full bg-slate-100">
+                        <div className="h-2.5 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
                             <div
                                 className="h-full rounded-full bg-blue-500 transition-all duration-500"
                                 style={{
@@ -196,7 +198,7 @@ const ProjectDetails = () => {
                             />
                         </div>
 
-                        <p className="mt-2 text-xs text-slate-400">
+                        <p className="mt-2 text-xs text-slate-400 dark:text-slate-400">
                             {completedTasks} of{" "}
                             {projectTasks.length} tasks completed
                         </p>
@@ -207,18 +209,18 @@ const ProjectDetails = () => {
             {/* Statistics */}
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
-                <div className="rounded-xl border border-slate-200 bg-white p-5">
-                    <p className="text-sm text-slate-500">
+                <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
                         Total Tasks
                     </p>
 
-                    <p className="mt-2 text-2xl font-bold text-slate-900">
+                    <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-slate-100">
                         {projectTasks.length}
                     </p>
                 </div>
 
-                <div className="rounded-xl border border-slate-200 bg-white p-5">
-                    <p className="text-sm text-slate-500">
+                <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
                         Completed
                     </p>
 
@@ -227,8 +229,8 @@ const ProjectDetails = () => {
                     </p>
                 </div>
 
-                <div className="rounded-xl border border-slate-200 bg-white p-5">
-                    <p className="text-sm text-slate-500">
+                <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
                         In Progress
                     </p>
 
@@ -237,8 +239,8 @@ const ProjectDetails = () => {
                     </p>
                 </div>
 
-                <div className="rounded-xl border border-slate-200 bg-white p-5">
-                    <p className="text-sm text-slate-500">
+                <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
                         Pending
                     </p>
 
@@ -249,39 +251,39 @@ const ProjectDetails = () => {
             </div>
 
             {/* Project Tasks */}
-            <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
+            <section className="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
 
-                <div className="border-b border-slate-100 p-5 sm:p-6">
-                    <h2 className="text-lg font-semibold text-slate-900">
+                <div className="border-b border-slate-100 p-5 dark:border-slate-800 sm:p-6">
+                    <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                         Project Tasks
                     </h2>
 
-                    <p className="mt-1 text-sm text-slate-500">
+                    <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                         Tasks assigned to this project.
                     </p>
                 </div>
 
                 {projectTasks.length === 0 ? (
                     <div className="flex flex-col items-center justify-center px-5 py-12 text-center">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
                             <Circle size={22} />
                         </div>
 
-                        <h3 className="mt-4 font-medium text-slate-900">
+                        <h3 className="mt-4 font-medium text-slate-900 dark:text-slate-100">
                             No tasks yet
                         </h3>
 
-                        <p className="mt-1 max-w-sm text-sm text-slate-500">
+                        <p className="mt-1 max-w-sm text-sm text-slate-500 dark:text-slate-400">
                             There are no tasks assigned to this project yet.
                         </p>
                     </div>
                 ) : (
-                    <div className="divide-y divide-slate-100">
+                    <div className="divide-y divide-slate-200 dark:divide-slate-800">
 
                         {projectTasks.map((task) => (
                             <div
                                 key={task.id}
-                                className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6"
+                                className="flex flex-col gap-4 p-5 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between sm:p-6"
                             >
                                 <div className="flex min-w-0 items-start gap-3">
 
@@ -294,7 +296,7 @@ const ProjectDetails = () => {
                                         ) : task.status === "In Progress" ? (
                                             <Clock3
                                                 size={20}
-                                                className="text-blue-500"
+                                                className="text-amber-500"
                                             />
                                         ) : (
                                             <Circle
@@ -307,18 +309,18 @@ const ProjectDetails = () => {
                                     <div className="min-w-0">
                                         <h3
                                             className={`font-medium ${task.status === "Completed"
-                                                ? "text-slate-400 line-through"
-                                                : "text-slate-900"
+                                                ? "text-slate-400 dark:text-slate-500 line-through"
+                                                : "text-slate-900 dark:text-slate-100"
                                                 }`}
                                         >
                                             {task.title}
                                         </h3>
 
-                                        <p className="mt-1 text-sm text-slate-500">
+                                        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                                             {task.description}
                                         </p>
 
-                                        <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-400">
+                                        <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-400 dark:text-slate-500">
                                             <span>
                                                 Due {task.dueDate}
                                             </span>
@@ -334,10 +336,10 @@ const ProjectDetails = () => {
 
                                 <span
                                     className={`w-fit shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${task.status === "Completed"
-                                        ? "bg-emerald-50 text-emerald-700"
+                                        ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
                                         : task.status === "In Progress"
-                                            ? "bg-blue-50 text-blue-700"
-                                            : "bg-amber-50 text-amber-700"
+                                            ? "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300"
+                                            : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
                                         }`}
                                 >
                                     {task.status}

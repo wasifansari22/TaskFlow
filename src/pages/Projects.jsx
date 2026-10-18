@@ -32,25 +32,25 @@ const Projects = () => {
             label: "All Projects",
             value: projects.length,
             icon: FolderKanban,
-            style: "bg-blue-50 text-blue-600",
+            style: "bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300",
         },
         {
             label: "Active",
             value: activeProjects.length,
             icon: FolderKanban,
-            style: "bg-emerald-50 text-emerald-600",
+            style: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-300",
         },
         {
             label: "On Hold",
             value: onHoldProjects.length,
             icon: PauseCircle,
-            style: "bg-amber-50 text-amber-600",
+            style: "bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-300",
         },
         {
             label: "Completed",
             value: completedProjects.length,
             icon: CheckCircle2,
-            style: "bg-slate-100 text-slate-600",
+            style: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
         },
     ],
         [
@@ -77,11 +77,11 @@ const Projects = () => {
                         Workspace
                     </p>
 
-                    <h1 className="mt-1 text-3xl font-bold tracking-tight text-slate-900">
+                    <h1 className="mt-1 text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-300">
                         Projects
                     </h1>
 
-                    <p className="mt-2 text-slate-600">
+                    <p className="mt-2 text-slate-600 dark:text-slate-400">
                         Organize your work and track project progress.
                     </p>
                 </div>
@@ -107,7 +107,7 @@ const Projects = () => {
                     return (
                         <div
                             key={stat.label}
-                            className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                            className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-slate-700 dark:bg-slate-900"
                         >
                             <div className="flex items-center gap-3">
                                 <div
@@ -117,11 +117,11 @@ const Projects = () => {
                                 </div>
 
                                 <div>
-                                    <p className="text-sm text-slate-500">
+                                    <p className="text-sm text-slate-500 dark:text-slate-400">
                                         {stat.label}
                                     </p>
 
-                                    <p className="text-2xl font-bold text-slate-900">
+                                    <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                                         {stat.value}
                                     </p>
                                 </div>
@@ -156,7 +156,7 @@ const Projects = () => {
             </Modal>
 
             {/* Search + Filters */}
-            <section className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:flex-row lg:items-center lg:justify-between">
+            <section className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 lg:flex-row lg:items-center lg:justify-between">
                 <div className="relative w-full lg:max-w-md">
                     <Search
                         size={18}
@@ -170,19 +170,19 @@ const Projects = () => {
                             setSearch(event.target.value)
                         }
                         placeholder="Search projects..."
-                        className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
+                        className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-800 dark:focus:ring-blue-900"
                     />
                 </div>
 
-                <div className="flex gap-1 overflow-x-auto rounded-lg bg-slate-100 p-1">
+                <div className="flex gap-1 overflow-x-auto rounded-lg bg-slate-100 p-1 dark:bg-slate-800">
                     {filters.map((item) => (
                         <button
                             key={item}
                             type="button"
                             onClick={() => setFilter(item)}
                             className={`whitespace-nowrap rounded-md px-3 py-2 text-xs font-medium transition cursor-pointer ${filter === item
-                                ? "bg-white text-blue-600 shadow-sm"
-                                : "text-slate-500 hover:text-slate-900"
+                                ? "bg-white text-blue-600 shadow-sm dark:bg-slate-700 dark:text-blue-300"
+                                : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
                                 }`}
                         >
                             {item}
@@ -193,21 +193,21 @@ const Projects = () => {
 
             {/* Project List */}
             {projectStatus === "loading" && (
-                <div className="rounded-xl border border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
+                <div className="rounded-xl border border-slate-200 bg-white p-6 text-center text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400">
                     Loading projects...
                 </div>
             )}
 
             {projectStatus === "failed" && (
-                <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center">
-                    <p className="text-sm text-red-600">
+                <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center dark:bg-slate-900">
+                    <p className="text-sm text-red-600 dark:text-slate-300">
                         {projectError || "Failed to load projects. Please try again."}
                     </p>
 
                     <button
                         type="button"
                         onClick={() => dispatch(fetchProjects())}
-                        className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
+                        className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700 cursor-pointer"
                     >
                         Try Again
                     </button>

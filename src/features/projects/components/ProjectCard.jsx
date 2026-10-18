@@ -92,36 +92,36 @@ const ProjectCard = ({ project, onEdit }) => {
 
     const priorityStyle =
         project.priority === "High"
-            ? "bg-rose-50 text-rose-700"
+            ? "bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300"
             : project.priority === "Medium"
-                ? "bg-amber-50 text-amber-700"
-                : "bg-slate-100 text-slate-600";
+                ? "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300"
+                : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300";
 
     const statusStyle =
         project.status === "Completed"
-            ? "bg-emerald-50 text-emerald-700"
+            ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
             : project.status === "On Hold"
-                ? "bg-slate-100 text-slate-600"
-                : "bg-blue-50 text-blue-700";
+                ? "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                : "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300";
 
     return (
-        <article className="group rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
+        <article className="group rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md dark:border-slate-700 dark:bg-slate-900">
             {/* Header */}
             <div className="flex items-start justify-between gap-4">
                 <Link
                     to={`/projects/${project.id}`}
                     className="flex min-w-0 items-start gap-3 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                 >
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 transition group-hover:bg-blue-100">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 transition group-hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300 dark:group-hover:bg-blue-900">
                         <FolderKanban size={21} />
                     </div>
 
                     <div className="min-w-0">
-                        <h2 className="truncate font-semibold text-slate-900 transition group-hover:text-blue-600">
+                        <h2 className="truncate font-semibold text-slate-900 transition group-hover:text-blue-600 dark:text-slate-100">
                             {project.name}
                         </h2>
 
-                        <p className="mt-1 line-clamp-2 text-sm leading-5 text-slate-500">
+                        <p className="mt-1 line-clamp-2 text-sm leading-5 text-slate-500 dark:text-slate-400">
                             {project.description}
                         </p>
                     </div>
@@ -137,16 +137,16 @@ const ProjectCard = ({ project, onEdit }) => {
             {/* Progress placeholder */}
             <div className="mt-6">
                 <div className="mb-2 flex items-center justify-between text-xs">
-                    <span className="font-medium text-slate-600">
+                    <span className="font-medium text-slate-600 dark:text-slate-300">
                         Progress
                     </span>
 
-                    <span className="font-medium text-slate-600">
+                    <span className="font-medium text-slate-600 dark:text-slate-300">
                         {progress}%
                     </span>
                 </div>
 
-                <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+                <div className="h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
                     <div
                         className="h-full rounded-full bg-blue-500 transition-all duration-500"
                         style={{ width: `${progress}%` }}
@@ -160,8 +160,8 @@ const ProjectCard = ({ project, onEdit }) => {
             </div>
 
             {/* Footer */}
-            <div className="mt-5 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex items-center gap-1.5 text-xs text-slate-500">
+            <div className="mt-5 flex flex-col gap-3 border-t border-slate-100 pt-4 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
                     <CalendarDays size={14} />
                     {project.dueDate || "No due date"}
                 </div>
@@ -176,7 +176,7 @@ const ProjectCard = ({ project, onEdit }) => {
                     <select
                         value={project.status}
                         onChange={handleStatusChange}
-                        className="rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-xs font-medium text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                        className="rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-xs font-medium text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:focus:ring-blue-900"
                         aria-label={`Change status for ${project.name}`}
                     >
                         <option value="Active">Active</option>
@@ -187,7 +187,7 @@ const ProjectCard = ({ project, onEdit }) => {
                     <button
                         type="button"
                         onClick={() => onEdit(project)}
-                        className="rounded-lg p-2 text-slate-400 transition hover:bg-blue-50 hover:text-blue-600"
+                        className="rounded-lg p-2 text-slate-400 transition hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950 dark:hover:text-blue-300"
                         aria-label={`Edit ${project.name}`}
                     >
                         <Pencil size={16} />
@@ -199,7 +199,7 @@ const ProjectCard = ({ project, onEdit }) => {
                             event.stopPropagation();
                             setShowDeleteModal(true);
                         }}
-                        className="rounded-lg p-2 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600"
+                        className="rounded-lg p-2 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950 dark:hover:text-rose-300"
                         aria-label={`Delete ${project.name}`}
                     >
                         <Trash2 size={16} />
@@ -212,9 +212,9 @@ const ProjectCard = ({ project, onEdit }) => {
                 onClose={() => setShowDeleteModal(false)}
                 title="Delete project?"
             >
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-slate-600 dark:text-slate-400">
                     Are you sure you want to delete{" "}
-                    <span className="font-medium text-slate-900">
+                    <span className="font-medium text-slate-900 dark:text-slate-600">
                         "{project.name}"
                     </span>
                     ? This action cannot be undone.
@@ -224,7 +224,7 @@ const ProjectCard = ({ project, onEdit }) => {
                     <button
                         type="button"
                         onClick={() => setShowDeleteModal(false)}
-                        className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                        className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer"
                     >
                         Cancel
                     </button>
@@ -232,7 +232,7 @@ const ProjectCard = ({ project, onEdit }) => {
                     <button
                         type="button"
                         onClick={handleDelete}
-                        className="rounded-lg bg-rose-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-rose-700"
+                        className="rounded-lg bg-rose-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-rose-700 cursor-pointer"
                     >
                         Delete
                     </button>

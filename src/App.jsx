@@ -2,29 +2,33 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { BrowserRouter } from "react-router";
 import AppRoutes from "./routes/AppRoutes";
+import { selectTheme } from "./features/settings/settingsSelectors";
 
 const App = () => {
-  const theme = useSelector((state) => state.settings.theme);
+  const theme = useSelector(selectTheme);
 
   useEffect(() => {
     const root = document.documentElement
-    const systemPreference = window.matchMedia("(prefers-color-scheme: dark)");
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
     const applyTheme = () => {
-      const shouldUseDark =
+      const isDark =
         theme === "dark" ||
         (theme === "system" && systemPreference.matches);
 
-      root.classList.toggle("dark", shouldUseDark);
+      root.classList.toggle("dark", isDark);
+      root.style.colorScheme = isDark ? "dark" : "light";
     };
 
     applyTheme();
 
-    systemPreference.addEventListener("change", applyTheme);
+    if (theme === "system") {
+      mediaQuery.addEventListener("change", applyTheme);
 
-    return () => {
-      systemPreference.removeEventListener("change", applyTheme);
-    };
+      return () => {
+        mediaQuery.removeEventListener("change", applyTheme);
+      };
+    }
   }, [theme]);
 
   return (

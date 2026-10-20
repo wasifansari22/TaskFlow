@@ -65,10 +65,7 @@ const NotificationPanel = ({ onClose }) => {
         if (!ownerKey) return;
 
         try {
-            await dispatch(
-                clearNotificationsAsync(ownerKey)
-            ).unwrap();
-
+            await dispatch(clearNotificationsAsync(ownerKey)).unwrap();
             setIsClearModalOpen(false);
         } catch (error) {
             console.error("Failed to clear notifications:", error);
@@ -190,8 +187,10 @@ const NotificationPanel = ({ onClose }) => {
                     <div className="flex justify-end gap-3">
                         <button
                             type="button"
-                            onClick={() => setIsClearModalOpen(false)}
-                            className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                            onClick={() => {
+                                setIsClearModalOpen(false)
+                            }}
+                            className="rounded-lg border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
                         >
                             Cancel
                         </button>

@@ -200,6 +200,7 @@ const initialState = {
     ownerKey: null,
     status: "idle",
     error: null,
+    fetchRequestId: null,
 };
 
 const notificationSlice = createSlice({
@@ -249,17 +250,26 @@ const notificationSlice = createSlice({
             })
 
             .addCase(fetchNotificationsAsync.pending, (state, action) => {
-                prepareOwner(state, ownerKeyFromArg(action.meta.arg));
+                const ownerKey = ownerKeyFromArg(action.meta.arg);
+                prepareOwner(state, ownerKey);
+                state.fetchRequestId = action.meta.requestId;
             })
             .addCase(fetchNotificationsAsync.fulfilled, (state, action) => {
+                // Ignore a fetch that was superseded by another fetch or a clear-all.
+                if (state.fetchRequestId !== action.meta.requestId) return;
                 if (state.ownerKey !== action.payload.ownerKey) return;
+
                 state.notifications = action.payload.notifications;
                 state.status = "succeeded";
                 state.error = null;
+                state.fetchRequestId = null;
             })
             .addCase(fetchNotificationsAsync.rejected, (state, action) => {
+                if (state.fetchRequestId !== action.meta.requestId) return;
                 if (state.ownerKey !== ownerKeyFromArg(action.meta.arg)) return;
+
                 setFailure(state, action);
+                state.fetchRequestId = null;
             })
 
             .addCase(createNotificationAsync.pending, (state, action) => {
@@ -332,6 +342,9 @@ const notificationSlice = createSlice({
             })
             .addCase(clearNotificationsAsync.fulfilled, (state, action) => {
                 if (state.ownerKey !== action.payload.ownerKey) return;
+
+                // Prevent an older fetch from repopulating cleared notifications.
+                state.fetchRequestId = null;
                 state.notifications = [];
                 state.status = "succeeded";
                 state.error = null;

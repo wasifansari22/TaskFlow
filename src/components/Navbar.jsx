@@ -40,28 +40,29 @@ const Navbar = () => {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
+            const clickedElement = event.target;
+            const clickedDialog = clickedElement.closest?.('[role="dialog"]');
+
+            if (clickedDialog) {
+                return;
+            }
+
             if (
                 notificationRef.current &&
-                !notificationRef.current.contains(event.target)
+                !notificationRef.current.contains(clickedElement)
             ) {
                 setIsNotificationOpen(false);
             }
 
             if (
                 profileRef.current &&
-                !profileRef.current.contains(event.target)
+                !profileRef.current.contains(clickedElement)
             ) {
                 setIsProfileOpen(false);
             }
         };
-
-        document.addEventListener("mousedown", handleClickOutside);
-
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
     }, []);
-
+ 
     useEffect(() => {
         const handleKeyDown = (event) => {
             if (event.key !== "Escape") return;

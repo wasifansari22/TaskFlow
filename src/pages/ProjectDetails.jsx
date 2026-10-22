@@ -51,13 +51,12 @@ const ProjectDetails = () => {
     if (projectStatus === "failed") {
         return (
             <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
-                <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-300">
                     Unable to load project
                 </h1>
 
-                <p className="mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
-                    {projectError ||
-                        "Something went wrong while loading this project."}
+                <p className="mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400 ">
+                    {projectError || "Something went wrong while loading this project."}
                 </p>
 
                 <button
@@ -66,14 +65,14 @@ const ProjectDetails = () => {
                         dispatch(fetchProjects());
                         dispatch(fetchTasks());
                     }}
-                    className="mt-5 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
+                    className="mt-5 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 cursor-pointer"
                 >
                     Try Again
                 </button>
 
                 <Link
                     to="/projects"
-                    className="mt-3 text-sm font-medium text-slate-500 transition hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+                    className="mt-3 text-sm font-medium text-slate-500 transition hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-600"
                 >
                     Back to Projects
                 </Link>

@@ -43,7 +43,7 @@ const Dashboard = () => {
             ) : hasError ? (
                 <div className="flex min-h-100 items-center justify-center">
                     <div className="max-w-md text-center">
-                        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-300">
                             Unable to load dashboard
                         </h2>
 
@@ -57,7 +57,7 @@ const Dashboard = () => {
                                 dispatch(fetchTasks());
                                 dispatch(fetchProjects());
                             }}
-                            className="mt-5 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+                            className="mt-5 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 cursor-pointer"
                         >
                             Try Again
                         </button>

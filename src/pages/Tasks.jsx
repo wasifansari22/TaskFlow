@@ -66,25 +66,25 @@ const Tasks = () => {
                 label: "All Tasks",
                 value: tasks.length,
                 icon: ListTodo,
-                style: "bg-blue-50 text-blue-600",
+                style: "bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300",
             },
             {
                 label: "In Progress",
                 value: inProgressTasks.length,
                 icon: Clock3,
-                style: "bg-amber-50 text-amber-600",
+                style: "bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-300",
             },
             {
                 label: "Completed",
                 value: completedTasks.length,
                 icon: CheckCircle2,
-                style: "bg-emerald-50 text-emerald-600",
+                style: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-300",
             },
             {
                 label: "Pending",
                 value: pendingTasks.length,
                 icon: ListTodo,
-                style: "bg-slate-100 text-slate-600",
+                style: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
             },
         ],
         [
@@ -229,8 +229,8 @@ const Tasks = () => {
             )}
 
             {taskStatus === "failed" && (
-                <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center dark:border-red-700">
-                    <p className="text-sm text-red-600">
+                <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center dark:border-red-700 dark:bg-slate-900 dark:text-slate-300">
+                    <p className="text-sm text-red-600 dark:text-slate-300">
                         {taskError || "Failed to load tasks. Please try again."}
                     </p>
 

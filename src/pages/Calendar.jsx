@@ -12,14 +12,14 @@ import { selectNotifications } from "../features/settings/settingsSelectors";
 const getTaskStatusStyle = (status) => {
     switch (status) {
         case "Completed":
-            return "bg-emerald-50 text-emerald-700 line-through";
+            return "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 line-through";
 
         case "In Progress":
-            return "bg-amber-50 text-amber-700";
+            return "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300";
 
         case "Pending":
         default:
-            return "bg-blue-50 text-blue-700";
+            return "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300";
     }
 };
 
@@ -456,25 +456,25 @@ const Calendar = () => {
         <div className="mx-auto w-full max-w-7xl space-y-8">
             {/* Header */}
             <section>
-                <p className="text-sm font-medium text-blue-600">
+                <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
                     Workspace
                 </p>
 
-                <h1 className="mt-1 text-3xl font-bold tracking-tight text-slate-900">
+                <h1 className="mt-1 text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
                     Calendar
                 </h1>
 
-                <p className="mt-2 text-slate-600">
+                <p className="mt-2 text-slate-600 dark:text-slate-300">
                     View your schedule and upcoming deadlines.
                 </p>
             </section>
 
             {/* Calendar */}
-            <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
+            <section className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white shadow-sm dark:bg-slate-900">
                 {/* Calendar Header */}
-                <div className="flex flex-col gap-4 border-b border-slate-200 p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex flex-col gap-4 border-b border-slate-200 dark:border-slate-700 p-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h2 className="text-xl font-semibold text-slate-900">
+                        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
                             {viewMode === "month"
                                 ? `${monthName} ${year}`
                                 : weekLabel}
@@ -482,13 +482,13 @@ const Calendar = () => {
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <div className="flex rounded-lg bg-slate-100 p-1">
+                        <div className="flex rounded-lg bg-slate-100 p-1 dark:bg-slate-800">
                             <button
                                 type="button"
                                 onClick={() => setViewMode("month")}
                                 className={`rounded-md px-3 py-1.5 text-sm font-medium transition ${viewMode === "month"
-                                    ? "bg-white text-blue-600 shadow-sm"
-                                    : "text-slate-500 hover:text-slate-900"
+                                    ? "bg-white dark:bg-slate-900 text-blue-600 shadow-sm dark:text-blue-400"
+                                    : "text-slate-500 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-100"
                                     }`}
                             >
                                 Month
@@ -502,8 +502,8 @@ const Calendar = () => {
                                     setSelectedDate(todayString);
                                 }}
                                 className={`rounded-md px-3 py-1.5 text-sm font-medium transition ${viewMode === "week"
-                                    ? "bg-white text-blue-600 shadow-sm"
-                                    : "text-slate-500 hover:text-slate-900"
+                                    ? "bg-white dark:bg-slate-900 text-blue-600 shadow-sm dark:text-blue-400"
+                                    : "text-slate-500 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-100"
                                     }`}
                             >
                                 Week
@@ -513,7 +513,7 @@ const Calendar = () => {
                         <button
                             type="button"
                             onClick={goToToday}
-                            className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
+                            className="rounded-lg border border-slate-200  px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 transition hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700  dark:hover:bg-slate-800"
                         >
                             Today
                         </button>
@@ -523,7 +523,7 @@ const Calendar = () => {
                             onClick={
                                 goToPreviousMonth
                             }
-                            className="rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50"
+                            className="rounded-lg border border-slate-200  p-2 text-slate-600 transition hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
                             aria-label="Previous month"
                         >
                             <ChevronLeft size={18} />
@@ -534,7 +534,7 @@ const Calendar = () => {
                             onClick={
                                 goToNextMonth
                             }
-                            className="rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50"
+                            className="rounded-lg border border-slate-200  p-2 text-slate-600 transition hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
                             aria-label="Next month"
                         >
                             <ChevronRight size={18} />
@@ -543,7 +543,7 @@ const Calendar = () => {
                 </div>
 
                 {/* Weekdays */}
-                <div className="grid grid-cols-7 border-b border-slate-200">
+                <div className="grid grid-cols-7 border-b border-slate-200 dark:border-slate-700">
                     {[
                         "Sun",
                         "Mon",
@@ -563,7 +563,7 @@ const Calendar = () => {
                 </div>
 
                 {/* Calendar Legend  */}
-                <div className="flex flex-wrap items-center gap-4 border-b border-slate-100 px-4 py-3 text-xs text-slate-500">
+                <div className="flex flex-wrap items-center gap-4 border-b border-slate-100 dark:border-slate-800 px-4 py-3 text-xs text-slate-500">
                     <div className="flex items-center gap-1.5">
                         <span className="h-2 w-2 rounded-full bg-blue-500" />
                         <span>Pending</span>
@@ -617,11 +617,11 @@ const Calendar = () => {
                                             handleDrop(event, dateString);
                                         }
                                     }}
-                                    className={`min-h-24 border-b border-r border-slate-100 p-1.5 transition sm:min-h-28 sm:p-3 ${day
-                                        ? "cursor-pointer hover:bg-slate-50"
+                                    className={`min-h-24 border-b border-r border-slate-100 p-1.5 transition dark:border-slate-800 sm:min-h-28 sm:p-3 ${day
+                                        ? "cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800"
                                         : ""
                                         } ${day && dragOverDate === dateString
-                                            ? "bg-blue-50 ring-2 ring-inset ring-blue-300"
+                                            ? "bg-blue-50 ring-2 ring-inset ring-blue-300 dark:bg-blue-950 dark:ring-blue-700"
                                             : ""
                                         }`}
                                 >
@@ -632,7 +632,7 @@ const Calendar = () => {
                                                     ? "bg-blue-600 text-white"
                                                     : dateString === todayString
                                                         ? "border border-blue-600 text-blue-600"
-                                                        : "text-slate-700"
+                                                        : "text-slate-700 dark:text-slate-200"
                                                     }`}
                                             >
                                                 {day}
@@ -669,12 +669,12 @@ const Calendar = () => {
 
                                                         {/* Mobile */}
                                                         <div className="mt-2 flex flex-col items-center gap-1 sm:hidden">
-                                                            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600">
+                                                            <span className="rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[10px] font-semibold text-slate-600 dark:text-slate-300">
                                                                 {tasksForDay.length}
                                                             </span>
 
                                                             <div
-                                                                className="flex h-1.5 w-8 overflow-hidden rounded-full bg-slate-100"
+                                                                className="flex h-1.5 w-8 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"
                                                                 title={`${tasksForDay.length} task${tasksForDay.length > 1 ? "s" : ""
                                                                     }`}
                                                             >
@@ -728,9 +728,9 @@ const Calendar = () => {
                                     onDrop={(event) =>
                                         handleDrop(event, dateString)
                                     }
-                                    className={`min-h-40 cursor-pointer border-b border-r border-slate-100 p-2 transition sm:p-3 ${dragOverDate === dateString
-                                        ? "bg-blue-50 ring-2 ring-inset ring-blue-300"
-                                        : "hover:bg-slate-50"
+                                    className={`min-h-40 cursor-pointer border-b border-r border-slate-100 p-2 transition dark:border-slate-800 sm:p-3 ${dragOverDate === dateString
+                                        ? "bg-blue-50 ring-2 ring-inset ring-blue-300 dark:bg-blue-950 dark:ring-blue-700"
+                                        : "hover:bg-slate-50 dark:hover:bg-slate-800"
                                         }`}
                                 >
                                     <div className="flex items-center justify-between">
@@ -739,7 +739,7 @@ const Calendar = () => {
                                                 ? "bg-blue-600 text-white"
                                                 : dateString === todayString
                                                     ? "border border-blue-600 text-blue-600"
-                                                    : "text-slate-700"
+                                                    : "text-slate-700 dark:text-slate-200"
                                                 }`}
                                         >
                                             {date.getDate()}
@@ -779,10 +779,10 @@ const Calendar = () => {
             </section>
 
             {/* Daily Task Panel */}
-            <section className="hidden rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:block">
+            <section className="hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white p-5 shadow-sm sm:block dark:bg-slate-900">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h2 className="font-semibold text-slate-900">
+                        <h2 className="font-semibold text-slate-900 dark:text-slate-100">
                             {selectedDate
                                 ? new Date(`${selectedDate}T00:00:00`).toLocaleDateString("en-US",
                                     {
@@ -810,8 +810,8 @@ const Calendar = () => {
                 </div>
 
                 {taskStatus === "loading" ? (
-                    <div className="mt-6 rounded-lg border border-dashed border-slate-200 bg-slate-50 p-6 text-center">
-                        <p className="text-sm font-medium text-slate-700">
+                    <div className="mt-6 rounded-lg border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-6 text-center">
+                        <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
                             Loading tasks...
                         </p>
                     </div>
@@ -827,14 +827,13 @@ const Calendar = () => {
                     </div>
                 ) :
                     selectedTasks.length === 0 ? (
-                        <div className="mt-6 rounded-lg border border-dashed border-slate-200 bg-slate-50 p-6 text-center">
-                            <p className="text-sm font-medium text-slate-700">
+                        <div className="mt-6 rounded-lg border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-6 text-center">
+                            <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
                                 No tasks scheduled
                             </p>
 
                             <p className="mt-1 text-xs text-slate-500">
-                                There are no tasks due on
-                                this date.
+                                There are no tasks due on this date.
                             </p>
                         </div>
                     ) : (
@@ -848,14 +847,14 @@ const Calendar = () => {
                                                 task
                                             )
                                         }
-                                        className="cursor-pointer rounded-lg border border-slate-200 p-4 transition hover:border-blue-300 hover:bg-blue-50/30 hover:shadow-sm"
+                                        className="cursor-pointer rounded-lg border border-slate-200 dark:border-slate-700 p-4 transition hover:border-blue-300 hover:bg-blue-50/30 hover:shadow-sm"
                                     >
                                         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                             <div className="min-w-0">
                                                 <h3
                                                     className={`font-medium ${task.status === "Completed"
                                                         ? "text-slate-400 line-through"
-                                                        : "text-slate-900"
+                                                        : "text-slate-900 dark:text-slate-100"
                                                         }`}
                                                 >
                                                     {task.title}
@@ -869,10 +868,10 @@ const Calendar = () => {
                                             <div className="flex shrink-0 items-center gap-2">
                                                 <span
                                                     className={`rounded-full px-2.5 py-1 text-xs font-medium ${task.priority === "High"
-                                                        ? "bg-rose-50 text-rose-700"
+                                                        ? "bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300"
                                                         : task.priority === "Medium"
-                                                            ? "bg-amber-50 text-amber-700"
-                                                            : "bg-slate-100 text-slate-600"
+                                                            ? "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300"
+                                                            : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
                                                         }`}
                                                 >
                                                     {task.priority}
@@ -888,7 +887,7 @@ const Calendar = () => {
                                                     onClick={(event) =>
                                                         event.stopPropagation()
                                                     }
-                                                    className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                                    className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                                                     aria-label={`Change status for ${task.title}`}
                                                 >
                                                     <option value="Pending">
@@ -932,15 +931,15 @@ const Calendar = () => {
                 >
                     <div className="space-y-4">
                         <div>
-                            <p className="text-sm text-slate-500">
+                            <p className="text-sm text-slate-500 dark:text-slate-400">
                                 Tasks scheduled for this day.
                             </p>
                         </div>
 
                         {selectedTasks.length ===
                             0 ? (
-                            <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 p-6 text-center">
-                                <p className="text-sm font-medium text-slate-700">
+                            <div className="rounded-lg border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-6 text-center">
+                                <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
                                     No tasks scheduled
                                 </p>
 
@@ -958,12 +957,12 @@ const Calendar = () => {
                                                 setShowMobileTasks(false);
                                                 setEditingTask(task);
                                             }}
-                                            className="cursor-pointer rounded-lg border border-slate-200 p-4 transition hover:border-blue-300 hover:bg-blue-50/30"
+                                            className="cursor-pointer rounded-lg border border-slate-200 dark:border-slate-700 p-4 transition hover:border-blue-300 hover:bg-blue-50/30"
                                         >
                                             <h3
                                                 className={`font-medium ${task.status === "Completed"
                                                     ? "text-slate-400 line-through"
-                                                    : "text-slate-900"
+                                                    : "text-slate-900 dark:text-slate-100"
                                                     }`}
                                             >
                                                 {task.title}
@@ -979,7 +978,7 @@ const Calendar = () => {
                                                         ? "bg-rose-50 text-rose-700"
                                                         : task.priority === "Medium"
                                                             ? "bg-amber-50 text-amber-700"
-                                                            : "bg-slate-100 text-slate-600"
+                                                            : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
                                                         }`}
                                                 >
                                                     {task.priority}
@@ -995,7 +994,7 @@ const Calendar = () => {
                                                     onClick={(event) =>
                                                         event.stopPropagation()
                                                     }
-                                                    className="rounded-full border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                                    className="rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-2 py-1 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                                                     aria-label={`Change status for ${task.title}`}
                                                 >
                                                     <option value="Pending">

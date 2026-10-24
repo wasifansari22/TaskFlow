@@ -14,7 +14,7 @@ const App = () => {
     const applyTheme = () => {
       const isDark =
         theme === "dark" ||
-        (theme === "system" && systemPreference.matches);
+        (theme === "system" && mediaQuery.matches);
 
       root.classList.toggle("dark", isDark);
       root.style.colorScheme = isDark ? "dark" : "light";

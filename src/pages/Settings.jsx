@@ -146,28 +146,28 @@ const Settings = () => {
         <div className="mx-auto w-full max-w-5xl space-y-8">
             {/* Header */}
             <section>
-                <p className="text-sm font-medium text-blue-600">
+                <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
                     Workspace
                 </p>
 
-                <h1 className="mt-1 text-3xl font-bold tracking-tight text-slate-900">
+                <h1 className="mt-1 text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-300">
                     Settings
                 </h1>
 
-                <p className="mt-2 text-slate-600">
+                <p className="mt-2 text-slate-600 dark:text-slate-400">
                     Manage your profile and TaskFlow preferences.
                 </p>
             </section>
 
             {/* Profile */}
-            <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
+            <section className="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div className="flex items-center gap-3 border-b border-slate-200 p-5">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
                         <User size={19} />
                     </div>
 
                     <div>
-                        <h2 className="font-semibold text-slate-900">
+                        <h2 className="font-semibold text-slate-900 dark:text-slate-200">
                             Profile
                         </h2>
 
@@ -183,7 +183,7 @@ const Settings = () => {
                         <div>
                             <label
                                 htmlFor="profile-first-name"
-                                className="mb-1.5 block text-sm font-medium text-slate-700"
+                                className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200"
                             >
                                 First name
                             </label>
@@ -193,14 +193,14 @@ const Settings = () => {
                                 autoComplete="given-name"
                                 value={firstName}
                                 onChange={(event) => setFirstName(event.target.value)}
-                                className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-blue-900"
                             />
                         </div>
 
                         <div>
                             <label
                                 htmlFor="profile-last-name"
-                                className="mb-1.5 block text-sm font-medium text-slate-700"
+                                className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200"
                             >
                                 Last name
                             </label>
@@ -210,14 +210,14 @@ const Settings = () => {
                                 autoComplete="family-name"
                                 value={lastName}
                                 onChange={(event) => setLastName(event.target.value)}
-                                className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-blue-900"
                             />
                         </div>
 
                         <div className="sm:col-span-2">
                             <label
                                 htmlFor="profile-email"
-                                className="mb-1.5 block text-sm font-medium text-slate-700"
+                                className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200"
                             >
                                 Email
                             </label>
@@ -228,7 +228,7 @@ const Settings = () => {
                                 required
                                 value={email}
                                 onChange={(event) => setEmail(event.target.value)}
-                                className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-blue-900"
                             />
                         </div>
                     </div>
@@ -247,17 +247,17 @@ const Settings = () => {
             </section>
 
             {/* Change Password */}
-            <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
+            <section className="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div className="flex items-center gap-3 border-b border-slate-200 p-5">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-rose-50 text-rose-600">
                         <LockKeyhole size={19} />
                     </div>
 
                     <div>
-                        <h2 className="font-semibold text-slate-900">
+                        <h2 className="font-semibold text-slate-900 dark:text-slate-100">
                             Change Password
                         </h2>
-                        <p className="text-sm text-slate-500">
+                        <p className="text-sm text-slate-500 dark:text-slate-400">
                             Update your password to keep your account secure.
                         </p>
                     </div>
@@ -267,7 +267,7 @@ const Settings = () => {
                     <div>
                         <label
                             htmlFor="current-password"
-                            className="mb-1.5 block text-sm font-medium text-slate-700"
+                            className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200"
                         >
                             Current password
                         </label>
@@ -277,7 +277,7 @@ const Settings = () => {
                             autoComplete="current-password"
                             value={currentPassword}
                             onChange={(event) => setCurrentPassword(event.target.value)}
-                            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-blue-900"
                             required
                         />
                     </div>
@@ -285,7 +285,7 @@ const Settings = () => {
                     <div>
                         <label
                             htmlFor="new-password"
-                            className="mb-1.5 block text-sm font-medium text-slate-700"
+                            className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200"
                         >
                             New password
                         </label>
@@ -295,10 +295,10 @@ const Settings = () => {
                             autoComplete="new-password"
                             value={newPassword}
                             onChange={(event) => setNewPassword(event.target.value)}
-                            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-blue-900"
                             required
                         />
-                        <p className="mt-1.5 text-xs text-slate-500">
+                        <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">
                             Your password must meet the server's password requirements.
                         </p>
                     </div>
@@ -306,7 +306,7 @@ const Settings = () => {
                     <div>
                         <label
                             htmlFor="confirm-new-password"
-                            className="mb-1.5 block text-sm font-medium text-slate-700"
+                            className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200"
                         >
                             Confirm new password
                         </label>
@@ -318,7 +318,7 @@ const Settings = () => {
                             onChange={(event) =>
                                 setConfirmNewPassword(event.target.value)
                             }
-                            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-blue-900"
                             required
                         />
                     </div>
@@ -336,25 +336,25 @@ const Settings = () => {
             </section>
 
             {/* Appearance */}
-            <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
+            <section className="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div className="flex items-center gap-3 border-b border-slate-200 p-5">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-50 text-violet-600">
                         <Palette size={19} />
                     </div>
 
                     <div>
-                        <h2 className="font-semibold text-slate-900">
+                        <h2 className="font-semibold text-slate-900 dark:text-slate-100">
                             Appearance
                         </h2>
 
-                        <p className="text-sm text-slate-500">
+                        <p className="text-sm text-slate-500 dark:text-slate-400">
                             Customize how TaskFlow looks.
                         </p>
                     </div>
                 </div>
 
                 <div className="p-5">
-                    <p className="text-sm font-medium text-slate-700">
+                    <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
                         Theme
                     </p>
 
@@ -365,8 +365,8 @@ const Settings = () => {
                                 type="button"
                                 onClick={() => dispatch(setTheme(option))}
                                 className={`rounded-lg border px-4 py-3 text-left text-sm font-medium capitalize transition ${theme === option
-                                    ? "border-blue-500 bg-blue-50 text-blue-700"
-                                    : "border-slate-200 text-slate-700 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700"
+                                    ? "border-blue-500 bg-blue-50 text-blue-700 dark:border-blue-400 dark:bg-blue-950 dark:text-blue-300"
+                                    : "border-slate-200 text-slate-700 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 dark:border-slate-700 dark:text-slate-300 dark:hover:border-blue-500 dark:hover:bg-slate-800 dark:hover:text-blue-300"
                                     }`}
                             >
                                 {option}
@@ -377,14 +377,14 @@ const Settings = () => {
             </section>
 
             {/* Notifications */}
-            <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
+            <section className="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div className="flex items-center gap-3 border-b border-slate-200 p-5">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
                         <Bell size={19} />
                     </div>
 
                     <div>
-                        <h2 className="font-semibold text-slate-900">
+                        <h2 className="font-semibold text-slate-900 dark:text-slate-100">
                             Notifications
                         </h2>
 
@@ -394,7 +394,7 @@ const Settings = () => {
                     </div>
                 </div>
 
-                <div className="divide-y divide-slate-100">
+                <div className="divide-y divide-slate-100 dark:divide-slate-800">
                     {[
                         {
                             key: "taskUpdates",
@@ -417,10 +417,10 @@ const Settings = () => {
                             className="flex items-center justify-between gap-4 p-5"
                         >
                             <div>
-                                <p className="text-sm font-medium text-slate-900">
+                                <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
                                     {item.title}
                                 </p>
-                                <p className="mt-1 text-xs text-slate-500">
+                                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                                     {item.description}
                                 </p>
                             </div>
@@ -428,9 +428,9 @@ const Settings = () => {
                             <button
                                 type="button"
                                 onClick={() => dispatch(toggleNotification(item.key))}
-                                className={`relative h-6 w-11 shrink-0 rounded-full transition-all cursor-pointer ${notifications[item.key]
+                                className={`relative h-6 w-11 shrink-0 cursor-pointer rounded-full transition-all ${notifications[item.key]
                                     ? "bg-blue-600"
-                                    : "bg-slate-300"
+                                    : "bg-slate-300 dark:bg-slate-600"
                                     }`}
                                 aria-label={`Toggle ${item.title}`}
                             >
@@ -445,14 +445,14 @@ const Settings = () => {
             </section>
 
             {/* Task Preferences */}
-            <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
+            <section className="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div className="flex items-center gap-3 border-b border-slate-200 p-5">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
                         <ListTodo size={19} />
                     </div>
 
                     <div>
-                        <h2 className="font-semibold text-slate-900">
+                        <h2 className="font-semibold text-slate-900 dark:text-slate-100">
                             Task Preferences
                         </h2>
 
@@ -466,7 +466,7 @@ const Settings = () => {
                     <div>
                         <label
                             htmlFor="default-priority"
-                            className="mb-1.5 block text-sm font-medium text-slate-700"
+                            className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200"
                         >
                             Default priority
                         </label>
@@ -475,7 +475,7 @@ const Settings = () => {
                             id="default-priority"
                             value={defaultPriority}
                             onChange={(event) => dispatch(setDefaultPriority(event.target.value))}
-                            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-blue-900"
                         >
                             <option value="Medium">Medium</option>
                             <option value="High">High</option>
@@ -486,7 +486,7 @@ const Settings = () => {
                     <div>
                         <label
                             htmlFor="default-status"
-                            className="mb-1.5 block text-sm font-medium text-slate-700"
+                            className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200"
                         >
                             Default status
                         </label>
@@ -495,7 +495,7 @@ const Settings = () => {
                             id="default-status"
                             value={defaultStatus}
                             onChange={(event) => dispatch(setDefaultStatus(event.target.value))}
-                            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-blue-900"
                         >
                             <option value="Pending">Pending</option>
                             <option value="In Progress">In Progress</option>
@@ -507,7 +507,7 @@ const Settings = () => {
             <button
                 type="button"
                 onClick={() => dispatch(resetSettings())}
-                className="rounded-lg px-4 py-2.5 text-sm font-medium text-white transition  bg-blue-600 hover:bg-blue-700 cursor-pointer"
+                className="cursor-pointer rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-950"
             >
                 Reset Settings
             </button>

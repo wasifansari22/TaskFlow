@@ -52,7 +52,7 @@ const Login = () => {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
+        <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
             <div className="w-full max-w-md">
                 {/* Header */}
                 <div className="mb-8 text-center">
@@ -60,17 +60,17 @@ const Login = () => {
                         T
                     </div>
 
-                    <h1 className="mt-4 text-2xl font-bold tracking-tight text-slate-900">
+                    <h1 className="mt-4 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
                         Welcome to TaskFlow
                     </h1>
 
-                    <p className="mt-2 text-sm text-slate-500">
+                    <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                         Sign in to manage your tasks and projects.
                     </p>
                 </div>
 
                 {/* Login */}
-                <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+                <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-8">
                     <form
                         onSubmit={handleSubmit}
                         className="space-y-5"
@@ -78,7 +78,7 @@ const Login = () => {
                         <div>
                             <label
                                 htmlFor="identifier"
-                                className="mb-1.5 block text-sm font-medium text-slate-700"
+                                className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200"
                             >
                                 Username or Email
                             </label>
@@ -90,14 +90,14 @@ const Login = () => {
                                 onChange={(event) => setIdentifier(event.target.value)}
                                 placeholder="Enter your username or email"
                                 autoComplete="username"
-                                className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-blue-900"
                             />
                         </div>
 
                         <div>
                             <label
                                 htmlFor="password"
-                                className="mb-1.5 block text-sm font-medium text-slate-700"
+                                className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200"
                             >
                                 Password
                             </label>
@@ -110,12 +110,12 @@ const Login = () => {
                                     setPassword(event.target.value)
                                 }
                                 placeholder="Enter your password"
-                                className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-blue-900"
                             />
                         </div>
 
                         {error && (
-                            <p className="rounded-lg bg-rose-50 px-3 py-2.5 text-sm text-rose-600">
+                            <p className="rounded-lg bg-rose-50 px-3 py-2.5 text-sm text-rose-600 dark:bg-rose-950/50 dark:text-rose-300">
                                 {error}
                             </p>
                         )}
@@ -123,13 +123,13 @@ const Login = () => {
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                            className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
                         >
                             {isSubmitting ? "Signing in..." : "Sign in"}
                         </button>
                     </form>
 
-                    <p className="mt-6 text-center text-sm text-slate-500">
+                    <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
                         Create an account?{" "}
                         <Link
                             to="/register"

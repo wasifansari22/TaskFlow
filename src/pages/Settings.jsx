@@ -162,7 +162,7 @@ const Settings = () => {
             {/* Profile */}
             <section className="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div className="flex items-center gap-3 border-b border-slate-200 p-5">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300">
                         <User size={19} />
                     </div>
 
@@ -249,7 +249,7 @@ const Settings = () => {
             {/* Change Password */}
             <section className="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div className="flex items-center gap-3 border-b border-slate-200 p-5">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-rose-50 text-rose-600">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-rose-50 text-rose-600 dark:bg-rose-950 dark:text-rose-300">
                         <LockKeyhole size={19} />
                     </div>
 
@@ -327,7 +327,7 @@ const Settings = () => {
                         <button
                             type="submit"
                             disabled={isChangingPassword}
-                            className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                            className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
                         >
                             {isChangingPassword ? "Updating..." : "Update Password"}
                         </button>
@@ -338,7 +338,7 @@ const Settings = () => {
             {/* Appearance */}
             <section className="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div className="flex items-center gap-3 border-b border-slate-200 p-5">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-50 text-violet-600">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-50 text-violet-600 dark:bg-violet-950 dark:text-violet-300">
                         <Palette size={19} />
                     </div>
 
@@ -379,7 +379,7 @@ const Settings = () => {
             {/* Notifications */}
             <section className="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div className="flex items-center gap-3 border-b border-slate-200 p-5">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-300">
                         <Bell size={19} />
                     </div>
 
@@ -447,7 +447,7 @@ const Settings = () => {
             {/* Task Preferences */}
             <section className="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div className="flex items-center gap-3 border-b border-slate-200 p-5">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-300">
                         <ListTodo size={19} />
                     </div>
 

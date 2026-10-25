@@ -38,12 +38,18 @@ const Navbar = () => {
         }
     }, [dispatch, ownerKey]);
 
+
     useEffect(() => {
         const handleClickOutside = (event) => {
             const clickedElement = event.target;
-            const clickedDialog = clickedElement.closest?.('[role="dialog"]');
 
-            if (clickedDialog) {
+            if (!(clickedElement instanceof Element)) {
+                return;
+            }
+
+            // Don't close the panel when interacting with a dialog,
+            // such as the Clear All confirmation modal.
+            if (clickedElement.closest('[role="dialog"]')) {
                 return;
             }
 
@@ -61,8 +67,18 @@ const Navbar = () => {
                 setIsProfileOpen(false);
             }
         };
+
+        document.addEventListener("pointerdown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener(
+                "pointerdown",
+                handleClickOutside
+            );
+        };
     }, []);
- 
+
+
     useEffect(() => {
         const handleKeyDown = (event) => {
             if (event.key !== "Escape") return;

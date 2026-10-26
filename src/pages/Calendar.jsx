@@ -486,7 +486,7 @@ const Calendar = () => {
                             <button
                                 type="button"
                                 onClick={() => setViewMode("month")}
-                                className={`rounded-md px-3 py-1.5 text-sm font-medium transition ${viewMode === "month"
+                                className={`rounded-md px-3 py-1.5 text-sm font-medium transition cursor-pointer ${viewMode === "month"
                                     ? "bg-white dark:bg-slate-900 text-blue-600 shadow-sm dark:text-blue-400"
                                     : "text-slate-500 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-100"
                                     }`}
@@ -501,7 +501,7 @@ const Calendar = () => {
                                     setCurrentDate(new Date(today));
                                     setSelectedDate(todayString);
                                 }}
-                                className={`rounded-md px-3 py-1.5 text-sm font-medium transition ${viewMode === "week"
+                                className={`rounded-md px-3 py-1.5 text-sm font-medium transition cursor-pointer ${viewMode === "week"
                                     ? "bg-white dark:bg-slate-900 text-blue-600 shadow-sm dark:text-blue-400"
                                     : "text-slate-500 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-100"
                                     }`}
@@ -513,7 +513,7 @@ const Calendar = () => {
                         <button
                             type="button"
                             onClick={goToToday}
-                            className="rounded-lg border border-slate-200  px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 transition hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700  dark:hover:bg-slate-800"
+                            className="rounded-lg border border-slate-200  px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 transition hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700  dark:hover:bg-slate-800 cursor-pointer"
                         >
                             Today
                         </button>
@@ -523,7 +523,7 @@ const Calendar = () => {
                             onClick={
                                 goToPreviousMonth
                             }
-                            className="rounded-lg border border-slate-200  p-2 text-slate-600 transition hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                            className="rounded-lg border border-slate-200  p-2 text-slate-600 transition hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer"
                             aria-label="Previous month"
                         >
                             <ChevronLeft size={18} />
@@ -534,7 +534,7 @@ const Calendar = () => {
                             onClick={
                                 goToNextMonth
                             }
-                            className="rounded-lg border border-slate-200  p-2 text-slate-600 transition hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                            className="rounded-lg border border-slate-200  p-2 text-slate-600 transition hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer"
                             aria-label="Next month"
                         >
                             <ChevronRight size={18} />
@@ -803,7 +803,7 @@ const Calendar = () => {
                         onClick={() =>
                             setShowTaskForm(true)
                         }
-                        className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+                        className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-blue-700 cursor-pointer"
                     >
                         + Add Task
                     </button>
@@ -816,14 +816,18 @@ const Calendar = () => {
                         </p>
                     </div>
                 ) : taskStatus === "failed" ? (
-                    <div className="mt-6 rounded-lg border border-dashed border-rose-200 bg-rose-50 p-6 text-center">
-                        <p className="text-sm font-medium text-rose-700">
-                            Unable to load tasks
-                        </p>
-
-                        <p className="mt-1 text-xs text-rose-600">
+                    <div className="mt-6 rounded-lg border border-rose-200 bg-rose-50 p-6 text-center dark:border-red-700 dark:bg-slate-900 dark:text-slate-300">
+                        <p className="mt-1 text-sm text-red-600 dark:text-slate-300">
                             {taskError || "Something went wrong while loading your tasks."}
                         </p>
+
+                        <button
+                            type="button"
+                            onClick={() => dispatch(fetchTasks())}
+                            className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700 cursor-pointer"
+                        >
+                            Try Again
+                        </button>
                     </div>
                 ) :
                     selectedTasks.length === 0 ? (

@@ -10,6 +10,7 @@ import { fetchTasks } from "../features/tasks/taskSlice";
 
 const Projects = () => {
     const dispatch = useDispatch();
+
     useEffect(() => {
         dispatch(fetchProjects());
         dispatch(fetchTasks());
@@ -199,7 +200,7 @@ const Projects = () => {
             )}
 
             {projectStatus === "failed" && (
-                <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center dark:bg-slate-900 dark:text-slate-300">
+                <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center dark:border-red-700 dark:bg-slate-900 dark:text-slate-300">
                     <p className="text-sm text-red-600 dark:text-slate-300">
                         {projectError || "Failed to load projects. Please try again."}
                     </p>

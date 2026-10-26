@@ -465,7 +465,7 @@ const Calendar = () => {
                 </h1>
 
                 <p className="mt-2 text-slate-600 dark:text-slate-400">
-                    View your schedule and upcoming deadlines.
+                    View your schedule and upcoming deadlines. Drag and drop tasks to reschedule them.
                 </p>
             </section>
 

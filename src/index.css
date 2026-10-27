@@ -15,6 +15,10 @@
     --tooltip-bg: #ffffff;
     --tooltip-border: #e2e8f0;
     --tooltip-text: #0f172a;
+
+    /* Custom scrollbar colors */
+    --scrollbar-thumb: #cbd5e1;
+    --scrollbar-thumb-hover: #94a3b8;
 }
 
 html.dark {
@@ -25,15 +29,48 @@ html.dark {
     --tooltip-bg: #1e293b;
     --tooltip-border: #475569;
     --tooltip-text: #f1f5f9;
+
+    /* Dark mode scrollbar colors */
+    --scrollbar-thumb: #475569;
+    --scrollbar-thumb-hover: #64748b;
 }
 
 * {
     box-sizing: border-box;
+
+    /* Firefox and other browsers supporting standard scrollbar properties */
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 
 html {
     min-height: 100%;
     scroll-behavior: smooth;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover);
+}
+
+*::-webkit-scrollbar-corner {
+    background: transparent;
 }
 
 body {

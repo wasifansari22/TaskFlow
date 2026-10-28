@@ -23,14 +23,7 @@ export const loginUser = async (identifier, password) => {
     return data;
 };
 
-export const registerUser = async ({
-    firstName,
-    lastName,
-    username,
-    email,
-    password,
-    passwordConfirm,
-}) => {
+export const registerUser = async ({ firstName, lastName, username, email, password, passwordConfirm, }) => {
     const response = await fetch(`${API_BASE_URL}/auth/register/`, {
         method: "POST",
         headers: {
@@ -105,6 +98,35 @@ export const changePasswordUser = async (passwordData, token) => {
 
         throw new Error(
             messages.join(" ") || "Unable to change your password."
+        );
+    }
+
+    return data;
+};
+
+
+export const deleteAccountUser = async (password, token) => {
+    const response = await fetch(
+        `${API_BASE_URL}/auth/delete-account/`,
+        {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Token ${token}`,
+            },
+            body: JSON.stringify({ password }),
+        }
+    );
+
+    if (response.status === 204) {
+        return null;
+    }
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+        throw new Error(
+            data.detail || "Unable to delete your account."
         );
     }
 

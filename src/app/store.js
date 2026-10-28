@@ -1,9 +1,10 @@
 import { configureStore, createListenerMiddleware, } from "@reduxjs/toolkit";
 import taskReducer from "../features/tasks/taskSlice";
-import projectReducer from "../features/projects/projectSlice";
+import projectReducer, { resetProjects } from "../features/projects/projectSlice";
 import notificationReducer from "../features/notifications/notificationSlice";
 import settingsReducer, { defaultSettings, getSettingsKey, PUBLIC_THEME_KEY, loadUserSettings, } from "../features/settings/settingsSlice";
 import authReducer, { login, register, logout, } from "../features/auth/authSlice";
+import { resetTasks } from "../features/tasks/taskSlice";
 
 const settingsListener = createListenerMiddleware();
 
@@ -62,6 +63,15 @@ settingsListener.startListening({
                 },
             })
         );
+    },
+});
+
+settingsListener.startListening({
+    actionCreator: logout,
+
+    effect: async (_, listenerApi) => {
+        listenerApi.dispatch(resetTasks());
+        listenerApi.dispatch(resetProjects());
     },
 });
 

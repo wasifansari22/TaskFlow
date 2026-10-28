@@ -1,16 +1,22 @@
-import { User, Palette, Bell, ListTodo } from "lucide-react";
+import { User, Palette, Bell, ListTodo, LockKeyhole, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setTheme, toggleNotification, setDefaultPriority, setDefaultStatus, resetSettings } from "../features/settings/settingsSlice";
+import { useNavigate } from "react-router";
+import { setTheme, toggleNotification, setDefaultPriority, setDefaultStatus, resetSettings, getSettingsKey } from "../features/settings/settingsSlice";
 import { selectTheme, selectNotifications, selectDefaultPriority, selectDefaultStatus } from "../features/settings/settingsSelectors";
 import { selectCurrentUser } from "../features/auth/authSelectors";
-import { updateProfile } from "../features/auth/authSlice";
-import { LockKeyhole } from "lucide-react";
-import { changePasswordUser } from "../api/authApi";
+import { updateProfile, logout } from "../features/auth/authSlice";
+import { changePasswordUser, deleteAccountUser } from "../api/authApi";
 import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 
 const Settings = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const [deletePassword, setDeletePassword] = useState("");
+    const [confirmDelete, setConfirmDelete] = useState(false);
+    const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+
     const theme = useSelector(selectTheme);
     const notifications = useSelector(selectNotifications);
     const currentUser = useSelector(selectCurrentUser);
@@ -100,6 +106,57 @@ const Settings = () => {
             );
         } finally {
             setIsChangingPassword(false);
+        }
+    };
+
+    const handleDeleteAccount = async (event) => {
+        event.preventDefault();
+
+        if (isDeletingAccount) return;
+
+        if (!deletePassword) {
+            toast.error("Enter your current password to delete your account.");
+            return;
+        }
+
+        if (!confirmDelete) {
+            toast.error("Please confirm that you understand this action is permanent.");
+            return;
+        }
+
+        const token = localStorage.getItem("taskflow-token");
+        const userId = currentUser?.id;
+
+        if (!token || userId == null) {
+            toast.error("Your session has expired. Please log in again.");
+            return;
+        }
+
+        setIsDeletingAccount(true);
+
+        try {
+            await deleteAccountUser(deletePassword, token);
+
+            // Remove only this account's saved preferences.
+            try {
+                localStorage.removeItem(getSettingsKey(userId));
+            } catch (error) {
+                console.error("Unable to remove saved account settings:", error);
+            }
+
+            // Existing logout listeners clear Redux account data.
+            dispatch(logout());
+
+            toast.success("Your account has been permanently deleted.");
+
+            // Let the user see the success notification before navigating.
+            navigate("/login", { replace: true });
+        } catch (error) {
+            toast.error(
+                error.message || "Unable to delete your account. Please try again."
+            );
+        } finally {
+            setIsDeletingAccount(false);
         }
     };
 
@@ -511,6 +568,92 @@ const Settings = () => {
             >
                 Reset Settings
             </button>
+
+            {/* Danger Zone */}
+            <section className="overflow-hidden rounded-xl border border-red-200 bg-white shadow-sm dark:border-red-900 dark:bg-slate-900">
+                <div className="flex items-center gap-3 border-b border-red-200 bg-red-50 p-5 dark:border-red-900 dark:bg-red-950/40">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300">
+                        <Trash2 size={19} />
+                    </div>
+
+                    <div>
+                        <h2 className="font-semibold text-red-700 dark:text-red-300">
+                            Danger Zone
+                        </h2>
+
+                        <p className="text-sm text-red-600 dark:text-red-400">
+                            Permanently remove your TaskFlow account.
+                        </p>
+                    </div>
+                </div>
+
+                <div className="space-y-5 p-5">
+                    <div>
+                        <h3 className="font-medium text-slate-900 dark:text-slate-100">
+                            Delete your account
+                        </h3>
+
+                        <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                            This action permanently deletes your account and its associated
+                            tasks, projects, notifications, and other account-owned data.
+                            You cannot undo this action.
+                        </p>
+                    </div>
+
+                    <form onSubmit={handleDeleteAccount} className="space-y-5">
+                        <div>
+                            <label
+                                htmlFor="delete-account-password"
+                                className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200"
+                            >
+                                Confirm your current password
+                            </label>
+
+                            <input
+                                id="delete-account-password"
+                                type="password"
+                                autoComplete="current-password"
+                                value={deletePassword}
+                                onChange={(event) => setDeletePassword(event.target.value)}
+                                disabled={isDeletingAccount}
+                                required
+                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-red-500 focus:ring-2 focus:ring-red-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-red-950"
+                                placeholder="Enter your current password"
+                            />
+                        </div>
+
+                        <label className="flex items-start gap-3 rounded-lg border border-red-200 p-4 dark:border-red-900">
+                            <input
+                                type="checkbox"
+                                checked={confirmDelete}
+                                onChange={(event) => setConfirmDelete(event.target.checked)}
+                                disabled={isDeletingAccount}
+                                className="mt-1 h-4 w-4 shrink-0 accent-red-600"
+                            />
+
+                            <span className="text-sm leading-6 text-slate-700 dark:text-slate-300">
+                                I understand that deleting my account is permanent and that
+                                my associated data will be deleted.
+                            </span>
+                        </label>
+
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                                Your password is used to verify your identity.
+                            </p>
+
+                            <button
+                                type="submit"
+                                disabled={isDeletingAccount || !confirmDelete || !deletePassword}
+                                className="inline-flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus:ring-offset-slate-950"
+                            >
+                                <Trash2 size={16} />
+                                {isDeletingAccount ? "Deleting account..." : "Delete My Account"}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
         </div>
     );
 };

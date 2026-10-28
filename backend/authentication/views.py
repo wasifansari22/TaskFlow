@@ -143,3 +143,32 @@ class ChangePasswordView(APIView):
             "detail": "Password changed successfully.",
             "token": new_token.key,
         })
+
+
+class DeleteAccountView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        password = request.data.get("password")
+
+        if not password:
+            return Response(
+                {"detail": "Your current password is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not request.user.check_password(password):
+            return Response(
+                {"detail": "Your password is incorrect."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user = request.user
+
+        # Remove the user's authentication token before deleting the account.
+        Token.objects.filter(user=user).delete()
+
+        # User-owned records configured with CASCADE are deleted as well.
+        user.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)

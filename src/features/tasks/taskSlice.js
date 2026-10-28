@@ -100,7 +100,9 @@ export const deleteTaskAsync = createAsyncThunk(
 const taskSlice = createSlice({
     name: "tasks",
     initialState,
-    reducers: {},
+    reducers: {
+        resetTasks: () => initialState,
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchTasks.pending, (state) => {
@@ -178,4 +180,5 @@ const taskSlice = createSlice({
     },
 });
 
+export const { resetTasks } = taskSlice.actions;
 export default taskSlice.reducer;

@@ -90,6 +90,9 @@ export const deleteProjectAsync = createAsyncThunk(
 const projectSlice = createSlice({
     name: "projects",
     initialState,
+    reducers: {
+        resetProjects: () => initialState,
+    },
     extraReducers: (builder) => {
         builder
 
@@ -136,4 +139,5 @@ const projectSlice = createSlice({
     },
 });
 
+export const { resetProjects } = projectSlice.actions;
 export default projectSlice.reducer;

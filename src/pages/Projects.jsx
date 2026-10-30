@@ -74,7 +74,7 @@ const Projects = () => {
             {/* Header */}
             <section className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <p className="text-sm font-medium text-blue-600">
+                    <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
                         Workspace
                     </p>
 

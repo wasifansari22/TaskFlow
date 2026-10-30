@@ -231,7 +231,7 @@ const Navbar = () => {
                                     type="button"
                                     role="menuitem"
                                     onClick={handleLogout}
-                                    className="mt-1 w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium text-rose-600 transition hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950"
+                                    className="mt-1 w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium text-rose-600 transition hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950 cursor-pointer"
                                 >
                                     Log out
                                 </button>

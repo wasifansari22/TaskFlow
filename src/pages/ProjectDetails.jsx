@@ -135,7 +135,7 @@ const ProjectDetails = () => {
             {/* Back navigation */}
             <Link
                 to="/projects"
-                className="inline-flex items-center text-sm font-medium text-slate-500 transition hover:text-slate-900"
+                className="inline-flex items-center text-sm font-medium text-slate-500 transition hover:text-slate-900 dark:hover:text-slate-300"
             >
                 ← Back to Projects
             </Link>

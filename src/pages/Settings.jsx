@@ -632,8 +632,7 @@ const Settings = () => {
                             />
 
                             <span className="text-sm leading-6 text-slate-700 dark:text-slate-300">
-                                I understand that deleting my account is permanent and that
-                                my associated data will be deleted.
+                                I understand that deleting my account is permanent and that my associated data will be deleted.
                             </span>
                         </label>
 
@@ -645,7 +644,7 @@ const Settings = () => {
                             <button
                                 type="submit"
                                 disabled={isDeletingAccount || !confirmDelete || !deletePassword}
-                                className="inline-flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus:ring-offset-slate-950"
+                                className="inline-flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus:ring-offset-slate-950 cursor-pointer"
                             >
                                 <Trash2 size={16} />
                                 {isDeletingAccount ? "Deleting account..." : "Delete My Account"}

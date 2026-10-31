@@ -469,6 +469,39 @@ const Calendar = () => {
                 </p>
             </section>
 
+            {/* Task loading / connection error */}
+            {taskError && (
+                <div
+                    role="alert"
+                    className="flex flex-col gap-3 rounded-lg border border-red-200 bg-red-50 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-red-700 dark:bg-slate-900 dark:text-slate-300"
+                >
+                    <div>
+                        <p className="text-sm font-semibold text-rose-800 dark:text-slate-300">
+                            Unable to refresh your tasks
+                        </p>
+
+                        <p className="mt-1 text-sm text-rose-700 dark:text-slate-300">
+                            {taskError}
+                        </p>
+
+                        {tasks.length > 0 && (
+                            <p className="mt-1 text-xs text-rose-600">
+                                Your previously loaded tasks are still displayed.
+                            </p>
+                        )}
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={() => dispatch(fetchTasks())}
+                        disabled={taskStatus === "loading"}
+                        className="shrink-0 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+                    >
+                        {taskStatus === "loading" ? "Retrying..." : "Try Again"}
+                    </button>
+                </div>
+            )}
+
             {/* Calendar */}
             <section className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white shadow-sm dark:bg-slate-900">
                 {/* Calendar Header */}
@@ -809,15 +842,19 @@ const Calendar = () => {
                     </button>
                 </div>
 
-                {taskStatus === "loading" ? (
+                {taskStatus === "loading" && tasks.length === 0 ? (
                     <div className="mt-6 rounded-lg border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-6 text-center">
                         <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
                             Loading tasks...
                         </p>
                     </div>
-                ) : taskStatus === "failed" ? (
-                    <div className="mt-6 rounded-lg border border-rose-200 bg-rose-50 p-6 text-center dark:border-red-700 dark:bg-slate-900 dark:text-slate-300">
-                        <p className="mt-1 text-sm text-red-600 dark:text-slate-300">
+                ) : taskStatus === "failed" && tasks.length === 0 ? (
+                    <div className="mt-6 rounded-lg border border-red-200 bg-rose-50 dark:border-red-700 dark:bg-slate-900 p-6 text-center">
+                        <p className="text-sm font-medium text-rose-700 dark:text-slate-300">
+                            Unable to load tasks
+                        </p>
+
+                        <p className="mt-1 text-xs text-rose-600 dark:text-slate-300">
                             {taskError || "Something went wrong while loading your tasks."}
                         </p>
 
@@ -829,90 +866,89 @@ const Calendar = () => {
                             Try Again
                         </button>
                     </div>
-                ) :
-                    selectedTasks.length === 0 ? (
-                        <div className="mt-6 rounded-lg border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-6 text-center">
-                            <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
-                                No tasks scheduled
-                            </p>
+                ) : selectedTasks.length === 0 ? (
+                    <div className="mt-6 rounded-lg border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-6 text-center">
+                        <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                            No tasks scheduled
+                        </p>
 
-                            <p className="mt-1 text-xs text-slate-500">
-                                There are no tasks due on this date.
-                            </p>
-                        </div>
-                    ) : (
-                        <div className="mt-5 space-y-3">
-                            {selectedTasks.map(
-                                (task) => (
-                                    <div
-                                        key={task.id}
-                                        onClick={() =>
-                                            setEditingTask(
-                                                task
-                                            )
-                                        }
-                                        className="cursor-pointer rounded-lg border border-slate-200 dark:border-slate-700 p-4 transition hover:border-blue-300 hover:bg-blue-50/30 hover:shadow-sm"
-                                    >
-                                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                            <div className="min-w-0">
-                                                <h3
-                                                    className={`font-medium ${task.status === "Completed"
-                                                        ? "text-slate-400 line-through"
-                                                        : "text-slate-900 dark:text-slate-100"
-                                                        }`}
-                                                >
-                                                    {task.title}
-                                                </h3>
+                        <p className="mt-1 text-xs text-slate-500">
+                            There are no tasks due on this date.
+                        </p>
+                    </div>
+                ) : (
+                    <div className="mt-5 space-y-3">
+                        {selectedTasks.map(
+                            (task) => (
+                                <div
+                                    key={task.id}
+                                    onClick={() =>
+                                        setEditingTask(
+                                            task
+                                        )
+                                    }
+                                    className="cursor-pointer rounded-lg border border-slate-200 dark:border-slate-700 p-4 transition hover:border-blue-300 hover:bg-blue-50/30 hover:shadow-sm"
+                                >
+                                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                        <div className="min-w-0">
+                                            <h3
+                                                className={`font-medium ${task.status === "Completed"
+                                                    ? "text-slate-400 line-through"
+                                                    : "text-slate-900 dark:text-slate-100"
+                                                    }`}
+                                            >
+                                                {task.title}
+                                            </h3>
 
-                                                <p className="mt-1 text-sm text-slate-500">
-                                                    {task.description}
-                                                </p>
-                                            </div>
+                                            <p className="mt-1 text-sm text-slate-500">
+                                                {task.description}
+                                            </p>
+                                        </div>
 
-                                            <div className="flex shrink-0 items-center gap-2">
-                                                <span
-                                                    className={`rounded-full px-2.5 py-1 text-xs font-medium ${task.priority === "High"
-                                                        ? "bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300"
-                                                        : task.priority === "Medium"
-                                                            ? "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300"
-                                                            : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
-                                                        }`}
-                                                >
-                                                    {task.priority}
-                                                </span>
+                                        <div className="flex shrink-0 items-center gap-2">
+                                            <span
+                                                className={`rounded-full px-2.5 py-1 text-xs font-medium ${task.priority === "High"
+                                                    ? "bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300"
+                                                    : task.priority === "Medium"
+                                                        ? "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300"
+                                                        : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
+                                                    }`}
+                                            >
+                                                {task.priority}
+                                            </span>
 
-                                                <select
-                                                    value={task.status}
-                                                    onChange={(event) => {
-                                                        event.stopPropagation();
+                                            <select
+                                                value={task.status}
+                                                onChange={(event) => {
+                                                    event.stopPropagation();
 
-                                                        handleStatusChange(event, task.id);
-                                                    }}
-                                                    onClick={(event) =>
-                                                        event.stopPropagation()
-                                                    }
-                                                    className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                                                    aria-label={`Change status for ${task.title}`}
-                                                >
-                                                    <option value="Pending">
-                                                        Pending
-                                                    </option>
+                                                    handleStatusChange(event, task.id);
+                                                }}
+                                                onClick={(event) =>
+                                                    event.stopPropagation()
+                                                }
+                                                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                                aria-label={`Change status for ${task.title}`}
+                                            >
+                                                <option value="Pending">
+                                                    Pending
+                                                </option>
 
-                                                    <option value="In Progress">
-                                                        In Progress
-                                                    </option>
+                                                <option value="In Progress">
+                                                    In Progress
+                                                </option>
 
-                                                    <option value="Completed">
-                                                        Completed
-                                                    </option>
-                                                </select>
-                                            </div>
+                                                <option value="Completed">
+                                                    Completed
+                                                </option>
+                                            </select>
                                         </div>
                                     </div>
-                                )
-                            )}
-                        </div>
-                    )}
+                                </div>
+                            )
+                        )}
+                    </div>
+                )}
             </section>
 
             {/* Mobile Daily Tasks */}
@@ -940,8 +976,31 @@ const Calendar = () => {
                             </p>
                         </div>
 
-                        {selectedTasks.length ===
-                            0 ? (
+                        {taskStatus === "loading" && tasks.length === 0 ? (
+                            <div className="rounded-lg border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-6 text-center">
+                                <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                                    Loading tasks...
+                                </p>
+                            </div>
+                        ) : taskStatus === "failed" && tasks.length === 0 ? (
+                            <div className="rounded-lg border border-dashed border-rose-200 bg-rose-50 dark:border-red-700 dark:bg-slate-900 p-6 text-center">
+                                <p className="text-sm font-medium text-rose-700 dark:text-rose-300">
+                                    Unable to load tasks
+                                </p>
+
+                                <p className="mt-1 text-xs text-rose-600 dark:text-slate-300">
+                                    {taskError || "Something went wrong while loading your tasks."}
+                                </p>
+
+                                <button
+                                    type="button"
+                                    onClick={() => dispatch(fetchTasks())}
+                                    className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white cursor-pointer"
+                                >
+                                    Try Again
+                                </button>
+                            </div>
+                        ) : selectedTasks.length === 0 ? (
                             <div className="rounded-lg border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-6 text-center">
                                 <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
                                     No tasks scheduled

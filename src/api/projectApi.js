@@ -1,117 +1,27 @@
-const API_BASE_URL = "http://127.0.0.1:8000/api";
-
-const getApiErrorMessage = (data, fallbackMessage) => {
-    if (data?.detail) {
-        return data.detail;
-    }
-
-    const firstFieldError = Object.values(data || {}).find(
-        (value) => Array.isArray(value) && value.length > 0
-    );
-
-    if (firstFieldError) {
-        return firstFieldError[0];
-    }
-
-    return fallbackMessage;
-};
-
-const getAuthHeaders = () => {
-    const token = localStorage.getItem("taskflow-token");
-
-    return {
-        "Content-Type": "application/json",
-        Authorization: `Token ${token}`,
-    };
-};
+import apiRequest from "./apiClient";
 
 export const getProjects = async () => {
-    const response = await fetch(
-        `${API_BASE_URL}/projects/`,
-        {
-            method: "GET",
-            headers: getAuthHeaders(),
-        }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-        throw new Error(
-            getApiErrorMessage(data, "Failed to fetch projects.")
-        );
-    }
-
-    return data;
+    return await apiRequest("/projects/");
 };
 
 export const createProjectRequest = async (projectData) => {
-    const response = await fetch(
-        `${API_BASE_URL}/projects/`,
-        {
-            method: "POST",
-            headers: getAuthHeaders(),
-            body: JSON.stringify(projectData),
-        }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-        throw new Error(
-            getApiErrorMessage(data, "Failed to create project.")
-        );
-    }
-
-    return data;
+    return await apiRequest("/projects/", {
+        method: "POST",
+        body: JSON.stringify(projectData),
+    });
 };
 
-export const updateProjectRequest = async (
-    id,
-    projectData
-) => {
-    const response = await fetch(
-        `${API_BASE_URL}/projects/${id}/`,
-        {
-            method: "PATCH",
-            headers: getAuthHeaders(),
-            body: JSON.stringify(projectData),
-        }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-        throw new Error(
-            getApiErrorMessage(data, "Failed to update project.")
-        );
-    }
-
-    return data;
+export const updateProjectRequest = async (id, projectData) => {
+    return await apiRequest(`/projects/${id}/`, {
+        method: "PATCH",
+        body: JSON.stringify(projectData),
+    });
 };
 
 export const deleteProjectRequest = async (id) => {
-    const response = await fetch(
-        `${API_BASE_URL}/projects/${id}/`,
-        {
-            method: "DELETE",
-            headers: getAuthHeaders(),
-        }
-    );
-
-    if (!response.ok) {
-        let data = {};
-
-        try {
-            data = await response.json();
-        } catch {
-            // DELETE may return an empty response.
-        }
-
-        throw new Error(
-            getApiErrorMessage(data, "Failed to delete project.")
-        );
-    }
+    await apiRequest(`/projects/${id}/`, {
+        method: "DELETE",
+    });
 
     return id;
 };

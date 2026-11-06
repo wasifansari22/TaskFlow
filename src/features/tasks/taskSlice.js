@@ -1,11 +1,36 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getTasks, createTaskRequest, updateTaskRequest, deleteTaskRequest } from "../../api/taskApi";
+import { readUserDataCache } from "../../utils/userDataCache";
 
-const initialState = {
-    tasks: [],
-    status: "idle",
-    error: null,
+const getInitialTasksState = () => {
+    let userId = null;
+
+    try {
+        const auth = JSON.parse(
+            localStorage.getItem("taskflow-auth") || "null"
+        );
+
+        if (auth?.isAuthenticated) {
+            userId = auth.user?.id;
+        }
+    } catch {
+        userId = null;
+    }
+
+    const cachedData = readUserDataCache(userId);
+
+    return {
+        tasks: Array.isArray(cachedData?.tasks)
+            ? cachedData.tasks
+            : [],
+        status: Array.isArray(cachedData?.tasks)
+            ? "succeeded"
+            : "idle",
+        error: null,
+    };
 };
+
+const initialState = getInitialTasksState();
 
 export const fetchTasks = createAsyncThunk(
     "tasks/fetchTasks",
@@ -97,12 +122,23 @@ export const deleteTaskAsync = createAsyncThunk(
     }
 );
 
+
 const taskSlice = createSlice({
     name: "tasks",
     initialState,
+
     reducers: {
         resetTasks: () => initialState,
+
+        hydrateTasks: (state, action) => {
+            state.tasks = Array.isArray(action.payload)
+                ? action.payload
+                : [];
+            state.status = "succeeded";
+            state.error = null;
+        },
     },
+
     extraReducers: (builder) => {
         builder
             .addCase(fetchTasks.pending, (state) => {
@@ -112,6 +148,7 @@ const taskSlice = createSlice({
 
             .addCase(fetchTasks.fulfilled, (state, action) => {
                 state.status = "succeeded";
+                state.error = null;
                 state.tasks = action.payload;
             })
 
@@ -176,9 +213,9 @@ const taskSlice = createSlice({
                 state.tasks = state.tasks.filter(
                     (task) => task.id !== action.payload
                 );
-            })
+            });
     },
 });
 
-export const { resetTasks } = taskSlice.actions;
+export const { resetTasks, hydrateTasks } = taskSlice.actions;
 export default taskSlice.reducer;

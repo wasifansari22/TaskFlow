@@ -8,6 +8,7 @@ import { updateProfile, logout } from "../features/auth/authSlice";
 import { changePasswordUser, deleteAccountUser } from "../api/authApi";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
+import { removeUserDataCache } from "../utils/userDataCache";
 
 const Settings = () => {
     const dispatch = useDispatch();
@@ -143,6 +144,9 @@ const Settings = () => {
             } catch (error) {
                 console.error("Unable to remove saved account settings:", error);
             }
+
+            // Remove only this account's cached tasks and projects.
+            removeUserDataCache(userId);
 
             // Existing logout listeners clear Redux account data.
             dispatch(logout());

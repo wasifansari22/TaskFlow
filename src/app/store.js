@@ -1,10 +1,10 @@
 import { configureStore, createListenerMiddleware, } from "@reduxjs/toolkit";
-import taskReducer from "../features/tasks/taskSlice";
-import projectReducer, { resetProjects } from "../features/projects/projectSlice";
 import notificationReducer from "../features/notifications/notificationSlice";
 import settingsReducer, { defaultSettings, getSettingsKey, PUBLIC_THEME_KEY, loadUserSettings, } from "../features/settings/settingsSlice";
 import authReducer, { login, register, logout, } from "../features/auth/authSlice";
-import { resetTasks } from "../features/tasks/taskSlice";
+import { readUserDataCache, saveUserDataCache, } from "../utils/userDataCache";
+import taskReducer, { fetchTasks, createTask, updateTaskAsync, updateTaskStatusAsync, deleteTaskAsync, hydrateTasks, resetTasks, } from "../features/tasks/taskSlice";
+import projectReducer, { fetchProjects, createProjectAsync, updateProjectAsync, deleteProjectAsync, hydrateProjects, resetProjects, } from "../features/projects/projectSlice";
 
 const settingsListener = createListenerMiddleware();
 
@@ -75,6 +75,61 @@ settingsListener.startListening({
     },
 });
 
+// Restore the newly authenticated user's cached workspace data.
+settingsListener.startListening({
+    matcher: (action) =>
+        login.fulfilled.match(action) ||
+        register.fulfilled.match(action),
+
+    effect: async (action, listenerApi) => {
+        const userId = action.payload?.user?.id;
+
+        if (userId == null) return;
+
+        const cachedData = readUserDataCache(userId);
+
+        listenerApi.dispatch(
+            hydrateTasks(cachedData?.tasks || [])
+        );
+
+        listenerApi.dispatch(
+            hydrateProjects(cachedData?.projects || [])
+        );
+    },
+});
+
+// Persist workspace data after successful API operations.
+settingsListener.startListening({
+    matcher: (action) =>
+        fetchTasks.fulfilled.match(action) ||
+        createTask.fulfilled.match(action) ||
+        updateTaskAsync.fulfilled.match(action) ||
+        updateTaskStatusAsync.fulfilled.match(action) ||
+        deleteTaskAsync.fulfilled.match(action) ||
+        fetchProjects.fulfilled.match(action) ||
+        createProjectAsync.fulfilled.match(action) ||
+        updateProjectAsync.fulfilled.match(action) ||
+        deleteProjectAsync.fulfilled.match(action),
+
+    effect: async (_, listenerApi) => {
+        const state = listenerApi.getState();
+        const userId = state.auth.user?.id;
+
+        if (
+            !state.auth.isAuthenticated ||
+            userId == null ||
+            String(state.settings.ownerId) !== String(userId)
+        ) {
+            return;
+        }
+
+        saveUserDataCache(userId, {
+            tasks: state.tasks.tasks,
+            projects: state.projects.projects,
+        });
+    },
+});
+
 export const store = configureStore({
     reducer: {
         tasks: taskReducer,
@@ -100,6 +155,7 @@ store.subscribe(() => {
         return;
     }
 
+    // Save settings.
     try {
         const { ownerId, ...settingsToSave } = state.settings;
 

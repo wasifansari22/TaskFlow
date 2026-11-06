@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getProjects, createProjectRequest, updateProjectRequest, deleteProjectRequest, } from "../../api/projectApi";
+import { readUserDataCache } from "../../utils/userDataCache";
 
 // Transition Layer
 const normalizeProject = (project) => ({
@@ -7,11 +8,35 @@ const normalizeProject = (project) => ({
     dueDate: project.due_date || "No due date",
 });
 
-const initialState = {
-    projects: [],
-    status: "idle",
-    error: null,
+const getInitialProjectsState = () => {
+    let userId = null;
+
+    try {
+        const auth = JSON.parse(
+            localStorage.getItem("taskflow-auth") || "null"
+        );
+
+        if (auth?.isAuthenticated) {
+            userId = auth.user?.id;
+        }
+    } catch {
+        userId = null;
+    }
+
+    const cachedData = readUserDataCache(userId);
+
+    return {
+        projects: Array.isArray(cachedData?.projects)
+            ? cachedData.projects
+            : [],
+        status: Array.isArray(cachedData?.projects)
+            ? "succeeded"
+            : "idle",
+        error: null,
+    };
 };
+
+const initialState = getInitialProjectsState();
 
 export const fetchProjects = createAsyncThunk(
     "projects/fetchProjects",
@@ -87,15 +112,25 @@ export const deleteProjectAsync = createAsyncThunk(
     }
 );
 
+
 const projectSlice = createSlice({
     name: "projects",
     initialState,
+
     reducers: {
         resetProjects: () => initialState,
+
+        hydrateProjects: (state, action) => {
+            state.projects = Array.isArray(action.payload)
+                ? action.payload
+                : [];
+            state.status = "succeeded";
+            state.error = null;
+        },
     },
+
     extraReducers: (builder) => {
         builder
-
             // Get
             .addCase(fetchProjects.pending, (state) => {
                 state.status = "loading";
@@ -104,6 +139,7 @@ const projectSlice = createSlice({
 
             .addCase(fetchProjects.fulfilled, (state, action) => {
                 state.status = "succeeded";
+                state.error = null;
                 state.projects = action.payload;
             })
 
@@ -139,5 +175,5 @@ const projectSlice = createSlice({
     },
 });
 
-export const { resetProjects } = projectSlice.actions;
+export const { resetProjects, hydrateProjects } = projectSlice.actions;
 export default projectSlice.reducer;

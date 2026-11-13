@@ -1,5 +1,9 @@
 @import "tailwindcss";
+
+/* Enable class-based dark mode for Tailwind utilities */
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* Theme Tokens */
 
 :root {
     font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -8,37 +12,56 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
-    color: #111827;
-    background-color: #f8fafc;
     color-scheme: light;
+
+    --app-bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-secondary: #f8fafc;
+    --border: #e2e8f0;
+
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+
+    --accent: #6366f1;
+    --accent-hover: #4f46e5;
 
     --tooltip-bg: #ffffff;
     --tooltip-border: #e2e8f0;
     --tooltip-text: #0f172a;
 
-    /* Custom scrollbar colors */
     --scrollbar-thumb: #cbd5e1;
     --scrollbar-thumb-hover: #94a3b8;
 }
 
+/* Dark theme */
 html.dark {
-    color: #e2e8f0;
-    background-color: #0f172a;
     color-scheme: dark;
+
+    --app-bg: #0b1120;
+    --surface: #111827;
+    --surface-secondary: #1e293b;
+    --border: #263449;
+
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+
+    --accent: #818cf8;
+    --accent-hover: #a5b4fc;
 
     --tooltip-bg: #1e293b;
     --tooltip-border: #475569;
     --tooltip-text: #f1f5f9;
 
-    /* Dark mode scrollbar colors */
     --scrollbar-thumb: #475569;
     --scrollbar-thumb-hover: #64748b;
 }
 
+/* Global styles */
+
 * {
     box-sizing: border-box;
-
-    /* Firefox and other browsers supporting standard scrollbar properties */
     scrollbar-width: thin;
     scrollbar-color: var(--scrollbar-thumb) transparent;
 }
@@ -48,7 +71,21 @@ html {
     scroll-behavior: smooth;
 }
 
-/* Chrome, Edge, and Safari */
+body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    background-color: var(--app-bg);
+    color: var(--text-primary);
+    transition: background-color 180ms ease, color 180ms ease;
+}
+
+#root {
+    min-height: 100vh;
+}
+
+/* Custom scrollbar */
+
 *::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -73,18 +110,7 @@ html {
     background: transparent;
 }
 
-body {
-    margin: 0;
-    min-width: 320px;
-    min-height: 100vh;
-    background-color: inherit;
-    color: inherit;
-    transition: background-color 180ms ease, color 180ms ease;
-}
-
-#root {
-    min-height: 100vh;
-}
+/* Page transitions */
 
 @keyframes page-enter {
     from {
@@ -102,8 +128,17 @@ body {
     animation: page-enter 180ms ease-out;
 }
 
+/* Respect reduced-motion preferences */
 @media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
     .page-enter {
         animation: none;
+    }
+
+    body {
+        transition: none;
     }
 }

@@ -68,7 +68,7 @@ const Dashboard = () => {
     };
 
     return (
-        <div className="mx-auto w-full max-w-7xl space-y-8">
+        <div className="mx-auto w-full max-w-360 space-y-7">
 
             {/* Initial Loading */}
             {hasNoDataAfterFailure ? (
@@ -98,25 +98,27 @@ const Dashboard = () => {
             ) : (
                 <>
                     {/* Page Header */}
-                    <section>
-                        <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                            Overview
-                        </p>
+                    <section className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-400">
+                                Workspace overview
+                            </p>
 
-                        <h1 className="mt-1 text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-300">
-                            Dashboard
-                        </h1>
+                            <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+                                Dashboard
+                            </h1>
 
-                        <p className="mt-2 max-w-2xl text-slate-600 dark:text-slate-400">
-                            Welcome back. Here's what's happening with your work.
-                        </p>
+                            <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">
+                                Plan, organize and accomplish your tasks with ease.
+                            </p>
+                        </div>
                     </section>
 
-                    {/* Refreshing Indicator */}
                     {isRefreshing && (
-                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                        <div className="flex items-center gap-2 text-xs font-medium text-indigo-600 dark:text-indigo-400">
+                            <span className="h-2 w-2 animate-pulse rounded-full bg-indigo-500" />
                             Refreshing dashboard data...
-                        </p>
+                        </div>
                     )}
 
                     {/* Task API Error */}
@@ -214,7 +216,7 @@ const Dashboard = () => {
                     </section>
 
                     {/* Projects and Quick Actions */}
-                    <section className="grid gap-6 xl:grid-cols-3">
+                    <section className="grid gap-5 xl:grid-cols-3">
                         <div className="xl:col-span-2">
                             <ProjectProgress />
                         </div>
@@ -228,7 +230,7 @@ const Dashboard = () => {
                     </section>
 
                     {/* Analytics */}
-                    <section className="grid gap-6 xl:grid-cols-2">
+                    <section className="grid gap-5 xl:grid-cols-2">
                         <TaskAnalytics />
                         <ProjectAnalytics />
                     </section>

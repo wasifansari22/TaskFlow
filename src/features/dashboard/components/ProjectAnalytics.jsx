@@ -19,10 +19,9 @@ const ProjectAnalytics = () => {
             : 0;
 
     return (
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-            {/* Header */}
+        <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-colors dark:border-slate-800 dark:bg-slate-900 sm:p-6">
             <div>
-                <h2 className="font-semibold text-slate-900 dark:text-slate-100">
+                <h2 className="text-base font-semibold tracking-tight text-slate-900 dark:text-white">
                     Project Analytics
                 </h2>
 
@@ -32,14 +31,12 @@ const ProjectAnalytics = () => {
             </div>
 
             {projects.length === 0 ? (
-                /* Empty State */
                 <div className="flex h-80 flex-col items-center justify-center text-center">
-                    <FolderKanban
-                        size={32}
-                        className="text-slate-300 dark:text-slate-600"
-                    />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
+                        <FolderKanban size={24} />
+                    </div>
 
-                    <p className="mt-3 font-medium text-slate-900 dark:text-slate-100">
+                    <p className="mt-4 font-semibold text-slate-900 dark:text-white">
                         No project data yet
                     </p>
 
@@ -49,46 +46,44 @@ const ProjectAnalytics = () => {
                 </div>
             ) : (
                 <>
-                    {/* Summary */}
                     <div className="mt-6 grid grid-cols-2 gap-3">
-                        <div className="rounded-lg bg-slate-50 p-3 dark:bg-slate-800">
-                            <p className="text-xs text-slate-500 dark:text-slate-400">
-                                Total Projects
+                        <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-4 dark:border-slate-800 dark:bg-slate-800/50">
+                            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                                Active Projects
                             </p>
 
-                            <p className="mt-1 text-xl font-bold text-slate-900 dark:text-slate-100">
+                            <p className="mt-2 text-2xl font-bold tabular-nums text-slate-900 dark:text-white">
                                 {totalProjects}
                             </p>
                         </div>
 
-                        <div className="rounded-lg bg-blue-50 p-3 dark:bg-blue-950">
+                        <div className="rounded-xl border border-indigo-100 bg-indigo-50/70 p-4 dark:border-indigo-900/50 dark:bg-indigo-950/30">
                             <div className="flex items-center gap-1.5">
                                 <TrendingUp
                                     size={14}
-                                    className="text-blue-600 dark:text-blue-400"
+                                    className="text-indigo-600 dark:text-indigo-400"
                                 />
 
-                                <p className="text-xs text-blue-600 dark:text-blue-400">
+                                <p className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
                                     Avg. Progress
                                 </p>
                             </div>
 
-                            <p className="mt-1 text-xl font-bold text-slate-900 dark:text-slate-100">
+                            <p className="mt-2 text-2xl font-bold tabular-nums text-slate-900 dark:text-white">
                                 {averageProgress}%
                             </p>
                         </div>
                     </div>
 
-                    {/* Chart */}
-                    <div className="mt-6 h-56">
+                    <div className="mt-6 h-56 min-w-0">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart
                                 data={projects}
                                 layout="vertical"
                                 margin={{
                                     top: 5,
-                                    right: 10,
-                                    left: 10,
+                                    right: 12,
+                                    left: 4,
                                     bottom: 5,
                                 }}
                             >
@@ -100,8 +95,10 @@ const ProjectAnalytics = () => {
                                         fill: "var(--tooltip-text)",
                                     }}
                                     tickFormatter={(value) => `${value}%`}
-                                    axisLine={{ stroke: "var(--tooltip-border)" }}
-                                    tickLine={{ stroke: "var(--tooltip-border)" }}
+                                    axisLine={{
+                                        stroke: "var(--tooltip-border)",
+                                    }}
+                                    tickLine={false}
                                 />
 
                                 <YAxis
@@ -112,7 +109,7 @@ const ProjectAnalytics = () => {
                                         fontSize: 11,
                                         fill: "var(--tooltip-text)",
                                     }}
-                                    axisLine={{ stroke: "var(--tooltip-border)" }}
+                                    axisLine={false}
                                     tickLine={false}
                                 />
 
@@ -124,8 +121,9 @@ const ProjectAnalytics = () => {
                                     contentStyle={{
                                         backgroundColor: "var(--tooltip-bg)",
                                         border: "1px solid var(--tooltip-border)",
-                                        borderRadius: "8px",
+                                        borderRadius: "12px",
                                         color: "var(--tooltip-text)",
+                                        boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
                                     }}
                                     formatter={(value) => [
                                         `${value}%`,
@@ -135,16 +133,20 @@ const ProjectAnalytics = () => {
 
                                 <Bar
                                     dataKey="progress"
-                                    fill="#2563eb"
+                                    fill="#6366f1"
+                                    background={{
+                                        fill: "var(--tooltip-border)",
+                                        radius: 6,
+                                    }}
                                     radius={[0, 6, 6, 0]}
-                                    barSize={24}
+                                    barSize={22}
                                 />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
                 </>
             )}
-        </div>
+        </section>
     );
 };
 

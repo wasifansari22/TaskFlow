@@ -216,7 +216,7 @@ const Dashboard = () => {
                     </section>
 
                     {/* Projects and Quick Actions */}
-                    <section className="grid gap-5 xl:grid-cols-3">
+                    <section className="grid items-stretch gap-5 xl:grid-cols-3">
                         <div className="xl:col-span-2">
                             <ProjectProgress />
                         </div>

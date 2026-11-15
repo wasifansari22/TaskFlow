@@ -1,10 +1,9 @@
 @import "tailwindcss";
 
-/* Enable class-based dark mode for Tailwind utilities */
+/* Enable class-based dark mode */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Theme Tokens */
-
+/* Light theme */
 :root {
     font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-synthesis: none;
@@ -14,52 +13,51 @@
 
     color-scheme: light;
 
-    --app-bg: #f8fafc;
-    --surface: #ffffff;
-    --surface-secondary: #f8fafc;
-    --border: #e2e8f0;
+    --app-bg: #F5F7FB;
+    --surface: #FFFFFF;
+    --surface-secondary: #E9EEF5;
+    --border: #DCE3ED;
 
-    --text-primary: #0f172a;
-    --text-secondary: #64748b;
-    --text-muted: #94a3b8;
+    --text-primary: #111827;
+    --text-secondary: #64748B;
+    --text-muted: #94A3B8;
 
-    --accent: #6366f1;
-    --accent-hover: #4f46e5;
+    --accent: #6366F1;
+    --accent-hover: #4F46E5;
 
-    --tooltip-bg: #ffffff;
-    --tooltip-border: #e2e8f0;
-    --tooltip-text: #0f172a;
+    --tooltip-bg: #FFFFFF;
+    --tooltip-border: #DCE3ED;
+    --tooltip-text: #111827;
 
-    --scrollbar-thumb: #cbd5e1;
-    --scrollbar-thumb-hover: #94a3b8;
+    --scrollbar-thumb: #CBD5E1;
+    --scrollbar-thumb-hover: #94A3B8;
 }
 
 /* Dark theme */
 html.dark {
     color-scheme: dark;
 
-    --app-bg: #0b1120;
-    --surface: #111827;
-    --surface-secondary: #1e293b;
-    --border: #263449;
+    --app-bg: #0B1020;
+    --surface: #141C2E;
+    --surface-secondary: #1C2940;
+    --border: #2B3950;
 
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
+    --text-primary: #F1F5F9;
+    --text-secondary: #A3B1C6;
+    --text-muted: #718096;
 
-    --accent: #818cf8;
-    --accent-hover: #a5b4fc;
+    --accent: #818CF8;
+    --accent-hover: #A5B4FC;
 
-    --tooltip-bg: #1e293b;
-    --tooltip-border: #475569;
-    --tooltip-text: #f1f5f9;
+    --tooltip-bg: #1C2940;
+    --tooltip-border: #3A4962;
+    --tooltip-text: #F1F5F9;
 
     --scrollbar-thumb: #475569;
-    --scrollbar-thumb-hover: #64748b;
+    --scrollbar-thumb-hover: #64748B;
 }
 
 /* Global styles */
-
 * {
     box-sizing: border-box;
     scrollbar-width: thin;
@@ -85,7 +83,6 @@ body {
 }
 
 /* Custom scrollbar */
-
 *::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -111,7 +108,6 @@ body {
 }
 
 /* Page transitions */
-
 @keyframes page-enter {
     from {
         opacity: 0;

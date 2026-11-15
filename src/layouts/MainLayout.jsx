@@ -24,7 +24,7 @@ function MainLayout() {
 
                 <main
                     ref={mainRef}
-                    className="min-h-0 flex-1 overflow-auto p-6 lg:p-8"
+                    className="min-h-0 flex-1 overflow-auto px-5 py-6 sm:px-7 lg:px-10 xl:px-12"
                 >
                     <div key={location.pathname} className="page-enter">
                         <Outlet />

@@ -13,7 +13,7 @@ const RecentTasks = () => {
             (a, b) =>
                 new Date(b.created_at) - new Date(a.created_at)
         )
-        .slice(0, 4);
+        .slice(0, 5);
 
     const getStatusStyle = (status) => {
         if (status === "Completed") {

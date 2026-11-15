@@ -1,8 +1,6 @@
-
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectDashboardStats } from "../features/dashboard/dashboardSelectors";
-
 import StatCard from "../features/dashboard/components/StatCard";
 import ProjectProgress from "../features/dashboard/components/ProjectProgress";
 import QuickActions from "../features/dashboard/components/QuickActions";
@@ -10,7 +8,6 @@ import RecentTasks from "../features/dashboard/components/RecentTasks";
 import UpcomingDeadlines from "../features/dashboard/components/UpcomingDeadlines";
 import TaskAnalytics from "../features/dashboard/components/TaskAnalytics";
 import ProjectAnalytics from "../features/dashboard/components/ProjectAnalytics";
-
 import { fetchTasks } from "../features/tasks/taskSlice";
 import { fetchProjects } from "../features/projects/projectSlice";
 
@@ -24,6 +21,7 @@ const Dashboard = () => {
 
     // Dashboard data
     const dashboardStats = useSelector(selectDashboardStats);
+
     const tasks = useSelector((state) => state.tasks.tasks);
     const projects = useSelector((state) => state.projects.projects);
 
@@ -33,9 +31,6 @@ const Dashboard = () => {
 
     const taskError = useSelector((state) => state.tasks.error);
     const projectError = useSelector((state) => state.projects.error);
-
-    // Check whether any previously loaded data is available
-    const hasAnyData = tasks.length > 0 || projects.length > 0;
 
     const hasTaskData = taskStatus === "succeeded" || tasks.length > 0;
     const hasProjectData = projectStatus === "succeeded" || projects.length > 0;
@@ -67,29 +62,49 @@ const Dashboard = () => {
         dispatch(fetchProjects());
     };
 
+    const handleRetryAll = () => {
+        dispatch(fetchTasks());
+        dispatch(fetchProjects());
+    };
+
+    const destinationMap = {
+        "Total Tasks": "/tasks?status=All",
+        "Pending": "/tasks?status=Pending",
+        "In Progress": "/tasks?status=In%20Progress",
+        "Completed": "/tasks?status=Completed",
+        "Active Projects": "/projects",
+    };
+
     return (
-        <div className="mx-auto w-full max-w-360 space-y-7">
+        <div className="mx-auto w-full max-w-340 space-y-7">
 
             {/* Initial Loading */}
-            {hasNoDataAfterFailure ? (
-                <div className="flex min-h-100 items-center justify-center">
-                    <div className="max-w-md text-center">
-                        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-200">
+            {isInitialLoading ? (
+                <div className="flex min-h-[60vh] flex-col items-center justify-center">
+                    <div className="h-9 w-9 animate-spin rounded-full border-4 border-indigo-100 border-t-indigo-600 dark:border-slate-700 dark:border-t-indigo-400" />
+
+                    <p className="mt-4 text-sm font-medium text-slate-600 dark:text-slate-400">
+                        Preparing your dashboard...
+                    </p>
+                </div>
+            ) : hasNoDataAfterFailure ? (
+
+                /* Dashboard Unavailable */
+                <div className="flex min-h-[60vh] items-center justify-center">
+                    <div className="max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
                             Dashboard data unavailable
                         </h2>
 
-                        <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-                            We couldn't retrieve your tasks or projects. Check your
-                            connection and try again.
+                        <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
+                            We couldn't retrieve your tasks or projects.
+                            Check your connection and try again.
                         </p>
 
                         <button
                             type="button"
-                            onClick={() => {
-                                dispatch(fetchTasks());
-                                dispatch(fetchProjects());
-                            }}
-                            className="mt-5 cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+                            onClick={handleRetryAll}
+                            className="mt-5 cursor-pointer rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
                         >
                             Try Again
                         </button>
@@ -97,29 +112,29 @@ const Dashboard = () => {
                 </div>
             ) : (
                 <>
-                    {/* Page Header */}
+                    {/* Dashboard Header */}
                     <section className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-400">
+                            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-indigo-600 dark:text-indigo-400">
                                 Workspace overview
                             </p>
 
-                            <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+                            <h1 className="mt-1.5 text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
                                 Dashboard
                             </h1>
 
-                            <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">
+                            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                                 Plan, organize and accomplish your tasks with ease.
                             </p>
                         </div>
-                    </section>
 
-                    {isRefreshing && (
-                        <div className="flex items-center gap-2 text-xs font-medium text-indigo-600 dark:text-indigo-400">
-                            <span className="h-2 w-2 animate-pulse rounded-full bg-indigo-500" />
-                            Refreshing dashboard data...
-                        </div>
-                    )}
+                        {isRefreshing && (
+                            <div className="flex items-center gap-2 text-xs font-medium text-indigo-600 dark:text-indigo-400">
+                                <span className="h-2 w-2 animate-pulse rounded-full bg-indigo-500" />
+                                Refreshing dashboard data...
+                            </div>
+                        )}
+                    </section>
 
                     {/* Task API Error */}
                     {taskStatus === "failed" && (
@@ -187,57 +202,52 @@ const Dashboard = () => {
                         </div>
                     )}
 
-                    {/* Statistics */}
-                    <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-                        {dashboardStats.map((stat) => {
-                            const destinationMap = {
-                                "Total Tasks": "/tasks?status=All",
-                                "Pending": "/tasks?status=Pending",
-                                "In Progress": "/tasks?status=In%20Progress",
-                                "Completed": "/tasks?status=Completed",
-                                "Active Projects": "/projects",
-                            };
-
-                            const destination =
-                                destinationMap[stat.title] || "/tasks";
-
-                            return (
-                                <StatCard
-                                    key={stat.title}
-                                    title={stat.title}
-                                    value={stat.value}
-                                    description={stat.description}
-                                    icon={stat.icon}
-                                    iconStyle={stat.iconStyle}
-                                    to={destination}
-                                />
-                            );
-                        })}
+                    {/* All Five Statistics Cards */}
+                    <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5">
+                        {dashboardStats.map((stat) => (
+                            <StatCard
+                                key={stat.title}
+                                title={stat.title}
+                                value={stat.value}
+                                description={stat.description}
+                                icon={stat.icon}
+                                iconStyle={stat.iconStyle}
+                                to={destinationMap[stat.title] || "/tasks"}
+                            />
+                        ))}
                     </section>
 
-                    {/* Projects and Quick Actions */}
-                    <section className="grid items-stretch gap-5 xl:grid-cols-3">
-                        <div className="xl:col-span-2">
+                    {/* Project Progress and Quick Actions */}
+                    <section className="grid min-w-0 grid-cols-1 gap-5 xl:grid-cols-12">
+                        <div className="min-w-0 xl:col-span-8">
                             <ProjectProgress />
                         </div>
 
-                        <QuickActions />
+                        <div className="min-w-0 xl:col-span-4">
+                            <QuickActions />
+                        </div>
                     </section>
 
-                    {/* Recent Tasks */}
-                    <section>
-                        <RecentTasks />
+                    {/* Recent Tasks and Upcoming Deadlines */}
+                    <section className="grid min-w-0 grid-cols-1 gap-5 xl:grid-cols-12">
+                        <div className="min-w-0 xl:col-span-8">
+                            <RecentTasks />
+                        </div>
+
+                        <div className="min-w-0 xl:col-span-4">
+                            <UpcomingDeadlines />
+                        </div>
                     </section>
 
                     {/* Analytics */}
-                    <section className="grid gap-5 xl:grid-cols-2">
-                        <TaskAnalytics />
-                        <ProjectAnalytics />
-                    </section>
+                    <section className="grid min-w-0 grid-cols-1 gap-5 xl:grid-cols-12">
+                        <div className="min-w-0 xl:col-span-7">
+                            <ProjectAnalytics />
+                        </div>
 
-                    {/* Upcoming Deadlines */}
-                    <section>
-                        <UpcomingDeadlines />
+                        <div className="min-w-0 xl:col-span-5">
+                            <TaskAnalytics />
+                        </div>
                     </section>
                 </>
             )}

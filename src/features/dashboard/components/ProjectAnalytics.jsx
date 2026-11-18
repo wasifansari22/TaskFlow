@@ -8,24 +8,16 @@ const ProjectAnalytics = () => {
 
     const totalProjects = projects.length;
 
-    const averageProgress =
-        totalProjects > 0
-            ? Math.round(
-                projects.reduce(
-                    (total, project) => total + project.progress,
-                    0
-                ) / totalProjects
-            )
-            : 0;
+    const averageProgress = totalProjects > 0 ? Math.round(projects.reduce((total, project) => total + project.progress, 0) / totalProjects) : 0;
 
     return (
-        <section className="h-full rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-colors dark:border-slate-800 dark:bg-slate-900 sm:p-6">
+        <section className="h-full rounded-xl border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] dark:border-[#292e3a] dark:bg-[#151821] sm:p-5">
             <div>
-                <h2 className="text-base font-semibold tracking-tight text-slate-900 dark:text-white">
+                <h2 className="text-base font-semibold text-slate-900 dark:text-white">
                     Project Analytics
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                     Progress across your active projects.
                 </p>
             </div>
@@ -47,7 +39,7 @@ const ProjectAnalytics = () => {
             ) : (
                 <>
                     <div className="mt-6 grid grid-cols-2 gap-3">
-                        <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-4 dark:border-slate-800 dark:bg-slate-800/50">
+                        <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-[#292e3a] dark:bg-[#1c202b]">
                             <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
                                 Active Projects
                             </p>
@@ -57,7 +49,7 @@ const ProjectAnalytics = () => {
                             </p>
                         </div>
 
-                        <div className="rounded-xl border border-indigo-100 bg-indigo-50/70 p-4 dark:border-indigo-900/50 dark:bg-indigo-950/30">
+                        <div className="rounded-lg border border-indigo-100 bg-indigo-50/70 p-3 dark:border-indigo-500/30 dark:bg-indigo-500/10">
                             <div className="flex items-center gap-1.5">
                                 <TrendingUp
                                     size={14}
@@ -144,6 +136,17 @@ const ProjectAnalytics = () => {
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
+
+                    {/* TODO: Pending
+                    <div className="rounded-lg border border-indigo-100 bg-indigo-50/70 p-3 dark:border-indigo-500/30 dark:bg-indigo-500/10">
+                        <p className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
+                            Completion Rate - Coming Soon
+                        </p>
+
+                        <p className="mt-2 text-2xl font-bold tabular-nums text-slate-900 dark:text-white">
+                            {totalProjects} - Functionality Pending...
+                        </p>
+                    </div> */}
                 </>
             )}
         </section>

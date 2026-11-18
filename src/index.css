@@ -26,11 +26,11 @@
     --accent-hover: #4338CA;
 
     --tooltip-bg: #FFFFFF;
-    --tooltip-border: #E7E9EF;
-    --tooltip-text: #111827;
+    --tooltip-border: #E2E8F0;
+    --tooltip-text: #0F172A;
 
-    --scrollbar-thumb: #CBD0DA;
-    --scrollbar-thumb-hover: #A7AFBD;
+    --scrollbar-thumb: #CBD5E1;
+    --scrollbar-thumb-hover: #94A3B8;
 }
 
 /* Dark styles */
@@ -49,12 +49,12 @@ html.dark {
     --accent: #5145E5;
     --accent-hover: #6257F0;
 
-    --tooltip-bg: #191D27;
-    --tooltip-border: #2B303C;
-    --tooltip-text: #F5F6FA;
+    --tooltip-bg: #151821;
+    --tooltip-border: #292E3A;
+    --tooltip-text: #E2E8F0;
 
-    --scrollbar-thumb: #353B49;
-    --scrollbar-thumb-hover: #4A5262;
+    --scrollbar-thumb: #3B4252;
+    --scrollbar-thumb-hover: #596174;
 }
 
 /* Global styles */

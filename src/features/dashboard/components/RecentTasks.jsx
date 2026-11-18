@@ -13,7 +13,7 @@ const RecentTasks = () => {
             (a, b) =>
                 new Date(b.created_at) - new Date(a.created_at)
         )
-        .slice(0, 5);
+        .slice(0, 4);
 
     const getStatusStyle = (status) => {
         if (status === "Completed") {
@@ -40,14 +40,14 @@ const RecentTasks = () => {
     };
 
     return (
-        <section className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm transition-colors dark:border-slate-800 dark:bg-slate-900">
+        <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)] dark:border-[#292e3a] dark:bg-[#151821]">
             <div className="flex items-center justify-between gap-3 border-b border-slate-100 p-5 dark:border-slate-800 sm:p-6">
                 <div>
                     <h2 className="text-base font-semibold tracking-tight text-slate-900 dark:text-white">
                         Recent Tasks
                     </h2>
 
-                    <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                         Keep track of your latest work.
                     </p>
                 </div>
@@ -61,7 +61,7 @@ const RecentTasks = () => {
                 </Link>
             </div>
 
-            <div className="divide-y divide-slate-100 dark:divide-slate-800">
+            <div className="divide-y divide-slate-200 dark:divide-[#292e3a]">
                 {recentTasks.length === 0 ? (
                     <div className="px-5 py-12 text-center">
                         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
@@ -94,10 +94,10 @@ const RecentTasks = () => {
                         return (
                             <div
                                 key={task.id}
-                                className="flex items-center justify-between gap-3 px-5 py-4 transition hover:bg-slate-50/80 dark:hover:bg-slate-800/40 sm:px-6"
+                                className="flex items-center justify-between gap-3 px-5 py-3.5 transition hover:bg-slate-50 dark:hover:bg-[#1c202b]"
                             >
                                 <div className="flex min-w-0 items-center gap-3">
-                                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-50 dark:bg-slate-800">
+                                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-[#222735]">
                                         {getStatusIcon(task.status)}
                                     </div>
 

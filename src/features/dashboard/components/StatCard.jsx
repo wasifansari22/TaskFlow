@@ -5,12 +5,12 @@ const StatCard = ({ title, value, description, icon: Icon, iconStyle = "bg-indig
     return (
         <Link
             to={to}
-            className="group relative flex min-w-0 flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-indigo-900/70 sm:p-5"
+            className="group relative flex min-w-0 flex-col justify-between overflow-hidden rounded-xl border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-md dark:border-[#292e3a] dark:bg-[#151821] dark:hover:border-indigo-500/60 sm:p-5"
         >
             {/* Card heading */}
             <div className="flex items-start justify-between gap-3">
                 <div
-                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${iconStyle}`}
+                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${iconStyle}`}
                 >
                     {Icon && <Icon size={21} strokeWidth={1.8} />}
                 </div>
@@ -31,7 +31,7 @@ const StatCard = ({ title, value, description, icon: Icon, iconStyle = "bg-indig
                     {value}
                 </p>
 
-                <p className="mt-1.5 text-xs leading-relaxed text-slate-400 dark:text-slate-500">
+                <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
                     {description}
                 </p>
             </div>

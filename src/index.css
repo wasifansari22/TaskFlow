@@ -3,7 +3,7 @@
 /* Enable class-based dark mode */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Light theme */
+/* light styles */
 :root {
     font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-synthesis: none;
@@ -13,48 +13,48 @@
 
     color-scheme: light;
 
-    --app-bg: #F5F7FB;
+    --app-bg: #F4F5F7;
     --surface: #FFFFFF;
-    --surface-secondary: #E9EEF5;
-    --border: #DCE3ED;
+    --surface-secondary: #F8F9FB;
+    --border: #E7E9EF;
 
     --text-primary: #111827;
     --text-secondary: #64748B;
     --text-muted: #94A3B8;
 
-    --accent: #6366F1;
-    --accent-hover: #4F46E5;
+    --accent: #5145E5;
+    --accent-hover: #4338CA;
 
     --tooltip-bg: #FFFFFF;
-    --tooltip-border: #DCE3ED;
+    --tooltip-border: #E7E9EF;
     --tooltip-text: #111827;
 
-    --scrollbar-thumb: #CBD5E1;
-    --scrollbar-thumb-hover: #94A3B8;
+    --scrollbar-thumb: #CBD0DA;
+    --scrollbar-thumb-hover: #A7AFBD;
 }
 
-/* Dark theme */
+/* Dark styles */
 html.dark {
     color-scheme: dark;
 
-    --app-bg: #0B1020;
-    --surface: #141C2E;
-    --surface-secondary: #1C2940;
-    --border: #2B3950;
+    --app-bg: #0B0C10;
+    --surface: #151821;
+    --surface-secondary: #191D27;
+    --border: #242832;
 
-    --text-primary: #F1F5F9;
-    --text-secondary: #A3B1C6;
-    --text-muted: #718096;
+    --text-primary: #F5F6FA;
+    --text-secondary: #A1A8B7;
+    --text-muted: #737C8D;
 
-    --accent: #818CF8;
-    --accent-hover: #A5B4FC;
+    --accent: #5145E5;
+    --accent-hover: #6257F0;
 
-    --tooltip-bg: #1C2940;
-    --tooltip-border: #3A4962;
-    --tooltip-text: #F1F5F9;
+    --tooltip-bg: #191D27;
+    --tooltip-border: #2B303C;
+    --tooltip-text: #F5F6FA;
 
-    --scrollbar-thumb: #475569;
-    --scrollbar-thumb-hover: #64748B;
+    --scrollbar-thumb: #353B49;
+    --scrollbar-thumb-hover: #4A5262;
 }
 
 /* Global styles */

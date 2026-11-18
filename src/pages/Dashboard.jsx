@@ -76,7 +76,7 @@ const Dashboard = () => {
     };
 
     return (
-        <div className="mx-auto w-full max-w-340 space-y-7">
+        <div className="mx-auto w-full max-w-340 space-y-6">
 
             {/* Initial Loading */}
             {isInitialLoading ? (
@@ -113,18 +113,14 @@ const Dashboard = () => {
             ) : (
                 <>
                     {/* Dashboard Header */}
-                    <section className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <section className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-indigo-600 dark:text-indigo-400">
-                                Workspace overview
-                            </p>
-
-                            <h1 className="mt-1.5 text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+                            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
                                 Dashboard
                             </h1>
 
                             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                                Plan, organize and accomplish your tasks with ease.
+                                Here's an overview of your projects and tasks.
                             </p>
                         </div>
 
@@ -140,17 +136,15 @@ const Dashboard = () => {
                     {taskStatus === "failed" && (
                         <div
                             role="alert"
-                            className="flex flex-col gap-3 rounded-xl border border-red-200 bg-red-50 p-4 dark:border-red-900/50 dark:bg-red-950/30 sm:flex-row sm:items-center sm:justify-between"
+                            className="flex flex-col gap-3 rounded-xl border border-red-200 bg-red-50 p-4 dark:border-red-500/30 dark:bg-red-950/30 sm:flex-row sm:items-center sm:justify-between"
                         >
                             <div>
                                 <h2 className="font-semibold text-red-800 dark:text-red-300">
                                     Unable to load tasks
                                 </h2>
-
                                 <p className="mt-1 text-sm text-red-700 dark:text-red-400">
                                     {taskError || "Something went wrong while loading tasks."}
                                 </p>
-
                                 {tasks.length > 0 && (
                                     <p className="mt-1 text-xs text-red-600 dark:text-red-400">
                                         Previously loaded tasks are still displayed.
@@ -173,17 +167,15 @@ const Dashboard = () => {
                     {projectStatus === "failed" && (
                         <div
                             role="alert"
-                            className="flex flex-col gap-3 rounded-xl border border-red-200 bg-red-50 p-4 dark:border-red-900/50 dark:bg-red-950/30 sm:flex-row sm:items-center sm:justify-between"
+                            className="flex flex-col gap-3 rounded-xl border border-red-200 bg-red-50 p-4 dark:border-red-500/30 dark:bg-red-950/30 sm:flex-row sm:items-center sm:justify-between"
                         >
                             <div>
                                 <h2 className="font-semibold text-red-800 dark:text-red-300">
                                     Unable to load projects
                                 </h2>
-
                                 <p className="mt-1 text-sm text-red-700 dark:text-red-400">
                                     {projectError || "Something went wrong while loading projects."}
                                 </p>
-
                                 {projects.length > 0 && (
                                     <p className="mt-1 text-xs text-red-600 dark:text-red-400">
                                         Previously loaded projects are still displayed.
@@ -202,8 +194,8 @@ const Dashboard = () => {
                         </div>
                     )}
 
-                    {/* All Five Statistics Cards */}
-                    <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5">
+                    {/* Statistics */}
+                    <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
                         {dashboardStats.map((stat) => (
                             <StatCard
                                 key={stat.title}
@@ -217,36 +209,36 @@ const Dashboard = () => {
                         ))}
                     </section>
 
-                    {/* Project Progress and Quick Actions */}
-                    <section className="grid min-w-0 grid-cols-1 gap-5 xl:grid-cols-12">
-                        <div className="min-w-0 xl:col-span-8">
-                            <ProjectProgress />
+                    {/* Analytics */}
+                    <section className="grid min-w-0 grid-cols-1 gap-4 xl:grid-cols-5">
+                        <div className="min-w-0 xl:col-span-3">
+                            <ProjectAnalytics />
                         </div>
 
-                        <div className="min-w-0 xl:col-span-4">
-                            <QuickActions />
+                        <div className="min-w-0 xl:col-span-2">
+                            <TaskAnalytics />
                         </div>
                     </section>
 
-                    {/* Recent Tasks and Upcoming Deadlines */}
-                    <section className="grid min-w-0 grid-cols-1 gap-5 xl:grid-cols-12">
-                        <div className="min-w-0 xl:col-span-8">
-                            <RecentTasks />
+                    {/* Project Progress and Upcoming Deadlines */}
+                    <section className="grid min-w-0 grid-cols-1 gap-4 xl:grid-cols-5">
+                        <div className="min-w-0 xl:col-span-2">
+                            <ProjectProgress />
                         </div>
 
-                        <div className="min-w-0 xl:col-span-4">
+                        <div className="min-w-0 xl:col-span-3">
                             <UpcomingDeadlines />
                         </div>
                     </section>
 
-                    {/* Analytics */}
-                    <section className="grid min-w-0 grid-cols-1 gap-5 xl:grid-cols-12">
-                        <div className="min-w-0 xl:col-span-7">
-                            <ProjectAnalytics />
+                    {/* Recent Tasks and Quick Actions */}
+                    <section className="grid min-w-0 grid-cols-1 gap-4 xl:grid-cols-5">
+                        <div className="min-w-0 xl:col-span-3">
+                            <RecentTasks />
                         </div>
 
-                        <div className="min-w-0 xl:col-span-5">
-                            <TaskAnalytics />
+                        <div className="min-w-0 xl:col-span-2">
+                            <QuickActions />
                         </div>
                     </section>
                 </>

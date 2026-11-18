@@ -7,13 +7,13 @@ const ProjectProgress = () => {
     const projects = useSelector(selectDashboardProjects);
 
     return (
-        <section className="h-full rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-colors dark:border-slate-800 dark:bg-slate-900 sm:p-6">
+        <section className="h-full rounded-xl border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] dark:border-[#292e3a] dark:bg-[#151821] sm:p-5">
             <div className="flex items-center justify-between gap-3">
                 <div>
-                    <h2 className="text-base font-semibold tracking-tight text-slate-900 dark:text-white">
+                    <h2 className="text-base font-semibold text-slate-900 dark:text-white">
                         Project Progress
                     </h2>
-                    <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                         Track the progress of your active projects.
                     </p>
                 </div>
@@ -51,12 +51,12 @@ const ProjectProgress = () => {
                         </Link>
                     </div>
                 ) : (
-                    <div className="space-y-5">
+                    <div className="space-y-4">
                         {projects.slice(0, 4).map((project) => (
                             <Link
                                 key={project.id}
                                 to="/projects"
-                                className="group block rounded-xl p-2 -mx-2 transition hover:bg-slate-50 dark:hover:bg-slate-800/60"
+                                className="group block rounded-lg px-1 py-1 transition hover:bg-slate-50 dark:hover:bg-[#1c202b]"
                             >
                                 <div className="flex items-center justify-between gap-3">
                                     <div className="min-w-0">
@@ -75,7 +75,7 @@ const ProjectProgress = () => {
                                 </div>
 
                                 <div
-                                    className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700/80"
+                                    className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-slate-100 dark:bg-[#292e3a]"
                                     role="progressbar"
                                     aria-label={`${project.name} progress`}
                                     aria-valuenow={project.progress}
@@ -83,7 +83,7 @@ const ProjectProgress = () => {
                                     aria-valuemax={100}
                                 >
                                     <div
-                                        className="h-full rounded-full bg-linear-to-r from-indigo-500 to-blue-500 transition-all duration-500"
+                                        className="h-full rounded-full bg-indigo-600 transition-all duration-500 dark:bg-indigo-500"
                                         style={{
                                             width: `${project.progress}%`,
                                         }}
